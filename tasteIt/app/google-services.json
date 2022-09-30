@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "274382044421",
+    "project_id": "tasteit-b6f78",
+    "storage_bucket": "tasteit-b6f78.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:274382044421:android:2bf887b09739c0bfbc8b6c",
+        "android_client_info": {
+          "package_name": "com.example.tasteit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "274382044421-12c1j00ktt9bbj9pgivdbh8up3818lts.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgjAJFkKRVTDoYCuO7I58pDOZz7OTeWYw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "274382044421-12c1j00ktt9bbj9pgivdbh8up3818lts.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

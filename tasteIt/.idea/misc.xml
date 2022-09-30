@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/java-projects/androidStudio-projects/tasteIt/app/src/main/res/drawable/facebook.xml" value="0.1425" />
+        <entry key="..\:/java-projects/androidStudio-projects/tasteIt/app/src/main/res/drawable/google.xml" value="0.1425" />
+        <entry key="..\:/java-projects/androidStudio-projects/tasteIt/app/src/main/res/layout/activity_login.xml" value="0.16530797101449277" />
+        <entry key="..\:/java-projects/androidStudio-projects/tasteIt/app/src/main/res/layout/activity_main.xml" value="0.16530797101449277" />
+        <entry key="..\:/java-projects/androidStudio-projects/tasteIt/app/src/main/res/layout/login.xml" value="0.21754385964912282" />
+        <entry key="..\:/java-projects/androidStudio-projects/tasteIt/app/src/main/res/layout/register.xml" value="0.16530797101449277" />
+        <entry key="..\:/java-projects/androidStudio-projects/tasteIt/app/src/main/res/xml/network_security_config.xml" value="0.16530797101449277" />
+        <entry key="..\:/proyectos/kotlin-projects/tasteIt/app/src/main/res/drawable/b_buttons.xml" value="0.188" />
+        <entry key="..\:/proyectos/kotlin-projects/tasteIt/app/src/main/res/drawable/facebook.xml" value="0.188" />
+        <entry key="..\:/proyectos/kotlin-projects/tasteIt/app/src/main/res/drawable/google.xml" value="0.346" />
+        <entry key="..\:/proyectos/kotlin-projects/tasteIt/app/src/main/res/drawable/ic_add.xml" value="0.346" />
+        <entry key="..\:/proyectos/kotlin-projects/tasteIt/app/src/main/res/drawable/ic_book.xml" value="0.346" />
+        <entry key="..\:/proyectos/kotlin-projects/tasteIt/app/src/main/res/drawable/ic_change_photo.xml" value="0.346" />
+        <entry key="..\:/proyectos/kotlin-projects/tasteIt/app/src/main/res/drawable/ic_default_profile.xml" value="0.346" />
+        <entry key="..\:/proyectos/kotlin-projects/tasteIt/app/src/main/res/drawable/ic_home.xml" value="0.346" />
+        <entry key="..\:/proyectos/kotlin-projects/tasteIt/app/src/main/res/drawable/ic_profile.xml" value="0.346" />
+        <entry key="..\:/proyectos/kotlin-projects/tasteIt/app/src/main/res/drawable/ic_search.xml" value="0.346" />
+        <entry key="..\:/proyectos/kotlin-projects/tasteIt/app/src/main/res/drawable/ic_tasteit.xml" value="0.346" />
+        <entry key="..\:/proyectos/kotlin-projects/tasteIt/app/src/main/res/layout/activity_forgot_password.xml" value="0.3484375" />
+        <entry key="..\:/proyectos/kotlin-projects/tasteIt/app/src/main/res/layout/activity_login.xml" value="0.4662813102119461" />
+        <entry key="..\:/proyectos/kotlin-projects/tasteIt/app/src/main/res/layout/activity_main.xml" value="0.29257246376811596" />
+        <entry key="..\:/proyectos/kotlin-projects/tasteIt/app/src/main/res/layout/activity_profile.xml" value="0.2749094202898551" />
+        <entry key="..\:/proyectos/kotlin-projects/tasteIt/app/src/main/res/layout/activity_terms.xml" value="0.3625" />
+        <entry key="..\:/proyectos/kotlin-projects/tasteIt/app/src/main/res/layout/login.xml" value="0.3625" />
+        <entry key="..\:/proyectos/kotlin-projects/tasteIt/app/src/main/res/layout/register.xml" value="0.3625" />
+        <entry key="..\:/proyectos/kotlin-projects/tasteIt/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.356" />
+        <entry key="..\:/proyectos/kotlin-projects/tasteIt/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1935" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

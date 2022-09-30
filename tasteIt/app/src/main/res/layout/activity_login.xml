@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoginActivity"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="230dp"
+        android:src="@drawable/ic_tasteit" />
+
+    <EditText
+        android:id="@+id/etEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/email"
+        android:inputType="textEmailAddress"
+        android:minHeight="48dp"
+        android:textAlignment="center"
+        android:fontFamily="@font/comfortaa_light" />
+
+
+    <EditText
+        android:id="@+id/etPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:fontFamily="@font/comfortaa_light"
+        android:hint="@string/password"
+        android:inputType="textPassword"
+        android:minHeight="48dp"
+        android:textAlignment="center" />
+
+    <EditText
+        android:id="@+id/etConfirmPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:fontFamily="@font/comfortaa_light"
+        android:hint="@string/Confirm_password"
+        android:inputType="textPassword"
+        android:minHeight="48dp"
+        android:textAlignment="center" />
+
+    <Button
+        android:id="@+id/bLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/viewCustom"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:text="@string/login"
+        android:onClick="login"
+        android:fontFamily="@font/comfortaa_bold"/>
+
+    <TextView
+        android:id="@+id/tvForgotPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/forgot_password"
+        android:textAlignment="center"
+        android:paddingTop="10dp"
+        android:onClick="forgotPassword"
+        android:fontFamily="@font/comfortaa_light"/>
+
+    <LinearLayout
+        android:id="@+id/lyTerms"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/cbAcept"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:text="@string/acept"
+            android:fontFamily="@font/comfortaa_light" />
+
+        <TextView
+            android:id="@+id/tvTerms"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:text="@string/terms"
+            android:layout_marginLeft="5dp"
+            android:textColor="@color/red"
+            android:onClick="goTerms"
+            android:fontFamily="@font/comfortaa_light" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btSignGoogle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/viewCustom"
+        android:theme="@style/viewCustom"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:drawableLeft="@drawable/google"
+        android:text="@string/google"
+        android:textAlignment="textStart"
+        android:textSize="16sp"
+        android:paddingLeft="30dp"
+        android:fontFamily="@font/comfortaa_light"
+        android:onClick="callSingInGoogle"
+        />
+
+<!--
+    <Button
+        android:id="@+id/btSignFacebook"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/viewCustom"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:drawableLeft="@drawable/facebook"
+        android:text="@string/facebook"
+        android:textAlignment="textStart"
+        android:textSize="16sp"
+        android:paddingLeft="30dp"
+        android:fontFamily="@font/comfortaa_light"
+        android:onClick="callSingInFacebook" />
+
+-->
+
+</LinearLayout>
+
+
