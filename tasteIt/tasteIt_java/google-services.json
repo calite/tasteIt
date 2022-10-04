@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "604894604964",
+    "project_id": "tasteit-java",
+    "storage_bucket": "tasteit-java.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:604894604964:android:56fd0ffd82a99f2fc24031",
+        "android_client_info": {
+          "package_name": "com.example.tasteit_java"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "604894604964-qcjrdsi03rksfmodg8pskujjrqld4aks.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDe4KQ8PMXQnY9UuOf7VpMr6vcdv3XrjOc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "604894604964-qcjrdsi03rksfmodg8pskujjrqld4aks.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
