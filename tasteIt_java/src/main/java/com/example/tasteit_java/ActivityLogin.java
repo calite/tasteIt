@@ -121,6 +121,7 @@ public class ActivityLogin extends AppCompatActivity {
     }
 
     private void loginUser() {
+//Hola
         email = etEmail.getText().toString();
         password = etPassword.getText().toString();
         TextView bLogin = findViewById(R.id.bLogin);
