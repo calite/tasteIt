@@ -2,7 +2,7 @@ package com.example.tasteit_java;
 //HOLA
 //HOLA2
 //HOLA3
-//hola soy daniel
+//hola soy daniel2
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
