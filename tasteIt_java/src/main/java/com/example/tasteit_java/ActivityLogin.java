@@ -2,7 +2,6 @@ package com.example.tasteit_java;
 //HOLA
 //HOLA2
 //HOLA3
-//HOLA4
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
