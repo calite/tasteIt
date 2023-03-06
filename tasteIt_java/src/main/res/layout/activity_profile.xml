@@ -25,6 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Profile Name"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toTopOf="@+id/fcMainMenu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.421"
@@ -50,6 +51,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="Followers"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.848"
         app:layout_constraintStart_toStartOf="parent"
@@ -84,6 +86,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="Recipes"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.13"
         app:layout_constraintStart_toStartOf="parent"
@@ -95,6 +98,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="Followers"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
@@ -104,6 +108,7 @@
         android:id="@+id/vSeparator"
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:backgroundTint="@color/maroon"
         android:background="@android:color/darker_gray"
         app:layout_constraintBottom_toTopOf="@+id/fcMainMenu"
         app:layout_constraintTop_toBottomOf="@+id/textView"
@@ -129,7 +134,7 @@
             <com.google.android.material.tabs.TabItem
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Videos" />
+                android:text="Comments" />
 
         </com.google.android.material.tabs.TabLayout>
 

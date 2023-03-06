@@ -64,6 +64,7 @@
             android:fontFamily="@font/comfortaa_bold"
             android:text="Name Creator"
             android:textColor="@color/white"
+            android:textStyle="italic"
             android:textSize="15dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.53"
@@ -88,11 +89,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="Steps" />
-
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Photos" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="match_parent"

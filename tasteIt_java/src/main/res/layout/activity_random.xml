@@ -6,13 +6,29 @@
     android:layout_height="match_parent"
     tools:context=".ActivityRandom">
 
+
+    <!--si no ves nada comenta este fragment container -->
+
     <TextView
+        android:id="@+id/textView11"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="RANDOM"
+        android:text="Lets try something..."
+        android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@+id/fcMainMenu"
-        app:layout_constraintTop_toTopOf="parent" />
-<!--si no ves nada comenta este fragment container -->
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.465"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Taste!"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView11" />
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fcMainMenu"
         android:name="com.example.tasteit_java.FragmentMainMenu"
