@@ -57,12 +57,18 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore:24.2.2'
     implementation 'com.google.android.gms:play-services-auth:20.2.0'
 
+    //picaso gallery
+    implementation 'com.squareup.picasso:picasso:2.5.2'
+
+
     //bdConnection
     //implementation files('C:/Users/Sito/Desktop/TFG/neo4j-java-driver-4.4.11.jar')
     //implementation files('C:/Users/Sito/Desktop/TFG/reactive-streams-1.0.4.jar')
 
     implementation group: 'org.neo4j.driver', name: 'neo4j-java-driver', version: '4.4.11'
     implementation group: 'org.reactivestreams', name: 'reactive-streams', version: '1.0.4'
+
+
 
 
 }

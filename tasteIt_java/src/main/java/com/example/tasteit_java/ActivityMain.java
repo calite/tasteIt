@@ -3,6 +3,8 @@ package com.example.tasteit_java;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
@@ -12,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.User;
@@ -84,7 +87,7 @@ public class ActivityMain extends AppCompatActivity {
         }
 
         //TEMPORAL - grid view
-        for(int i = 0; i < 20; i++) {
+        for(int i = 0; i < 5; i++) {
             listRecipes.add(new Recipe("Pinneaple pizza","etc etc etc","chuck norris", "5.0", R.drawable.recipe_demo, new ArrayList<String>()));
         }
 
@@ -101,14 +104,17 @@ public class ActivityMain extends AppCompatActivity {
             }
         });
 
+        //ya funciona, pero hace cosas raras en el scroll
+
         /*
         //TEMPORAL - recycler view
         rvRecipes = findViewById(R.id.rvRecipes);
-        GridLayoutManager layoutManager = new GridLayoutManager(this,3);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvRecipes.setLayoutManager(layoutManager);
         adapter2 = new AdapterRecyclerMain(listRecipes);
         rvRecipes.setAdapter(adapter2);
         */
+
     }
 
 

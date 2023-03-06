@@ -14,12 +14,11 @@ import java.util.ArrayList;
 
 public class AdapterRecyclerMain extends RecyclerView.Adapter<AdapterRecyclerMain.ViewHolder> {
 
-    private ArrayList<Recipe> listRecipe;
+    private ArrayList<Recipe> listRecipes;
 
-    /**
-     * Provide a reference to the type of views that you are using
-     * (custom ViewHolder).
-     */
+    public AdapterRecyclerMain(ArrayList<Recipe> listRecipes) {
+        this.listRecipes = listRecipes;
+    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -60,23 +59,10 @@ public class AdapterRecyclerMain extends RecyclerView.Adapter<AdapterRecyclerMai
         }
 
     }
-    /*
-     * Initialize the dataset of the Adapter.
-     *
-     * @param dataSet String[] containing the data to populate views to be used
-     * by RecyclerView.
-     */
-    public AdapterRecyclerMain(ArrayList<Recipe> listRecipes) {
-        listRecipe = new ArrayList<>();
-    }
 
-    // Create new views (invoked by the layout manager)
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        // Create a new view, which defines the UI of the list item
-        /*
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_main_recycler, viewGroup, false);
-        */
+
         LayoutInflater layoutInflater = LayoutInflater.from(viewGroup.getContext());
         View view = layoutInflater.inflate(R.layout.item_main_recycler,viewGroup,false);
         ViewHolder viewHolder = new ViewHolder(view);
@@ -84,29 +70,21 @@ public class AdapterRecyclerMain extends RecyclerView.Adapter<AdapterRecyclerMai
         return viewHolder;
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
+
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        // Get element from your dataset at this position and replace the
-        // contents of the view with that element
-        /*
-        viewHolder.getTvNameRecipe().setText(listRecipe.get(position).getName());
-        viewHolder.getTvDescriptionRecipe().setText(listRecipe.get(position).getDescription());
-        viewHolder.getTvNameCreator().setText(listRecipe.get(position).getCreator());
-        viewHolder.getTvRating().setText(listRecipe.get(position).getRating());
-        viewHolder.getIvPhotoRecipe().setImageResource(listRecipe.get(position).getImg());
-        */
-        viewHolder.tvNameRecipe.setText(listRecipe.get(position).getName());
-        viewHolder.tvNameCreator.setText(listRecipe.get(position).getCreator());
-        viewHolder.tvDescriptionRecipe.setText(listRecipe.get(position).getDescription());
-        viewHolder.tvRating.setText(listRecipe.get(position).getRating());
-        viewHolder.ivPhotoRecipe.setImageResource(listRecipe.get(position).getImg());
+
+        viewHolder.tvNameRecipe.setText(listRecipes.get(position).getName());
+        viewHolder.tvNameCreator.setText(listRecipes.get(position).getCreator());
+        viewHolder.tvDescriptionRecipe.setText(listRecipes.get(position).getDescription());
+        viewHolder.tvRating.setText(listRecipes.get(position).getRating());
+        viewHolder.ivPhotoRecipe.setImageResource(listRecipes.get(position).getImg());
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return listRecipe.size();
+        return listRecipes.size();
     }
 
 
