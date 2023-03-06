@@ -3,9 +3,7 @@ package com.example.tasteit_java;
 //HOLA2
 //HOLA3
 //HOLA4
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
+//HOLA SOY DANIEL; Y SOY PROGRAMAD0R
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,6 +17,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.example.tasteit_java.clases.ValidateEmail;
 import com.google.android.gms.tasks.OnCompleteListener;
