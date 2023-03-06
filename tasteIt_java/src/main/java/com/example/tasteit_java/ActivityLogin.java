@@ -17,18 +17,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.tasteit_java.bdConn.BdConnection;
-import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.ValidateEmail;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.text.SimpleDateFormat;
-import java.util.HashMap;
 
 public class ActivityLogin extends AppCompatActivity {
 
