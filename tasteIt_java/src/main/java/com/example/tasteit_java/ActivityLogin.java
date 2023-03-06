@@ -1,28 +1,32 @@
 package com.example.tasteit_java;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
+
 import com.example.tasteit_java.clases.ValidateEmail;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
 
 public class ActivityLogin extends AppCompatActivity {
 
@@ -32,11 +36,15 @@ public class ActivityLogin extends AppCompatActivity {
     private EditText etEmail;
     private EditText etPassword;
     private EditText etConfirmPassword;
-    private LinearLayout lyTerms;
+    private Button bShowPass;
+    private Button bShowPass2;
+    private ConstraintLayout lyTerms;
 
     private FirebaseAuth mAuth;
 
-    private ImageView temp;
+    //google sign in
+    private GoogleApiClient googleApiClient;
+    private static final int RC_SIGN_IN = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,33 +59,77 @@ public class ActivityLogin extends AppCompatActivity {
         lyTerms.setVisibility(View.INVISIBLE);
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
         etConfirmPassword.setVisibility(View.INVISIBLE);
+        bShowPass = findViewById(R.id.bShowPass);
+        bShowPass2 = findViewById(R.id.bShowPass2);
+        bShowPass2.setVisibility(View.INVISIBLE);
 
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
         mAuth = FirebaseAuth.getInstance();
 
-        manageButtonLogin();
+        /*
+        GoogleSignInOptions gso =  new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
 
-        etEmail.addTextChangedListener(new TextWatcher() {
+        googleApiClient=new GoogleApiClient.Builder(this)
+                .enableAutoManage(this,null)
+                .addApi(Auth.GOOGLE_SIGN_IN_API,gso)
+                .build();
+        */
+
+        //onclick eyes
+        bShowPass.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                manageButtonLogin();
+            public void onClick(View view) {
+                if (etPassword.getInputType() != InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) {
+                    etPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                } else {
+                    etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                }
             }
+        });
+        bShowPass2.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void afterTextChanged(Editable editable) {}
+            public void onClick(View view) {
+                if (etConfirmPassword.getInputType() != InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) {
+                    etConfirmPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                } else {
+                    etConfirmPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                }
+            }
         });
 
-        etPassword.addTextChangedListener(new TextWatcher() {
+        manageButtonLogin();
+
+        //listener para comprobar pass y email
+        etEmail.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 manageButtonLogin();
             }
+
             @Override
-            public void afterTextChanged(Editable editable) {}
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+        etPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                manageButtonLogin();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
         });
 
     }
@@ -93,12 +145,10 @@ public class ActivityLogin extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-
         Intent startMain = new Intent(Intent.ACTION_MAIN);
         startMain.addCategory(Intent.CATEGORY_HOME);
         startMain.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(startMain);
-
     }
 
     private void manageButtonLogin() {
@@ -129,11 +179,14 @@ public class ActivityLogin extends AppCompatActivity {
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) goHome();
-                        else {
+                        if (task.isSuccessful()) {
+                            waitingForLogin();
+                            goHome();
+                        } else {
                             if (lyTerms.getVisibility() == View.INVISIBLE && etConfirmPassword.getVisibility() == View.INVISIBLE) {
                                 lyTerms.setVisibility(View.VISIBLE);
                                 etConfirmPassword.setVisibility(View.VISIBLE);
+                                bShowPass2.setVisibility(View.VISIBLE);
                                 bLogin.setText("register now!");
                             } else {
                                 CheckBox cbAcept = findViewById(R.id.cbAcept);
@@ -157,6 +210,7 @@ public class ActivityLogin extends AppCompatActivity {
     }
 
     private void goHome() {
+
         Intent i = new Intent(this, ActivityMain.class);
         /*
         //NEO4J
@@ -171,6 +225,15 @@ public class ActivityLogin extends AppCompatActivity {
         //NEO4J
         */
         startActivity(i);
+    }
+
+    private void waitingForLogin() {
+
+        View loading = View.inflate(ActivityLogin.this, R.layout.item_waiting_for_login, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(ActivityLogin.this);
+        builder.setView(loading);
+        builder.create().show();
+
     }
 
     private void register() {
@@ -197,8 +260,10 @@ public class ActivityLogin extends AppCompatActivity {
 
                     dbRegister.collection("users").document(email).set(user);
                     */
+                    waitingForLogin();
                     goHome();
-                } else Toast.makeText(ActivityLogin.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+                } else
+                    Toast.makeText(ActivityLogin.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -238,56 +303,41 @@ public class ActivityLogin extends AppCompatActivity {
         return password.equals(confirmPassword);
     }
 
-
-    //POR REPARAR
     /*
+    //POR REPARAR
     public void callSingInGoogle(View view) {
         signInGoogle();
     }
 
     private void signInGoogle() {
-        GoogleSignInOptions.Builder gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
 
-        GoogleSignIn googleSignInClient = GoogleSignIn.getClient(this, gso);
+        GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, gso);
         googleSignInClient.signOut();
-
-        startActivityForResult(googleSignInClient.signInIntent, RESULT_CODE_SIGN_IN);
+        Intent intent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
+        startActivityForResult(intent, RC_SIGN_IN);
     }
 
-    private void onActivityResult(requestCode:Int, resultCode:Int, data:Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == RESULT_CODE_SIGN_IN) {
-
-            try {
-                val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-
-                val account = task.getResult(ApiException:: class.java)!!
-
-                if (account != null) {
-                    email = account.email !!
-                            val credential = GoogleAuthProvider.getCredential(account.idToken, null);
-                    mAuth.signInWithCredential(credential).addOnCompleteListener {
-                        if (it.isSuccessful) goHome();
-                        else showError("Google")
-
-                    }
-                }
-
-
-            } catch (e:ApiException){
-                showError("Google")
-            }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==RC_SIGN_IN){
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            handleSignInResult(result);
         }
-
+    }
+    private void handleSignInResult(GoogleSignInResult result){
+        if(result.isSuccess()){
+            goHome();
+        }else{
+            Toast.makeText(getApplicationContext(),"Sign in cancel",Toast.LENGTH_LONG).show();
+        }
     }
 
     private void showError(String provider) {
         Toast.makeText(this, "Error with the connection to $provider", Toast.LENGTH_SHORT).show();
     }
     */
-
 }
