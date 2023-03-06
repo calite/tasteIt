@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+import com.example.tasteit_java.R;
 import com.example.tasteit_java.clases.Recipe;
 
 import java.util.ArrayList;

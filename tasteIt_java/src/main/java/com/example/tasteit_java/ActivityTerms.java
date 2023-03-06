@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+import com.example.tasteit_java.R;
+
 public class ActivityTerms extends AppCompatActivity {
 
     @Override
