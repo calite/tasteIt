@@ -6,14 +6,73 @@
     android:layout_height="match_parent"
     tools:context=".ActivitySearch">
 
-    <TextView
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="SEARCH"
-        app:layout_constraintBottom_toTopOf="@+id/fcMainMenu"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:background="@color/maroon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <!--si no ves nada comenta este fragment container -->
+        <EditText
+            android:id="@+id/tvSearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:hint="Type something..."
+            android:textSize="20dp"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/ic_search"
+            app:layout_constraintEnd_toEndOf="@+id/tvSearch"
+            app:layout_constraintTop_toTopOf="@+id/tvSearch" />
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvSearch">
+
+            <RadioButton
+                android:id="@+id/rbName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="80dp"
+                android:text="Name"
+                android:textColor="@color/white"
+                android:textSize="15dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <RadioButton
+                android:id="@+id/rbTags"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text="Tags"
+                android:textColor="@color/white"
+                android:textSize="15dp"
+                app:layout_constraintStart_toEndOf="@+id/rbName"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <RadioButton
+                android:id="@+id/rbCountry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="Country"/>
+
+        </RadioGroup>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fcMainMenu"
         android:name="com.example.tasteit_java.FragmentMainMenu"
@@ -21,6 +80,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent" />
+    <!--si no ves nada comenta este fragment container -->
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

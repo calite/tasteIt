@@ -16,5 +16,6 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         -->
+        <item name="android:fontFamily">@font/comfortaa_bold</item>
     </style>
 </resources>
