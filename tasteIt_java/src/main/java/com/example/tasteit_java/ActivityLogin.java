@@ -1,5 +1,6 @@
 package com.example.tasteit_java;
-//TEST FINAL - n0m0r3dr4m4
+
+//ULTIMO INTENTO
 
 import android.content.Intent;
 import android.os.Bundle;
