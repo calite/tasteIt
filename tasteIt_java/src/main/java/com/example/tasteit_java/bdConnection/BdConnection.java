@@ -1,7 +1,5 @@
 package com.example.tasteit_java.bdConnection;
 
-//No cambia
-
 import static org.neo4j.driver.Values.parameters;
 
 import android.os.StrictMode;
