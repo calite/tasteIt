@@ -1,5 +1,7 @@
 package com.example.tasteit_java.clases;
 
+//No cambia
+
 import java.io.Serializable;
 import java.util.Base64;
 
