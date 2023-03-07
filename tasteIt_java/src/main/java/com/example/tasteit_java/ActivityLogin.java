@@ -19,12 +19,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
+import com.example.tasteit_java.bdConnection.BdConnection;
+import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.ValidateEmail;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
 
 public class ActivityLogin extends AppCompatActivity {
 
@@ -40,11 +44,20 @@ public class ActivityLogin extends AppCompatActivity {
 
     private ImageView temp;
 
+    private BdConnection app;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        //NEO4J
+        String uri = "neo4j+s://dc95b24b.databases.neo4j.io"; //URL conexion Neo4j
+        String user = "neo4j";
+        String pass = "sBQ6Fj2oXaFltjizpmTDhyEO9GDiqGM1rG-zelf17kg"; //PDTE CIFRAR
+        app = new BdConnection(uri, user, pass);  //Instanciamos la conexion
+        //FIN NEO
 
         getSupportActionBar().hide();
 
@@ -62,24 +75,32 @@ public class ActivityLogin extends AppCompatActivity {
 
         etEmail.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 manageButtonLogin();
             }
+
             @Override
-            public void afterTextChanged(Editable editable) {}
+            public void afterTextChanged(Editable editable) {
+            }
         });
 
         etPassword.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 manageButtonLogin();
             }
+
             @Override
-            public void afterTextChanged(Editable editable) {}
+            public void afterTextChanged(Editable editable) {
+            }
         });
 
     }
@@ -160,18 +181,12 @@ public class ActivityLogin extends AppCompatActivity {
 
     private void goHome() {
         Intent i = new Intent(this, ActivityMain.class);
-        /*
         //NEO4J
-        String uri = "neo4j+s://dc95b24b.databases.neo4j.io"; //URL conexion Neo4j
-        String user = "neo4j";
-        String pass = "sBQ6Fj2oXaFltjizpmTDhyEO9GDiqGM1rG-zelf17kg"; //PDTE CIFRAR
-
-        try (BdConnection app = new BdConnection(uri, user, pass)) { //Instanciamos la conexion
-            User usuario = app.login(email, password); //Intentamos el login
-            i.putExtra("user", usuario);
-        }
-        //NEO4J
-        */
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        String uid = firebaseUser.getUid();
+        User usuario = app.login(uid); //Intentamos el login
+        i.putExtra("user", usuario);
+        //FIN NEO
         startActivity(i);
     }
 
@@ -199,8 +214,17 @@ public class ActivityLogin extends AppCompatActivity {
 
                     dbRegister.collection("users").document(email).set(user);
                     */
+
+                    //NEO4J
+                    FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                    String uid = firebaseUser.getUid();
+                    String username = email.substring(0, email.indexOf("@"));
+                    app.register(username, uid);
+                    //FIN NEO
+
                     goHome();
-                } else Toast.makeText(ActivityLogin.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+                } else
+                    Toast.makeText(ActivityLogin.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
             }
         });
 
