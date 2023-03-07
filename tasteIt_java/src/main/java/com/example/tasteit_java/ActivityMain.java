@@ -1,12 +1,5 @@
 package com.example.tasteit_java;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -16,10 +9,16 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
@@ -43,8 +42,13 @@ public class ActivityMain extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //NEO4J
+        //test -> uid usuario firebase
+        FirebaseUser asd = FirebaseAuth.getInstance().getCurrentUser();
+        Toast.makeText(this,  asd.getUid() + "" , Toast.LENGTH_SHORT).show();
+
         /*
+        //NEO4J
+
         iProfile = findViewById(R.id.iProfile);
         Bundle params = getIntent().getExtras();
         user = (User) params.getSerializable("user");
@@ -60,9 +64,8 @@ public class ActivityMain extends AppCompatActivity {
                 return true;
             }
         });
-        */
-
         //NEO4J
+        */
 
         //menu superior
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

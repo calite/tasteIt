@@ -10,12 +10,12 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
 import com.example.tasteit_java.clases.ValidateEmail;
@@ -33,7 +33,7 @@ public class ActivityLogin extends AppCompatActivity {
     private EditText etEmail;
     private EditText etPassword;
     private EditText etConfirmPassword;
-    private LinearLayout lyTerms;
+    private ConstraintLayout lyTerms;
 
     private FirebaseAuth mAuth;
 
