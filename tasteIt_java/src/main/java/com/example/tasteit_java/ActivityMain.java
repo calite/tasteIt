@@ -1,14 +1,5 @@
 package com.example.tasteit_java;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.menu.ActionMenuItemView;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -18,10 +9,16 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
@@ -37,16 +34,38 @@ public class ActivityMain extends AppCompatActivity {
     private ArrayList<Recipe> listRecipes = new ArrayList<>();
 
     private User user;
-    private ActionMenuItemView iProfile;
+    private MenuItem iProfile;
 
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //test -> uid usuario firebase
+        FirebaseUser asd = FirebaseAuth.getInstance().getCurrentUser();
+        Toast.makeText(this,  asd.getUid() + "" , Toast.LENGTH_SHORT).show();
+
+        /*
+        //NEO4J
+
         iProfile = findViewById(R.id.iProfile);
+        Bundle params = getIntent().getExtras();
+        user = (User) params.getSerializable("user");
+        iProfile.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                //return false;
+                Intent i = new Intent(ActivityMain.this, ActivityProfile.class);
+                i.putExtra("username", user.getUsername());
+                i.putExtra("email", user.getEmail());
+
+                startActivity(i);
+                return true;
+            }
+        });
+        //NEO4J
+        */
 
         //menu superior
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -120,15 +139,19 @@ public class ActivityMain extends AppCompatActivity {
                 return true;
             case R.id.iProfile:
                 //NEO4J
+                /*
+                iProfile = findViewById(R.id.iProfile);
                 Bundle params = getIntent().getExtras();
                 user = (User) params.getSerializable("user");
 
                 Intent i = new Intent(ActivityMain.this, ActivityProfile.class);
-                i.putExtra("user", user);
-                startActivity(i);
-                //FIN NEO4J
+                i.putExtra("username", user.getUsername());
+                i.putExtra("email", user.getEmail());
 
-                //startActivity(new Intent(getApplicationContext(), ActivityProfile.class));
+                startActivity(i);
+                */
+                //FIN NEO4J
+                startActivity(new Intent(getApplicationContext(), ActivityProfile.class));
                 return true;
             case R.id.iCloseSesion:
                 signOut();
