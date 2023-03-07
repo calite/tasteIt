@@ -2,6 +2,8 @@ package com.example.tasteit_java.clases;
 
 //No cambia
 
+//holi
+
 import java.io.Serializable;
 
 public class User implements Serializable {
