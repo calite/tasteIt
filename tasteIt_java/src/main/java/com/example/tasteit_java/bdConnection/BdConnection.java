@@ -1,4 +1,4 @@
-package com.example.tasteit_java.bdConn;
+package com.example.tasteit_java.bdConnection;
 
 import com.example.tasteit_java.clases.User;
 
