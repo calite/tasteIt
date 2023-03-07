@@ -1,7 +1,5 @@
 package com.example.tasteit_java;
 
-//ULTIMO INTENTO
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -199,23 +197,6 @@ public class ActivityLogin extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    /*
-                    //temporal - se usara SQLite
-                    //NO FURULA
-                    SimpleDateFormat dateRegister = new SimpleDateFormat("dd/MM/yyyy");
-                    FirebaseFirestore dbRegister = FirebaseFirestore.getInstance();
-                    String username = email.substring(0, email.indexOf("@"));
-                    int photo = R.drawable.ic_default_profile;
-
-                    HashMap<String, Object> user = new HashMap<>();
-                    user.put("user", email);
-                    user.put("dateRegister", dateRegister);
-                    user.put("username", username);
-                    user.put("photo", photo);
-
-                    dbRegister.collection("users").document(email).set(user);
-                    */
-
                     //NEO4J
                     FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
                     String uid = firebaseUser.getUid();

@@ -26,7 +26,6 @@ public class ActivityProfile extends AppCompatActivity {
 
     private User user;
     private TextView tvUserName;
-    private TextView tvBiography;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -39,8 +38,6 @@ public class ActivityProfile extends AppCompatActivity {
         user = (User) params.getSerializable("user");
         tvUserName = findViewById(R.id.tvUserName);
         tvUserName.setText(user.getUsername());
-        //tvBiography = findViewById(R.id.tvBiography);
-        //tvBiography.setText(user.getBiography());
         //FIN NEO4J
 
         //menu superior

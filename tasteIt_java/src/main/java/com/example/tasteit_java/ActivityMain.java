@@ -37,7 +37,6 @@ public class ActivityMain extends AppCompatActivity {
     private ArrayList<Recipe> listRecipes = new ArrayList<>();
 
     private User user;
-    private ActionMenuItemView iProfile;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -45,8 +44,6 @@ public class ActivityMain extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        iProfile = findViewById(R.id.iProfile);
 
         //menu superior
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
