@@ -1,15 +1,24 @@
 package com.example.tasteit_java.clases;
 
 import java.io.Serializable;
+import java.util.Base64;
 
 public class User implements Serializable {
 
     private String username;
-    private String email;
+    private String token;
+    private String biography;
+    private String imgProfile;
 
-    public User(String username, String email) {
+    public User(String username, String token) {
         this.username = username;
-        this.email = email;
+        this.token = token;
+    }
+
+    public User(String username, String biography, String imgProfile) {
+        this.username = username;
+        this.biography = biography;
+        this.imgProfile = imgProfile;
     }
 
     public String getUsername() {
@@ -20,11 +29,27 @@ public class User implements Serializable {
         this.username = username;
     }
 
-    public String getEmail() {
-        return email;
+    public String getToken() {
+        return token;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getBiography() {
+        return biography;
+    }
+
+    public void setBiography(String biography) {
+        this.biography = biography;
+    }
+
+    public String getImgProfile() {
+        return imgProfile;
+    }
+
+    public void setImgProfile(String imgProfile) {
+        this.imgProfile = imgProfile;
     }
 }

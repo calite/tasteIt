@@ -1,12 +1,14 @@
 package com.example.tasteit_java;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.menu.ActionMenuItemView;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -35,34 +37,16 @@ public class ActivityMain extends AppCompatActivity {
     private ArrayList<Recipe> listRecipes = new ArrayList<>();
 
     private User user;
-    private MenuItem iProfile;
+    private ActionMenuItemView iProfile;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //NEO4J
-        /*
         iProfile = findViewById(R.id.iProfile);
-        Bundle params = getIntent().getExtras();
-        user = (User) params.getSerializable("user");
-        iProfile.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                //return false;
-                Intent i = new Intent(ActivityMain.this, ActivityProfile.class);
-                i.putExtra("username", user.getUsername());
-                i.putExtra("email", user.getEmail());
-
-                startActivity(i);
-                return true;
-            }
-        });
-        */
-
-        //NEO4J
 
         //menu superior
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -136,19 +120,15 @@ public class ActivityMain extends AppCompatActivity {
                 return true;
             case R.id.iProfile:
                 //NEO4J
-                /*
-                iProfile = findViewById(R.id.iProfile);
                 Bundle params = getIntent().getExtras();
                 user = (User) params.getSerializable("user");
 
                 Intent i = new Intent(ActivityMain.this, ActivityProfile.class);
-                i.putExtra("username", user.getUsername());
-                i.putExtra("email", user.getEmail());
-
+                i.putExtra("user", user);
                 startActivity(i);
-                */
                 //FIN NEO4J
-                startActivity(new Intent(getApplicationContext(), ActivityProfile.class));
+
+                //startActivity(new Intent(getApplicationContext(), ActivityProfile.class));
                 return true;
             case R.id.iCloseSesion:
                 signOut();
