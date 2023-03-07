@@ -1,6 +1,5 @@
 package com.example.tasteit_java;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -13,7 +12,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.example.tasteit_java.clases.User;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -24,24 +22,25 @@ public class ActivityProfile extends AppCompatActivity {
     private TabLayout tlUser;
     private ViewPager2 vpPaginator;
 
-    private User user;
+    private String username;
+    private String email;
     private TextView tvUserName;
-    private TextView tvBiography;
 
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
         //NEO4J
+        /*
         Bundle params = getIntent().getExtras();
-        user = (User) params.getSerializable("user");
+        username = params.getString("username");
+        email = params.getString("email");
         tvUserName = findViewById(R.id.tvUserName);
-        tvUserName.setText(user.getUsername());
-        //tvBiography = findViewById(R.id.tvBiography);
-        //tvBiography.setText(user.getBiography());
-        //FIN NEO4J
+        tvUserName.setText(username);
+        */
+
+        //NEO4J
 
         //menu superior
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
