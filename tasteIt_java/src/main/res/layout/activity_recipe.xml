@@ -33,7 +33,7 @@
             android:text="Recipe Name"
             android:textColor="@color/white"
             android:textSize="25dp"
-            app:layout_constraintBottom_toTopOf="@+id/rating"
+            app:layout_constraintBottom_toTopOf="@+id/rbRating"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.494"
             app:layout_constraintStart_toEndOf="@+id/ivRecipePhoto"
@@ -41,7 +41,7 @@
             app:layout_constraintVertical_bias="0.714" />
 
         <RatingBar
-            android:id="@+id/rating"
+            android:id="@+id/rbRating"
             style="?android:attr/ratingBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -69,7 +69,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.53"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/rating" />
+            app:layout_constraintTop_toBottomOf="@+id/rbRating" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

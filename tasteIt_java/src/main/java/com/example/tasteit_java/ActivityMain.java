@@ -1,10 +1,5 @@
 package com.example.tasteit_java;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -13,6 +8,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -29,7 +30,7 @@ public class ActivityMain extends AppCompatActivity {
     private AdapterGridViewMain adapter;
     private RecyclerView rvRecipes;
     private AdapterRecyclerMain adapter2;
-    private ArrayList<Recipe> listRecipes = new ArrayList<>();
+    public static ArrayList<Recipe> listRecipes = new ArrayList<>();
 
     private User user;
     private MenuItem iProfile;
@@ -42,6 +43,16 @@ public class ActivityMain extends AppCompatActivity {
 
         //menu superior
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        //gipsy fix
+
+        //NEO4J
+        String uri = "neo4j+s://dc95b24b.databases.neo4j.io"; //URL conexion Neo4j
+        String user = "neo4j";
+        String pass = "sBQ6Fj2oXaFltjizpmTDhyEO9GDiqGM1rG-zelf17kg"; //PDTE CIFRAR
+        BdConnection app = new BdConnection(uri, user, pass);  //Instanciamos la conexion
+        //FIN NEO
+
 
         //boton crear receta
         bCreate = findViewById(R.id.bCreate);
@@ -61,11 +72,14 @@ public class ActivityMain extends AppCompatActivity {
             ft.add(R.id.fcMainMenu, mainMenuFargment,"main_menu");
             ft.commit();
         }
-
+        /*
         //TEMPORAL - grid view
         for(int i = 0; i < 5; i++) {
-            listRecipes.add(new Recipe("Pinneaple pizza","etc etc etc","chuck norris", "5.0", R.drawable.recipe_demo, new ArrayList<String>()));
+            listRecipes.add(new Recipe("Pinneaple pizza","etc etc etc","chuck norris", "5.0", R.drawable.recipe_demo, new ArrayList<String>(), 3));
         }
+        */
+
+        listRecipes = app.retrieveAllRecipes();
 
         gvRecipes = findViewById(R.id.gvRecipes);
         adapter = new AdapterGridViewMain(this, listRecipes);
@@ -81,7 +95,6 @@ public class ActivityMain extends AppCompatActivity {
         });
 
         //ya funciona, pero hace cosas raras en el scroll
-
         /*
         //TEMPORAL - recycler view
         rvRecipes = findViewById(R.id.rvRecipes);

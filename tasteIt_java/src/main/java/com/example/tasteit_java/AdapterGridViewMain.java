@@ -1,14 +1,16 @@
 package com.example.tasteit_java;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.example.tasteit_java.R;
 import com.example.tasteit_java.clases.Recipe;
+import com.example.tasteit_java.clases.Utils;
 
 import java.util.ArrayList;
 
@@ -44,9 +46,17 @@ public class AdapterGridViewMain extends BaseAdapter {
         view = inflater.inflate(R.layout.item_main_gridview, null);
 
         ImageView ivPhoto = view.findViewById(R.id.ivPhotoRecipe);
+        TextView tvNameRecipe = view.findViewById(R.id.tvNameRecipe);
+        TextView tvNameCreator = view.findViewById(R.id.tvNameCreator);
+        TextView tvDescription = view.findViewById(R.id.tvDescriptionRecipe);
 
-        ivPhoto.setImageResource(arrayListRecipes.get(i).getImg());
+        Bitmap bitmap = Utils.decodeBase64(arrayListRecipes.get(i).getImage());
+        ivPhoto.setImageBitmap(bitmap);
+        tvNameRecipe.setText(arrayListRecipes.get(i).getName());
+        tvNameCreator.setText(arrayListRecipes.get(i).getCreator());
+        tvDescription.setText(arrayListRecipes.get(i).getDescription());
 
         return view;
     }
+
 }

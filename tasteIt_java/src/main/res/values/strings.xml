@@ -58,4 +58,17 @@
         non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
     </string>
 
+    <!--Countries-->
+    <string-array name="countries_array">
+        <item>Spain</item>
+        <item>France</item>
+        <item>Italy</item>
+        <item>Portugal</item>
+        <item>Greece</item>
+        <item>Germany</item>
+        <item>Turkey</item>
+        <item>England</item>
+    </string-array>
+
+
 </resources>

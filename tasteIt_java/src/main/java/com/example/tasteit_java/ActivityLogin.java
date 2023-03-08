@@ -3,30 +3,30 @@ package com.example.tasteit_java;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
 import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.User;
-import com.example.tasteit_java.clases.ValidateEmail;
+import com.example.tasteit_java.clases.Utils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GetTokenResult;
 
 public class ActivityLogin extends AppCompatActivity {
 
@@ -37,10 +37,10 @@ public class ActivityLogin extends AppCompatActivity {
     private EditText etPassword;
     private EditText etConfirmPassword;
     private ConstraintLayout lyTerms;
+    private Button bShowPass;
+    private Button bShowPass2;
 
     private FirebaseAuth mAuth;
-
-    private ImageView temp;
 
     private BdConnection app;
 
@@ -64,6 +64,9 @@ public class ActivityLogin extends AppCompatActivity {
         lyTerms.setVisibility(View.INVISIBLE);
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
         etConfirmPassword.setVisibility(View.INVISIBLE);
+        bShowPass = findViewById(R.id.bShowPass);
+        bShowPass2 = findViewById(R.id.bShowPass2);
+        bShowPass2.setVisibility(View.INVISIBLE);
 
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
@@ -85,7 +88,6 @@ public class ActivityLogin extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
             }
         });
-
         etPassword.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -101,6 +103,29 @@ public class ActivityLogin extends AppCompatActivity {
             }
         });
 
+        bShowPass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(etPassword.getInputType() != InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) {
+                    etPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                } else {
+                    etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                }
+            }
+        });
+
+        bShowPass2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(etConfirmPassword.getInputType() != InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) {
+                    etConfirmPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                } else {
+                    etConfirmPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                }
+            }
+        });
+
+
     }
 
     @Override
@@ -114,12 +139,10 @@ public class ActivityLogin extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-
         Intent startMain = new Intent(Intent.ACTION_MAIN);
         startMain.addCategory(Intent.CATEGORY_HOME);
         startMain.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(startMain);
-
     }
 
     private void manageButtonLogin() {
@@ -128,7 +151,7 @@ public class ActivityLogin extends AppCompatActivity {
         password = etPassword.getText().toString();
         confirmPassword = etConfirmPassword.getText().toString();
         //HAY QUE COMPROBAR LA CLASE VALIDATE EMAIL CON SU METODO
-        if (password.length() < 6 || !ValidateEmail.isEmail(email)) {
+        if (password.length() < 6 || !Utils.isEmail(email)) {
             bLogin.setBackgroundColor(ContextCompat.getColor(this, R.color.gray));
             bLogin.setEnabled(false);
         } else {
@@ -138,6 +161,8 @@ public class ActivityLogin extends AppCompatActivity {
     }
 
     public void login(View view) {
+        //pantalla de carga
+        waitingForConection();
         loginUser();
     }
 
@@ -155,12 +180,15 @@ public class ActivityLogin extends AppCompatActivity {
                             if (lyTerms.getVisibility() == View.INVISIBLE && etConfirmPassword.getVisibility() == View.INVISIBLE) {
                                 lyTerms.setVisibility(View.VISIBLE);
                                 etConfirmPassword.setVisibility(View.VISIBLE);
+                                bShowPass2.setVisibility(View.VISIBLE);
                                 bLogin.setText("register now!");
                             } else {
                                 CheckBox cbAcept = findViewById(R.id.cbAcept);
                                 if (cbAcept.isChecked()) {
                                     if (confirmPassword()) {
                                         bLogin.setBackgroundColor(ContextCompat.getColor(ActivityLogin.this, R.color.green));
+                                        //pantalla de carga
+                                        waitingForConection();
                                         register();
                                     } else {
                                         bLogin.setBackgroundColor(ContextCompat.getColor(ActivityLogin.this, R.color.orange));
@@ -174,6 +202,21 @@ public class ActivityLogin extends AppCompatActivity {
                         }
                     }
                 });
+
+    }
+
+    private void waitingForConection(){
+
+        View view = View.inflate(ActivityLogin.this, R.layout.item_waiting_for_login, null);
+
+        //creamos el alert dialog
+        androidx.appcompat.app.AlertDialog.Builder builder = new AlertDialog.Builder(ActivityLogin.this);
+        builder.setView(view);
+
+        //por ultimos creamos y mostramos el dialogo
+        builder.create().show();
+
+
 
     }
 
@@ -202,7 +245,8 @@ public class ActivityLogin extends AppCompatActivity {
                     String username = email.substring(0, email.indexOf("@"));
                     app.register(username, uid);
                     //FIN NEO
-
+                    //pantalla de carga
+                    waitingForConection();
                     goHome();
                 } else
                     Toast.makeText(ActivityLogin.this, "Something went wrong!", Toast.LENGTH_SHORT).show();

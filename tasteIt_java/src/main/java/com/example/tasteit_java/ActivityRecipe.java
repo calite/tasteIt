@@ -2,25 +2,52 @@ package com.example.tasteit_java;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.tasteit_java.clases.Recipe;
+import com.example.tasteit_java.clases.Utils;
+
 public class ActivityRecipe extends AppCompatActivity {
+
+    private ImageView ivRecipePhoto;
+    private TextView tvRecipeName;
+    private RatingBar rbRating;
+    private TextView tvNameCreator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe);
 
+        //recogemos la receta pasada como parametro
+        Bundle params = getIntent().getExtras();
+        Recipe recipe = (Recipe) params.getSerializable("recipe");
+
         //menu superior
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        ivRecipePhoto = findViewById(R.id.ivRecipePhoto);
+        tvRecipeName = findViewById(R.id.tvRecipeName);
+        rbRating = findViewById(R.id.rbRating);
+        tvNameCreator = findViewById(R.id.tvNameCreator);
+
+        Bitmap bitmap = Utils.decodeBase64(recipe.getImage());
+        ivRecipePhoto.setImageBitmap(bitmap);
+        tvRecipeName.setText(recipe.getName());
+        tvNameCreator.setText(recipe.getCreator());
+
+
     }
 
     //MENU superior
