@@ -1,8 +1,10 @@
 package com.example.tasteit_java;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
@@ -22,17 +25,23 @@ import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.ValidateEmail;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ActivityLogin extends AppCompatActivity {
 
     private String email;
     private String password;
     private String confirmPassword;
+    private String userName;
     private EditText etEmail;
     private EditText etPassword;
     private EditText etConfirmPassword;
@@ -43,6 +52,8 @@ public class ActivityLogin extends AppCompatActivity {
     private ImageView temp;
 
     private BdConnection app;
+
+    Logger log = Logger.getLogger(ActivityMain.class.getName());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +119,22 @@ public class ActivityLogin extends AppCompatActivity {
         super.onStart();
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser != null) goHome();
+
+        if (currentUser != null){
+
+            currentUser.reload().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(task.isSuccessful()){
+                        log.log(Level.INFO,currentUser.getUid()+" "+currentUser.getEmail());
+                        goHome();
+
+                    }else {
+                        log.log(Level.INFO,"Logged user doesn't exist anymore");
+                    }
+                }
+            });
+        }
 
     }
 
@@ -161,7 +187,27 @@ public class ActivityLogin extends AppCompatActivity {
                                 if (cbAcept.isChecked()) {
                                     if (confirmPassword()) {
                                         bLogin.setBackgroundColor(ContextCompat.getColor(ActivityLogin.this, R.color.green));
-                                        register();
+                                        //
+                                        //Alert para el username
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(ActivityLogin.this);
+                                        builder.setTitle("Choose your username");
+                                        final EditText etUsername = new EditText(ActivityLogin.this);
+                                        etUsername.setInputType(InputType.TYPE_CLASS_TEXT);
+                                        builder.setView(etUsername);
+                                        builder.setCancelable(false);
+                                        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                userName = etUsername.getText().toString();
+                                                if(!userName.equals("")){
+                                                    dialog.dismiss();
+                                                    register(); }else{
+                                                    Toast.makeText(ActivityLogin.this, "You must choose a valid username", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        });
+                                        builder.show();
+                                        //
                                     } else {
                                         bLogin.setBackgroundColor(ContextCompat.getColor(ActivityLogin.this, R.color.orange));
                                         Toast.makeText(ActivityLogin.this, "passwords are not equals.", Toast.LENGTH_SHORT).show();
@@ -178,12 +224,15 @@ public class ActivityLogin extends AppCompatActivity {
     }
 
     private void goHome() {
+
         Intent i = new Intent(this, ActivityMain.class);
         //NEO4J
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
         String uid = firebaseUser.getUid();
         User usuario = app.login(uid); //Intentamos el login
         i.putExtra("user", usuario);
+        log.log(Level.INFO,uid+" "+firebaseUser.getEmail());
         //FIN NEO
         startActivity(i);
     }
@@ -199,8 +248,7 @@ public class ActivityLogin extends AppCompatActivity {
                     //NEO4J
                     FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
                     String uid = firebaseUser.getUid();
-                    String username = email.substring(0, email.indexOf("@"));
-                    app.register(username, uid);
+                    app.register(userName, uid);
                     //FIN NEO
 
                     goHome();
