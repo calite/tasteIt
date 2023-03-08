@@ -186,8 +186,6 @@ public class ActivityLogin extends AppCompatActivity {
     }
 
     public void login(View view) {
-        //pantalla de carga
-        waitingForConection();
         loginUser();
     }
 
@@ -200,7 +198,7 @@ public class ActivityLogin extends AppCompatActivity {
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) goHome();
+                        if (task.isSuccessful()){waitingForConection(); goHome();}
                         else {
                             if (lyTerms.getVisibility() == View.INVISIBLE && etConfirmPassword.getVisibility() == View.INVISIBLE) {
                                 lyTerms.setVisibility(View.VISIBLE);
