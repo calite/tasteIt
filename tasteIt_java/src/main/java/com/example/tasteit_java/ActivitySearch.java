@@ -115,6 +115,7 @@ public class ActivitySearch extends AppCompatActivity {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 //CLEAR GRIDVIEW WHEN SEARCH PARAMETER IS CHANGED
+                tvSearch.setText("");
                 listRecipes.clear();
                 adapter.notifyDataSetChanged();
             }
