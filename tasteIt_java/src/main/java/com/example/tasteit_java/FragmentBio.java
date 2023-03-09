@@ -18,7 +18,7 @@ import org.w3c.dom.Text;
  */
 public class FragmentBio extends Fragment {
 
-    private static TextView tvBiography;
+    private TextView tvBiography;
     private String biography;
 
     // TODO: Rename parameter arguments, choose names that match
