@@ -17,17 +17,32 @@
         android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@+id/fcMainMenu"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.465"
+        app:layout_constraintVertical_bias="0.142"
         tools:layout_editor_absoluteX="0dp" />
 
     <Button
+        android:id="@+id/btnShuffle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="Taste!"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView11" />
+
+    <GridView
+        android:id="@+id/gvRecipes"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:horizontalSpacing="10dp"
+        android:numColumns="1"
+        android:padding="10dp"
+        android:verticalSpacing="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/fcMainMenu"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnShuffle" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fcMainMenu"
@@ -36,6 +51,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout="@layout/fragment_main_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
