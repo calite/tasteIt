@@ -8,8 +8,11 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 public class AdapterFragmentProfile extends FragmentStateAdapter {
 
-    public AdapterFragmentProfile(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {
+    private String biography;
+
+    public AdapterFragmentProfile(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, String biography) {
         super(fragmentManager, lifecycle);
+        this.biography = biography;
     }
 
     @NonNull
@@ -17,7 +20,7 @@ public class AdapterFragmentProfile extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch(position) {
             case 0:
-                return new FragmentBio();
+                return FragmentBio.newInstance(biography);
             case 1:
                 return new FragmentPhotos();
             case 2:

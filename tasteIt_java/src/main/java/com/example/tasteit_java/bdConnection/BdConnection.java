@@ -25,13 +25,22 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class BdConnection implements AutoCloseable {
+
     private static final Logger LOGGER = Logger.getLogger(BdConnection.class.getName());
     private final Driver driver;
 
-    public BdConnection(String uri, String user, String password) {
+    //NEO4J
+    private final String uri = "neo4j+s://dc95b24b.databases.neo4j.io"; //URL conexion Neo4j
+    private final String user = "neo4j";
+    private final String pass = "sBQ6Fj2oXaFltjizpmTDhyEO9GDiqGM1rG-zelf17kg"; //PDTE CIFRAR
+    //FIN NEO
+
+    StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+
+    public BdConnection() {
         // The driver is a long living object and should be opened during the start of your application
-        //driver = GraphDatabase.driver(uri, AuthTokens.basic(user, password), config);
-        driver = GraphDatabase.driver(uri, AuthTokens.basic(user, password));
+        driver = GraphDatabase.driver(uri, AuthTokens.basic(user, pass));
+        StrictMode.setThreadPolicy(policy);
     }
 
     @Override
@@ -40,16 +49,21 @@ public class BdConnection implements AutoCloseable {
         driver.close();
     }
 
+    public Session openSession() {
+        return driver.session();
+    }
+
+    public void closeSession(Session session) {
+        session.close();
+    }
+
     public User login(final String token) {
         // To learn more about the Cypher syntax, see https://neo4j.com/docs/cypher-manual/current/
         // The Reference Card is also a good resource for keywords https://neo4j.com/docs/cypher-refcard/current/
         User user = null;
         try {
-            //Esto es para que no salte excepcion de Sincronia (pdte hacer algo)
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
             //Iniciamos una sesion con la bd (el driver se configura en el constructor)
-            Session session = driver.session();
+            Session session = openSession();
             //Creamos la sentencia que se ejecutara y guardamos el resultado
             Query query = new Query("MATCH (n:User {token:\"" + token + "\"}) RETURN n.username, n.biography, n.imgProfile;");
             Result result = session.run(query);
@@ -61,7 +75,7 @@ public class BdConnection implements AutoCloseable {
                 String imgProfile = record.get(2).asString();
                 user = new User(name, biography, imgProfile); //Lo mostramos segun su tipo
             }
-            session.close(); //Cerramos la sesión
+            closeSession(session); //Cerramos la sesión
             return user; //Retornamos el valor
             // You should capture any errors along with the query and data for traceability
         } catch (Neo4jException ex) {
@@ -78,11 +92,9 @@ public class BdConnection implements AutoCloseable {
         // To learn more about the Cypher syntax, see https://neo4j.com/docs/cypher-manual/current/
         // The Reference Card is also a good resource for keywords https://neo4j.com/docs/cypher-refcard/current/
         try {
-            //Esto es para que no salte excepcion de Sincronia (pdte hacer algo)
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
             //Iniciamos una sesion con la bd
-            Session session = driver.session();
+            Session session = openSession();
+
             //Creamos la sentencia que se ejecutara para crear el usuario
             session.writeTransaction(tx -> {
                 Query query = new Query("CREATE (" + username + ":User {username: $username, token: $token})", parameters("username", username, "token", token));
@@ -90,7 +102,7 @@ public class BdConnection implements AutoCloseable {
                 return null;
             });
 
-            session.close(); //Cerramos la sesión
+            closeSession(session); //Cerramos la sesión
             // You should capture any errors along with the query and data for traceability
         } catch (Neo4jException ex) {
             LOGGER.log(Level.SEVERE, " raised an exception", ex);
@@ -104,11 +116,8 @@ public class BdConnection implements AutoCloseable {
         Recipe r = recipe;
         //creacion receta
         try {
-            //Esto es para que no salte excepcion de Sincronia (pdte hacer algo)
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
             //Iniciamos una sesion con la bd
-            Session session = driver.session();
+            Session session = openSession();
             //fecha
             Calendar c = Calendar.getInstance();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -134,7 +143,7 @@ public class BdConnection implements AutoCloseable {
 
 
 
-            session.close(); //Cerramos la sesión
+            closeSession(session); //Cerramos la sesión
             // You should capture any errors along with the query and data for traceability
         } catch (Neo4jException ex) {
             LOGGER.log(Level.SEVERE, " raised an exception", ex);
@@ -149,11 +158,8 @@ public class BdConnection implements AutoCloseable {
         ArrayList<Recipe> listRecipes = new ArrayList<>();
 
         try {
-            //Esto es para que no salte excepcion de Sincronia (pdte hacer algo)
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
             //Iniciamos una sesion con la bd (el driver se configura en el constructor)
-            Session session = driver.session();
+            Session session = openSession();
             //Creamos la sentencia que se ejecutara y guardamos el resultado
             Query query = new Query("MATCH (n1:User)-[:Created]-(n2:Recipe) RETURN n2.name, n2.description, n2.steps, n2.image, n2.dateCreated, n2.country, n1.username;");
             Result result = session.run(query);
@@ -179,7 +185,7 @@ public class BdConnection implements AutoCloseable {
                 Recipe recipe = new Recipe(name,description,arrayListSteps,image,dateCreated,country,creator); //Lo mostramos segun su tipo
                 listRecipes.add(recipe);
             }
-            session.close(); //Cerramos la sesión
+            closeSession(session); //Cerramos la sesión
             return listRecipes; //Retornamos el valor
             // You should capture any errors along with the query and data for traceability
         } catch (Neo4jException ex) {
@@ -196,11 +202,8 @@ public class BdConnection implements AutoCloseable {
         String userName = null;
 
         try {
-            //Esto es para que no salte excepcion de Sincronia (pdte hacer algo)
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
             //Iniciamos una sesion con la bd (el driver se configura en el constructor)
-            Session session = driver.session();
+            Session session = openSession();
             //Creamos la sentencia que se ejecutara y guardamos el resultado
             Query query = new Query("MATCH (n:User) WHERE n.token = '" + uid + "' RETURN n.username;");
             Result result = session.run(query);
@@ -210,7 +213,7 @@ public class BdConnection implements AutoCloseable {
                 userName = record.get(0).asString();
 
             }
-            session.close(); //Cerramos la sesión
+            closeSession(session); //Cerramos la sesión
             return userName; //Retornamos el valor
             // You should capture any errors along with the query and data for traceability
         } catch (Neo4jException ex) {
