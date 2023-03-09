@@ -124,8 +124,29 @@ public class BdConnection implements AutoCloseable {
             });
             */
             session.writeTransaction(tx -> {
-                        Query query = new Query("MATCH (a:User) WHERE a.token = $token CREATE (" + r.getName().replaceAll(" ", "") + ":Recipe {name: $name, description: $description, steps: $steps, image: $image, dateCreated: date($dateCreated), country: $country } )-[created:Created]->(a)",
-                                parameters("token", token,"name", r.getName(), "description", r.getDescription(),"steps",r.getSteps(),"image",r.getImage(),"dateCreated", dateCreated,"country",r.getCountry()));
+                        Query query = new Query("MATCH (a:User) WHERE a.token = $token CREATE (" + r.getName().replaceAll(" ", "") + ":Recipe {" +
+                                "name: $name, " +
+                                "description: $description, " +
+                                "steps: $steps, " +
+                                "image: $image, " +
+                                "dateCreated: date($dateCreated), " +
+                                "country: $country, " +
+                                "difficulty: $difficulty, " +
+                                "tags: $tags, " +
+                                "ingredients: $ingredients} )-[created:Created]->(a)",
+                                parameters(
+                                        "token", token,
+                                        "name", r.getName(),
+                                        "description", r.getDescription(),
+                                        "steps",r.getSteps(),
+                                        "image",r.getImage(),
+                                        "dateCreated", dateCreated,
+                                        "country",r.getCountry(),
+                                        "difficulty", r.getDifficulty(),
+                                        "tags", r.getTags(),
+                                        "ingredients", r.getIngredients()
+                                )
+                        );
                                 tx.run(query);
                 return null;
             });
@@ -155,7 +176,7 @@ public class BdConnection implements AutoCloseable {
             //Iniciamos una sesion con la bd (el driver se configura en el constructor)
             Session session = driver.session();
             //Creamos la sentencia que se ejecutara y guardamos el resultado
-            Query query = new Query("MATCH (n1:User)-[:Created]-(n2:Recipe) RETURN n2.name, n2.description, n2.steps, n2.image, n2.dateCreated, n2.country, n1.username;");
+            Query query = new Query("MATCH (n1:User)-[:Created]-(n2:Recipe) RETURN n2.name, n2.description, n2.steps, n2.image, n2.dateCreated, n2.country, n1.username, n2.difficulty, n2.tags, n2.ingredients;");
             Result result = session.run(query);
             while (result.hasNext()) //Mientras haya registros..
             {
@@ -164,19 +185,28 @@ public class BdConnection implements AutoCloseable {
                 String name = record.get(0).asString();
                 String description = record.get(1).asString();
                 List<Object> listSteps = record.get(2).asList();
-
                 //convertimos la lista de objetos a array list de strings
                 ArrayList<String> arrayListSteps = new ArrayList<>();
                 for (Object obj : listSteps) {
                     arrayListSteps.add(obj.toString());
                 }
-
                 String image = record.get(3).asString();
                 String dateCreated = record.get(4).asLocalDate().toString();
                 String country = record.get(5).asString();
                 String creator = record.get(6).asString();
+                int difficulty = record.get(7).asInt();
+                List<Object> listTags = record.get(8).asList();
+                ArrayList<String> arrayListTags = new ArrayList<>();
+                for (Object obj : listTags) {
+                    arrayListTags.add(obj.toString());
+                }
+                List<Object> listIngredients = record.get(9).asList();
+                ArrayList<String> arrayListIngredients = new ArrayList<>();
+                for (Object obj : listTags) {
+                    arrayListIngredients.add(obj.toString());
+                }
                 //creamos una receta nueva
-                Recipe recipe = new Recipe(name,description,arrayListSteps,image,dateCreated,country,creator); //Lo mostramos segun su tipo
+                Recipe recipe = new Recipe(name, description, arrayListSteps, dateCreated, difficulty, creator, image, country, arrayListTags, arrayListIngredients); //Lo mostramos segun su tipo
                 listRecipes.add(recipe);
             }
             session.close(); //Cerramos la sesión

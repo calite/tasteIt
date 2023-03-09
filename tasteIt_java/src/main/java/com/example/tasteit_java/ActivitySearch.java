@@ -1,14 +1,14 @@
 package com.example.tasteit_java;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -68,4 +68,6 @@ public class ActivitySearch extends AppCompatActivity {
         FirebaseAuth.getInstance().signOut();
         startActivity (new Intent(this, ActivityLogin.class));
     }
+
+
 }

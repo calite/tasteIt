@@ -103,7 +103,7 @@
         android:layout_width="wrap_content"
         android:layout_height="300dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/lyAllButtons"
+        app:layout_constraintBottom_toTopOf="@+id/fcvMainMenu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
@@ -128,8 +128,9 @@
         app:srcCompat="@drawable/ic_like"
         app:tint="@color/white" />
 
-    <LinearLayout
-        android:id="@+id/lyAllButtons"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fcvMainMenu"
+        android:name="com.example.tasteit_java.FragmentMainMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

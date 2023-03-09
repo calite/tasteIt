@@ -8,8 +8,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.tasteit_java.clases.User;
@@ -18,8 +16,6 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class ActivityProfile extends AppCompatActivity {
 
-
-    private FragmentTransaction ft;
     private TabLayout tlUser;
     private ViewPager2 vpPaginator;
 
@@ -73,17 +69,6 @@ public class ActivityProfile extends AppCompatActivity {
             }
         });
 
-
-
-        //fragment menu inferior
-        FragmentManager fm = this.getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        FragmentMainMenu mainMenuFargment = new FragmentMainMenu();
-        //comprobamos si existe
-        if(savedInstanceState == null) {
-            ft.add(R.id.fcMainMenu, mainMenuFargment,"main_menu");
-            ft.commit();
-        }
 
     }
 

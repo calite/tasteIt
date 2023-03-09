@@ -11,23 +11,21 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.Utils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
@@ -44,15 +42,9 @@ public class ActivityNewRecipe extends AppCompatActivity {
 
     private ImageView ivRecipePhoto;
     private ImageButton ibPickPhoto;
-    private EditText etRecipeName;
-    private EditText etDescriptionRecipe;
-    private Button bAddStep;
-    private ListView lvSteps;
-    private AdapterListViewNewRecipe adapter;
-    private ArrayList<String> listSteps;
+    private TabLayout tlRecipe;
+    private ViewPager2 vpPaginator;
     private Button bSave;
-    private Spinner spCountries;
-
     //firebase fotos
     private FirebaseStorage storage;
     private StorageReference storageReference;
@@ -86,21 +78,36 @@ public class ActivityNewRecipe extends AppCompatActivity {
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
 
-        //textbox
-        etRecipeName = findViewById(R.id.etRecipeName);
-        etDescriptionRecipe = findViewById(R.id.etDescripcionRecipe);
+        //bio, photo and video Fragments
+        vpPaginator = findViewById(R.id.vpPaginator);
+        tlRecipe = findViewById(R.id.tlRecipe);
 
-        //spinner
-        spCountries = findViewById(R.id.spCountry);
-        ArrayAdapter<CharSequence> adapterSpinnerCountries = ArrayAdapter.createFromResource(this,
-                R.array.countries_array, android.R.layout.simple_spinner_item);
-        adapterSpinnerCountries.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spCountries.setAdapter(adapterSpinnerCountries);
+        vpPaginator.setAdapter(new AdapterFragmentRecipe(getSupportFragmentManager(), getLifecycle()));
 
+        tlRecipe.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                vpPaginator.setCurrentItem(tab.getPosition());
+            }
 
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
 
-        //boton guardado
-        bSave = findViewById(R.id.bSave);
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+        vpPaginator.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                //super.onPageSelected(position);
+                tlRecipe.selectTab(tlRecipe.getTabAt(position));
+            }
+        });
 
         //seleccionar foto perfil
         ibPickPhoto = findViewById(R.id.ibPickPhoto);
@@ -112,24 +119,8 @@ public class ActivityNewRecipe extends AppCompatActivity {
             }
         });
 
-
-        //steps
-        listSteps = new ArrayList<>();
-        listSteps.add("");
-
-        lvSteps = findViewById(R.id.lvSteps);
-        adapter = new AdapterListViewNewRecipe(this,listSteps);
-        lvSteps.setAdapter(adapter);
-
-        bAddStep = findViewById(R.id.bAddStep);
-        bAddStep.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listSteps.add("");
-                adapter.notifyDataSetChanged();
-            }
-        });
-        //guardado de receta
+        //boton guardado
+        bSave = findViewById(R.id.bSave);
         bSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -140,21 +131,30 @@ public class ActivityNewRecipe extends AppCompatActivity {
                 String dateCreated = sdf.format(c.getTime());
                 //img to base64
                 Drawable drawable = ivRecipePhoto.getDrawable();
-                Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
+                Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
                 String imgBase64 = Utils.encodeTobase64(bitmap);
-
-                //userName
+                //recogemos datos de fragment info
+                String name = FragmentInfo.getRecipeName();
+                String description = FragmentInfo.getDescriptionRecipe();
+                String country = FragmentInfo.getCountry();
+                int difficulty = FragmentInfo.getDificulty();
+                ArrayList<String> listTags = FragmentInfo.getTags();
+                //recogemos datos de fragment pasos
+                ArrayList<String> listSteps = FragmentSteps.getSteps();
+                //recogemos datos del fragment ingredientes
+                ArrayList<String> listIngredients = FragmentIngredients.getIngredients();
+                //recogemos el userName
                 String userName = app.retrieveNameCurrentUser(uid);
-
-                Recipe r = new Recipe(etRecipeName.getText().toString(),etDescriptionRecipe.getText().toString(), listSteps,imgBase64,dateCreated,spCountries.getSelectedItem().toString(),userName);
-                app.createRecipe(r,uid);
-                //temporal
-                ActivityMain.listRecipes.add(r);
+                //instanciacion de receta
+                Recipe r = new Recipe(name, description, listSteps, dateCreated, difficulty, userName, imgBase64, country, listTags, listIngredients);
+                //insercion en neo
+                app.createRecipe(r, uid);
                 //redireccionamos al main
                 startActivity(new Intent(ActivityNewRecipe.this, ActivityMain.class));
 
             }
         });
+
 
     }
 
@@ -163,7 +163,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent,"Select a Picture"), SELECT_PICTURE);
+        startActivityForResult(Intent.createChooser(intent, "Select a Picture"), SELECT_PICTURE);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -202,13 +202,13 @@ public class ActivityNewRecipe extends AppCompatActivity {
             StorageReference ref = storageReference.child("images/" + UUID.randomUUID().toString());
             //listeners para el resultado de la subida
             ref.putFile(filePath)
-                    .addOnSuccessListener( new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(
                                 UploadTask.TaskSnapshot taskSnapshot) {
                             //correcto
                             progressDialog.dismiss();
-                            Toast.makeText(ActivityNewRecipe.this,"Image Uploaded!!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ActivityNewRecipe.this, "Image Uploaded!!", Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -216,12 +216,11 @@ public class ActivityNewRecipe extends AppCompatActivity {
                         public void onFailure(@NonNull Exception e) {
                             //fail
                             progressDialog.dismiss();
-                            Toast.makeText(ActivityNewRecipe.this,"Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ActivityNewRecipe.this, "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
         }
     }
-    //END PHOTO PICKER
 
     //MENU SUPERIOR
     @Override

@@ -1,16 +1,14 @@
 package com.example.tasteit_java;
 
 import android.content.Context;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.example.tasteit_java.R;
-import com.example.tasteit_java.clases.Recipe;
 
 import java.util.ArrayList;
 
@@ -47,10 +45,24 @@ public class AdapterListViewNewRecipe extends BaseAdapter {
 
         TextView tvTitle = view.findViewById(R.id.tvTitle);
         EditText etText = view.findViewById(R.id.etText);
+        //por si cambia el texto
+        etText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                arrayListSteps.set(i, etText.getText().toString());
+            }
+        });
 
         tvTitle.setText("Step " + (i + 1) );
         etText.setText(arrayListSteps.get(i));
 
         return view;
     }
+
 }

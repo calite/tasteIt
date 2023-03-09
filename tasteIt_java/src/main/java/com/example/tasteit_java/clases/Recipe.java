@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public class Recipe implements Serializable {
 
 
+
     private String name;
     private String description;
     private ArrayList<String> steps;
@@ -15,36 +16,31 @@ public class Recipe implements Serializable {
     private String rating;
     private String image;
     private String country;
-
-
-
+    private ArrayList<String> tags;
+    private ArrayList<String> ingredients;
+    //temp
     private int img;
-
-    public Recipe(String name, String description, int img) {
-        this.name = name;
-        this.description = description;
-        this.img = img;
+    public int getImg() {
+        return img;
     }
-
-    public Recipe(String name, String description, String creator, String rating, int img, ArrayList<String> steps, int difficulty) {
+    public Recipe(String name, String description, int recipe_demo) {
         this.name = name;
         this.description = description;
-        this.creator = creator;
-        this.rating = rating;
-        this.img = img;
-        this.steps = steps;
-        this.difficulty = difficulty;
+        this.img = recipe_demo;
     }
 
     //constructor de new recipe para neo
-    public Recipe(String name,String description, ArrayList<String> steps,String image, String dateCreated,String country,String creator){
+    public Recipe(String name, String description, ArrayList<String> steps, String dateCreated, int difficulty, String creator, String image, String country, ArrayList<String> tags, ArrayList<String> ingredients) {
         this.name = name;
         this.description = description;
         this.steps = steps;
-        this.image = image;
         this.dateCreated = dateCreated;
-        this.country = country;
+        this.difficulty = difficulty;
         this.creator = creator;
+        this.image = image;
+        this.country = country;
+        this.tags = tags;
+        this.ingredients = ingredients;
     }
 
 
@@ -105,14 +101,6 @@ public class Recipe implements Serializable {
         this.rating = rating;
     }
 
-    public int getImg() {
-        return img;
-    }
-
-    public void setImg(int img) {
-        this.img = img;
-    }
-
     public String getImage() {
         return image;
     }
@@ -128,6 +116,14 @@ public class Recipe implements Serializable {
     public void setCountry(String country) {
         this.country = country;
     }
+
+    public ArrayList<String> getTags() { return tags; }
+
+    public void setTags(ArrayList<String> tags) { this.tags = tags; }
+
+    public ArrayList<String> getIngredients() { return ingredients; }
+
+    public void setIngredients(ArrayList<String> ingredients) { this.ingredients = ingredients; }
 
 
 }
