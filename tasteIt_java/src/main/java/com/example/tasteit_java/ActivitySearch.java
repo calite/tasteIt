@@ -76,12 +76,12 @@ public class ActivitySearch extends AppCompatActivity {
                     for(Recipe r: recipes){
                         if(rg.getCheckedRadioButtonId() == rbName.getId()){
                             //SEARCH BY NAME
-                            if(r.getName().toLowerCase(Locale.ROOT).startsWith(search.toLowerCase())){
+                            if(r.getName().toLowerCase(Locale.ROOT).contains(search.toLowerCase())){
                                 listRecipes.add(r);
                             }
                         }else if (rg.getCheckedRadioButtonId() == rbCountry.getId()) {
                             //SEARCH BY COUNTRY
-                            if(r.getCountry().toLowerCase(Locale.ROOT).startsWith(search.toLowerCase())){
+                            if(r.getCountry().toLowerCase(Locale.ROOT).contains(search.toLowerCase())){
                                 listRecipes.add(r);
                             }
                         }else if (rg.getCheckedRadioButtonId() == rbTags.getId()){
@@ -94,7 +94,7 @@ public class ActivitySearch extends AppCompatActivity {
                         */
                         }else{
                             //SEARCH BY ALL
-                            if(r.getCountry().toLowerCase(Locale.ROOT).startsWith(search.toLowerCase()) || r.getName().toLowerCase(Locale.ROOT).startsWith(search.toLowerCase())){
+                            if(r.getCountry().toLowerCase(Locale.ROOT).contains(search.toLowerCase()) || r.getName().toLowerCase(Locale.ROOT).contains(search.toLowerCase())){
                                 listRecipes.add(r);
                             }
                         }
