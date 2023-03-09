@@ -57,12 +57,7 @@ public class ActivityLogin extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        //NEO4J
-        String uri = "neo4j+s://dc95b24b.databases.neo4j.io"; //URL conexion Neo4j
-        String user = "neo4j";
-        String pass = "sBQ6Fj2oXaFltjizpmTDhyEO9GDiqGM1rG-zelf17kg"; //PDTE CIFRAR
-        app = new BdConnection(uri, user, pass);  //Instanciamos la conexion
-        //FIN NEO
+        app = new BdConnection();
 
         getSupportActionBar().hide();
 
@@ -201,7 +196,7 @@ public class ActivityLogin extends AppCompatActivity {
                                 lyTerms.setVisibility(View.VISIBLE);
                                 etConfirmPassword.setVisibility(View.VISIBLE);
                                 bShowPass2.setVisibility(View.VISIBLE);
-                                bLogin.setText("register now!");
+                                bLogin.setText("Register now!");
                             } else {
                                 CheckBox cbAcept = findViewById(R.id.cbAcept);
                                 if (cbAcept.isChecked()) {

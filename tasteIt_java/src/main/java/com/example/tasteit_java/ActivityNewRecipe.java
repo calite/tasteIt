@@ -57,13 +57,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
         setContentView(R.layout.activity_new_recipe);
 
         //gipsy fix
-
-        //NEO4J
-        String uri = "neo4j+s://dc95b24b.databases.neo4j.io"; //URL conexion Neo4j
-        String user = "neo4j";
-        String pass = "sBQ6Fj2oXaFltjizpmTDhyEO9GDiqGM1rG-zelf17kg"; //PDTE CIFRAR
-        BdConnection app = new BdConnection(uri, user, pass);  //Instanciamos la conexion
-        //FIN NEO
+        BdConnection app = new BdConnection();  //Instanciamos la conexion
 
         //firebase User
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();

@@ -164,7 +164,7 @@
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/vpPaginator"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="300dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/fcMainMenu"

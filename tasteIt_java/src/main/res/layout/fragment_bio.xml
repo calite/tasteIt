@@ -3,12 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FragmentBio">
+    tools:context=".FragmentBio"
+    android:layout_margin="5dp">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
+        android:id="@+id/tvBiography"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/lorem_ipsum" />
+        android:fontFamily="@font/comfortaa_light"
+        android:textSize="15dp"
+        android:textAlignment="inherit"
+        android:padding="5dp"
+        android:justificationMode="inter_word"
+        android:text="@string/lorem_ipsum"/>
 
 </FrameLayout>

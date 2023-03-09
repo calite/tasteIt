@@ -7,6 +7,9 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,6 +17,9 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class FragmentBio extends Fragment {
+
+    private static TextView tvBiography;
+    private String biography;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -46,6 +52,14 @@ public class FragmentBio extends Fragment {
         return fragment;
     }
 
+    public static FragmentBio newInstance(String param1) {
+        FragmentBio fragment = new FragmentBio();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +73,9 @@ public class FragmentBio extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_bio, container, false);
+        View view = inflater.inflate(R.layout.fragment_bio, container, false);
+        tvBiography = view.findViewById(R.id.tvBiography);
+        tvBiography.setText(mParam1);
+        return view;
     }
 }
