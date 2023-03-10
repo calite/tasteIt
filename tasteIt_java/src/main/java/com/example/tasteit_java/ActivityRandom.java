@@ -1,9 +1,5 @@
 package com.example.tasteit_java;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,6 +7,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.Recipe;
@@ -30,12 +30,8 @@ public class ActivityRandom extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_random);
 
-        //NEO4J
-        String uri = "neo4j+s://dc95b24b.databases.neo4j.io"; //URL conexion Neo4j
-        String user = "neo4j";
-        String pass = "sBQ6Fj2oXaFltjizpmTDhyEO9GDiqGM1rG-zelf17kg"; //PDTE CIFRAR
-        BdConnection app = new BdConnection(uri, user, pass);  //Instanciamos la conexion
-        //FIN NEO
+        BdConnection app = new BdConnection();  //Instanciamos la conexion
+
         ArrayList<Recipe> recipes = app.retrieveAllRecipes();
         ArrayList<Recipe> listRecipes = new ArrayList<>();
         gvRecipes = findViewById(R.id.gvRecipes);

@@ -261,6 +261,7 @@ public class BdConnection implements AutoCloseable {
     MATCH (n:Users) WHERE n.username = $username AND n.password = $password RETURN CASE WHEN n IS NOT NULL THEN true ELSE false END AS n; //Devolver BOOLEAN si se encuentra o no
     MATCH (n:Users) WHERE n.username = $username AND n.password = $password RETURN
     CREATE (user3:Users {name:'user3', username:'user3', password:'user3', followers:[], following:[], recipes:[], biography:'', photos:[], videos:[], perfilimg:''}); //Sentencia para crear users
+    match (c) where id(c) = 16 set c.image = "" return c
     */
 }
 

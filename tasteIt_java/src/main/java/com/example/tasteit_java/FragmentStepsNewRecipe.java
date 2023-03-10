@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -12,20 +11,20 @@ import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
 
-public class FragmentSteps extends Fragment {
+public class FragmentStepsNewRecipe extends Fragment {
 
-    private static ArrayList<String> listSteps;
+    private static ArrayList<String> listSteps = new ArrayList<>();
     private static ListView lvSteps;
     private static Button bAddStep;
     private static AdapterListViewNewRecipe adapter;
 
 
-    public FragmentSteps() {
+    public FragmentStepsNewRecipe() {
         // Required empty public constructor
     }
 
-    public static FragmentSteps newInstance() {
-        FragmentSteps fragment = new FragmentSteps();
+    public static FragmentStepsNewRecipe newInstance() {
+        FragmentStepsNewRecipe fragment = new FragmentStepsNewRecipe();
 
         return fragment;
     }
@@ -42,7 +41,6 @@ public class FragmentSteps extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_steps, container, false);
         //steps
-        listSteps = new ArrayList<>();
         lvSteps = view.findViewById(R.id.lvSteps);
         adapter = new AdapterListViewNewRecipe(getContext(),listSteps);
         lvSteps.setAdapter(adapter);
@@ -56,10 +54,11 @@ public class FragmentSteps extends Fragment {
             }
         });
         //borrar de steps
-        lvSteps.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        lvSteps.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                //TODO
+            public boolean onLongClick(View view) {
+                listSteps.remove(lvSteps.getPositionForView(view));
+                return false;
             }
         });
 

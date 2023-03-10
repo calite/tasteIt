@@ -14,7 +14,7 @@ public class Utils {
     public static String encodeTobase64(Bitmap image){
         System.gc();  //For memory efficiency
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        image.compress(Bitmap.CompressFormat.JPEG, 50, baos);
         byte[] b = baos.toByteArray();
         String imageEncoded = null;
         imageEncoded = Base64.encodeToString(b, Base64.DEFAULT);

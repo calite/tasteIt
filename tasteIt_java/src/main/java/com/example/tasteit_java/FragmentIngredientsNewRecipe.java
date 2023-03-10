@@ -14,19 +14,19 @@ import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
 
-public class FragmentIngredients extends Fragment {
+public class FragmentIngredientsNewRecipe extends Fragment {
 
     private static EditText etIngredientName;
     private ChipGroup cgIngredients;
-    private static ArrayList<String> ingredients;
+    private static ArrayList<String> ingredients = new ArrayList<>();
     private Button bAddIngredient;
 
-    public FragmentIngredients() {
+    public FragmentIngredientsNewRecipe() {
         // Required empty public constructor
     }
 
-    public static FragmentIngredients newInstance() {
-        FragmentIngredients fragment = new FragmentIngredients();
+    public static FragmentIngredientsNewRecipe newInstance() {
+        FragmentIngredientsNewRecipe fragment = new FragmentIngredientsNewRecipe();
         return fragment;
     }
 
@@ -42,7 +42,6 @@ public class FragmentIngredients extends Fragment {
         View view = inflater.inflate(R.layout.fragment_ingredients, container, false);
 
         //ingredientes
-        ingredients = new ArrayList<>();
         cgIngredients = view.findViewById(R.id.cgIngredients);
         bAddIngredient = view.findViewById(R.id.bAddIngredient);
         etIngredientName = view.findViewById(R.id.etIngredientName);
@@ -71,4 +70,5 @@ public class FragmentIngredients extends Fragment {
     public static ArrayList<String> getIngredients() {
         return ingredients;
     }
+    public static EditText getEtIngredientName() { return etIngredientName; }
 }

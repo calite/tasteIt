@@ -17,23 +17,23 @@ import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
 
-public class FragmentInfo extends Fragment {
+public class FragmentInfoNewRecipe extends Fragment {
 
     private static EditText etRecipeName;
     private static EditText etDescriptionRecipe;
     private static Spinner spCountries;
     private static SeekBar skDificulty;
     private ChipGroup cgTags;
-    private static ArrayList<String> tags;
+    private static ArrayList<String> tags = new ArrayList<>();
     private Button bAddTag;
     private static EditText etTagName;
 
-    public FragmentInfo() {
+    public FragmentInfoNewRecipe() {
         // Required empty public constructor
     }
 
-    public static FragmentInfo newInstance() {
-        FragmentInfo fragment = new FragmentInfo();
+    public static FragmentInfoNewRecipe newInstance() {
+        FragmentInfoNewRecipe fragment = new FragmentInfoNewRecipe();
 
         return fragment;
     }
@@ -62,7 +62,6 @@ public class FragmentInfo extends Fragment {
         adapterSpinnerCountries.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spCountries.setAdapter(adapterSpinnerCountries);
         //tags
-        tags = new ArrayList<>();
         cgTags = view.findViewById(R.id.cgTags);
         bAddTag = view.findViewById(R.id.bAddTag);
         etTagName = view.findViewById(R.id.etTagName);
@@ -88,13 +87,13 @@ public class FragmentInfo extends Fragment {
         return view;
     }
 
-    public static String getRecipeName(){
-        return etRecipeName.getText().toString();
+    public static EditText getRecipeName(){
+        return etRecipeName;
     }
 
-    public static String getDescriptionRecipe() {
-        return etDescriptionRecipe.getText().toString();
-    }
+    public static EditText getDescriptionRecipe() { return etDescriptionRecipe; }
+
+    public static EditText getEtTagName() { return etTagName; }
 
     public static String getCountry() {
         return spCountries.getSelectedItem().toString();

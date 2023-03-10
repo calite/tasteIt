@@ -12,6 +12,7 @@ import android.provider.MediaStore;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -76,7 +77,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
         vpPaginator = findViewById(R.id.vpPaginator);
         tlRecipe = findViewById(R.id.tlRecipe);
 
-        vpPaginator.setAdapter(new AdapterFragmentRecipe(getSupportFragmentManager(), getLifecycle()));
+        vpPaginator.setAdapter(new AdapterFragmentNewRecipe(getSupportFragmentManager(), getLifecycle()));
 
         tlRecipe.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -128,28 +129,72 @@ public class ActivityNewRecipe extends AppCompatActivity {
                 Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
                 String imgBase64 = Utils.encodeTobase64(bitmap);
                 //recogemos datos de fragment info
-                String name = FragmentInfo.getRecipeName();
-                String description = FragmentInfo.getDescriptionRecipe();
-                String country = FragmentInfo.getCountry();
-                int difficulty = FragmentInfo.getDificulty();
-                ArrayList<String> listTags = FragmentInfo.getTags();
+                String name = FragmentInfoNewRecipe.getRecipeName().getText().toString();
+                String description = FragmentInfoNewRecipe.getDescriptionRecipe().getText().toString();
+                String country = FragmentInfoNewRecipe.getCountry();
+                int difficulty = FragmentInfoNewRecipe.getDificulty();
+                ArrayList<String> listTags = FragmentInfoNewRecipe.getTags();
                 //recogemos datos de fragment pasos
-                ArrayList<String> listSteps = FragmentSteps.getSteps();
+                ArrayList<String> listSteps = FragmentStepsNewRecipe.getSteps();
                 //recogemos datos del fragment ingredientes
-                ArrayList<String> listIngredients = FragmentIngredients.getIngredients();
+                ArrayList<String> listIngredients = FragmentIngredientsNewRecipe.getIngredients();
                 //recogemos el userName
                 String userName = app.retrieveNameCurrentUser(uid);
                 //instanciacion de receta
-                Recipe r = new Recipe(name, description, listSteps, dateCreated, difficulty, userName, imgBase64, country, listTags, listIngredients);
-                //insercion en neo
-                app.createRecipe(r, uid);
-                //redireccionamos al main
-                startActivity(new Intent(ActivityNewRecipe.this, ActivityMain.class));
+                if(checkFields()){
+                    Recipe r = new Recipe(name, description, listSteps, dateCreated, difficulty, userName, imgBase64, country, listTags, listIngredients);
+                    //insercion en neo
+                    app.createRecipe(r, uid);
+                    //redireccionamos al main
+                    startActivity(new Intent(ActivityNewRecipe.this, ActivityMain.class));
+                } else{
+                    Toast.makeText(ActivityNewRecipe.this, "Fill the required Fields", Toast.LENGTH_SHORT).show();
+                }
+
 
             }
         });
 
 
+    }
+
+    private boolean checkFields() {
+
+        boolean status = true;
+
+        //check foto
+        if(ivRecipePhoto.getDrawable() == null) {
+            status = false;
+        }
+        //check name
+        EditText etRecipeName = FragmentInfoNewRecipe.getRecipeName();
+        if(etRecipeName.getText().toString().length() == 0) {
+            status = false;
+            etRecipeName.setError("Please enter a Recipe Name");
+        }
+        //description
+        EditText etDescriptionRecipe = FragmentInfoNewRecipe.getDescriptionRecipe();
+        if(etDescriptionRecipe.getText().toString().length() == 0) {
+            status = false;
+            etDescriptionRecipe.setError("Please enter a Recipe Description");
+        }
+        //tags
+        EditText etTagName = FragmentInfoNewRecipe.getEtTagName();
+        if(FragmentInfoNewRecipe.getTags().size() == 0) {
+            status = false;
+            etTagName.setError("");
+        }
+        //steps
+        if(FragmentStepsNewRecipe.getSteps().size() == 0) {
+            status = false;
+        }
+        //ingredients
+        EditText etIngredientName = FragmentIngredientsNewRecipe.getEtIngredientName();
+        if(FragmentIngredientsNewRecipe.getIngredients().size() == 0) {
+            status = false;
+            etIngredientName.setError("");
+        }
+        return status;
     }
 
     //PHOTO PICKER

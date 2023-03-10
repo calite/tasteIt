@@ -39,6 +39,7 @@ public class ActivityProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        //NEO4J
         Bundle params = getIntent().getExtras();
         user = (User) params.getSerializable("user");
 
