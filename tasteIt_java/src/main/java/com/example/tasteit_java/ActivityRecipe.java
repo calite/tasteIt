@@ -48,6 +48,7 @@ public class ActivityRecipe extends AppCompatActivity {
         tvNameCreator.setText(recipe.getCreator());
 
 
+
     }
 
     //MENU superior
