@@ -4,9 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Recipe implements Serializable {
-
-
-
     private String name;
     private String description;
     private ArrayList<String> steps;
