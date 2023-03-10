@@ -208,7 +208,7 @@ public class BdConnection implements AutoCloseable {
                 }
                 List<Object> listIngredients = record.get(9).asList();
                 ArrayList<String> arrayListIngredients = new ArrayList<>();
-                for (Object obj : listTags) {
+                for (Object obj : listIngredients) {
                     arrayListIngredients.add(obj.toString());
                 }
                 //creamos una receta nueva

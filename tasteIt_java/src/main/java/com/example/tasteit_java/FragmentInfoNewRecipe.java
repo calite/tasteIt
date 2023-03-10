@@ -85,6 +85,7 @@ public class FragmentInfoNewRecipe extends Fragment {
                 });
                 cgTags.addView(chip);
                 tags.add(etTagName.getText().toString());
+                etTagName.setText("");
             }
         });
 

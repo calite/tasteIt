@@ -65,6 +65,7 @@ public class FragmentIngredientsNewRecipe extends Fragment {
                 });
                 cgIngredients.addView(chip);
                 ingredients.add(etIngredientName.getText().toString());
+                etIngredientName.setText("");
             }
         });
 

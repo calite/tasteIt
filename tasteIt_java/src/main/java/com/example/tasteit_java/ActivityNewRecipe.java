@@ -147,7 +147,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
                 if(checkFields()){
                     Recipe r = new Recipe(name, description, listSteps, dateCreated, difficulty, userName, imgBase64, country, listTags, listIngredients);
                     //insercion en neo
-                    //app.createRecipe(r, uid);
+                    app.createRecipe(r, uid);
                     //redireccionamos al main
                     startActivity(new Intent(ActivityNewRecipe.this, ActivityMain.class));
                 } else{
