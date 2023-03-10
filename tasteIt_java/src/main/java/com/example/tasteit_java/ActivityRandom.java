@@ -2,9 +2,12 @@ package com.example.tasteit_java;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 
@@ -20,11 +23,16 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ActivityRandom extends AppCompatActivity {
+public class ActivityRandom extends AppCompatActivity implements GestureDetector.OnGestureListener{
     private GridView gvRecipes;
     private AdapterGridViewMain adapter;
     private Button btnShuffle;
-    Logger log = Logger.getLogger(ActivityMain.class.getName());
+
+    private ArrayList<Recipe> recipeList;
+
+    private ArrayList<Recipe> listRecipes = new ArrayList<>();
+    private GestureDetector gestureDetector;
+    Logger log = Logger.getLogger(ActivityRandom.class.getName());
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +41,7 @@ public class ActivityRandom extends AppCompatActivity {
         BdConnection app = new BdConnection();  //Instanciamos la conexion
 
         ArrayList<Recipe> recipes = app.retrieveAllRecipes();
-        ArrayList<Recipe> listRecipes = new ArrayList<>();
+        recipeList = recipes;
         gvRecipes = findViewById(R.id.gvRecipes);
         adapter = new AdapterGridViewMain(this, listRecipes);
         gvRecipes.setAdapter(adapter);
@@ -55,14 +63,29 @@ public class ActivityRandom extends AppCompatActivity {
         btnShuffle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int recipeIndex = (int) (Math.random()*recipes.size());
-                log.log(Level.INFO, ""+recipeIndex);
-                listRecipes.clear();
-                listRecipes.add(recipes.get(recipeIndex));
-                adapter.notifyDataSetChanged();
+
+                    int recipeIndex = (int) (Math.random()*recipes.size());
+                    log.log(Level.INFO, ""+recipeIndex);
+                    listRecipes.clear();
+                    listRecipes.add(recipes.get(recipeIndex));
+                    adapter.notifyDataSetChanged();
+
+
+            }
+        });
+
+        gestureDetector = new GestureDetector(this);
+
+        gvRecipes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent i = new Intent(getApplicationContext(), ActivityRecipe.class);
+                i.putExtra("recipe",listRecipes.get(0));
+                startActivity(i);
             }
         });
     }
+
 
     //MENU superior
     @Override
@@ -95,5 +118,47 @@ public class ActivityRandom extends AppCompatActivity {
     private void signOut(){
         FirebaseAuth.getInstance().signOut();
         startActivity (new Intent(this, ActivityLogin.class));
+    }
+
+    @Override
+    public boolean onDown(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        if(listRecipes.size() != 0) {
+            int recipeIndex = (int) (Math.random() * recipeList.size());
+            log.log(Level.INFO, "" + recipeIndex);
+            listRecipes.clear();
+            listRecipes.add(recipeList.get(recipeIndex));
+            adapter.notifyDataSetChanged();
+        }
+        return true;
+    }
+    @Override
+    public boolean onTouchEvent(MotionEvent event){
+        gestureDetector.onTouchEvent(event);
+        return super.onTouchEvent(event);
     }
 }

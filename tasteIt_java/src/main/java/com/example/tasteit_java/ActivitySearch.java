@@ -7,6 +7,7 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.RadioButton;
@@ -22,6 +23,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ActivitySearch extends AppCompatActivity {
@@ -44,11 +46,11 @@ public class ActivitySearch extends AppCompatActivity {
         ArrayList<Recipe> recipes = app.retrieveAllRecipes();
         ArrayList<Recipe> listRecipes = new ArrayList<>();
         //LOG RECIPES COUNTRY & NAME
-        /*
+
         for(Recipe r: recipes) {
-            log.log(Level.INFO, r.getName() + " " + r.getCountry());
+            log.log(Level.INFO, r.getName() + " " + r.getCountry()+" "+r.getTags().toString());
         }
-        */
+
         tvSearch = findViewById(R.id.tvSearch);
         rbName = findViewById(R.id.rbName);
         rbTags = findViewById(R.id.rbTags);
@@ -82,15 +84,17 @@ public class ActivitySearch extends AppCompatActivity {
                             }
                         }else if (rg.getCheckedRadioButtonId() == rbTags.getId()){
                             //SEARCH BY TAGS
-                            //TODO
-                        /*
-                        if(r.getTags().contains(search)){
 
+                        for(String tag: r.getTags()){
+                            if(tag.contains(search.toLowerCase())){
+                                listRecipes.add(r);
+                            }
                         }
-                        */
+
+
                         }else{
                             //SEARCH BY ALL
-                            if(r.getCountry().toLowerCase(Locale.ROOT).contains(search.toLowerCase()) || r.getName().toLowerCase(Locale.ROOT).contains(search.toLowerCase())){
+                            if(r.getCountry().toLowerCase(Locale.ROOT).contains(search.toLowerCase()) || r.getName().toLowerCase(Locale.ROOT).contains(search.toLowerCase()) || r.getTags().contains(search.toLowerCase())){
                                 listRecipes.add(r);
                             }
                         }
@@ -129,6 +133,15 @@ public class ActivitySearch extends AppCompatActivity {
             ft.add(R.id.fcMainMenu, mainMenuFargment);
             ft.commit();
         }
+
+        gvRecipes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent i = new Intent(getApplicationContext(), ActivityRecipe.class);
+                i.putExtra("recipe",listRecipes.get(position));
+                startActivity(i);
+            }
+        });
     }
 
 
