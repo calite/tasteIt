@@ -43,7 +43,7 @@ public class ActivitySearch extends AppCompatActivity {
         setContentView(R.layout.activity_search);
 
         BdConnection app = new BdConnection();  //Instanciamos la conexion
-        //FIN NEO
+
         ArrayList<Recipe> recipes = app.retrieveAllRecipes();
         ArrayList<Recipe> listRecipes = new ArrayList<>();
         //LOG RECIPES COUNTRY & NAME

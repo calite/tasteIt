@@ -18,8 +18,7 @@ import org.w3c.dom.Text;
  */
 public class FragmentBio extends Fragment {
 
-    private static TextView tvBiography;
-    private String biography;
+    private TextView tvBiography;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -27,7 +26,7 @@ public class FragmentBio extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
+    private String biography;
     private String mParam2;
 
     public FragmentBio() {
@@ -52,10 +51,10 @@ public class FragmentBio extends Fragment {
         return fragment;
     }
 
-    public static FragmentBio newInstance(String param1) {
+    public static FragmentBio newInstance(String bio) {
         FragmentBio fragment = new FragmentBio();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM1, bio);
         fragment.setArguments(args);
         return fragment;
     }
@@ -64,8 +63,8 @@ public class FragmentBio extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            biography = getArguments().getString(ARG_PARAM1);
+            //mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -75,7 +74,7 @@ public class FragmentBio extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_bio, container, false);
         tvBiography = view.findViewById(R.id.tvBiography);
-        tvBiography.setText(mParam1);
+        tvBiography.setText(biography);
         return view;
     }
 }

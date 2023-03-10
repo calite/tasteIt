@@ -3,6 +3,7 @@ package com.example.tasteit_java.bdConnection;
 import static org.neo4j.driver.Values.parameters;
 
 import android.os.StrictMode;
+import android.widget.Toast;
 
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.User;
@@ -16,11 +17,14 @@ import org.neo4j.driver.Result;
 import org.neo4j.driver.Session;
 import org.neo4j.driver.exceptions.Neo4jException;
 import org.neo4j.driver.exceptions.NoSuchRecordException;
+import org.neo4j.driver.types.Node;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -57,7 +61,7 @@ public class BdConnection implements AutoCloseable {
         session.close();
     }
 
-    public User login(final String token) {
+    /*public User login(final String token) {
         // To learn more about the Cypher syntax, see https://neo4j.com/docs/cypher-manual/current/
         // The Reference Card is also a good resource for keywords https://neo4j.com/docs/cypher-refcard/current/
         User user = null;
@@ -86,7 +90,7 @@ public class BdConnection implements AutoCloseable {
             throw ex;
         }
 
-    }
+    }*/
 
     public void register(final String username, final String token) {
         // To learn more about the Cypher syntax, see https://neo4j.com/docs/cypher-manual/current/
@@ -160,10 +164,6 @@ public class BdConnection implements AutoCloseable {
                 return null;
             });
 
-
-
-
-
             closeSession(session); //Cerramos la sesión
             // You should capture any errors along with the query and data for traceability
         } catch (Neo4jException ex) {
@@ -208,7 +208,7 @@ public class BdConnection implements AutoCloseable {
                 }
                 List<Object> listIngredients = record.get(9).asList();
                 ArrayList<String> arrayListIngredients = new ArrayList<>();
-                for (Object obj : listTags) {
+                for (Object obj : listIngredients) {
                     arrayListIngredients.add(obj.toString());
                 }
                 //creamos una receta nueva
@@ -217,6 +217,121 @@ public class BdConnection implements AutoCloseable {
             }
             closeSession(session); //Cerramos la sesión
             return listRecipes; //Retornamos el valor
+            // You should capture any errors along with the query and data for traceability
+        } catch (Neo4jException ex) {
+            LOGGER.log(Level.SEVERE, " raised an exception", ex);
+            throw ex;
+        } catch (NoSuchRecordException ex) {
+            LOGGER.log(Level.SEVERE, "No record found raised an exception", ex);
+            throw ex;
+        }
+    }
+
+    public ArrayList<Recipe> retrieveAllRecipesbyUid(String uid) {
+
+        ArrayList<Recipe> listRecipes = new ArrayList<>();
+
+        try {
+            //Iniciamos una sesion con la bd (el driver se configura en el constructor)
+            Session session = openSession();
+            //Creamos la sentencia que se ejecutara y guardamos el resultado
+            Query query = new Query("MATCH (n1:User)-[:Created]-(n2:Recipe) WHERE n1.token = '" + uid + "' RETURN n1.username, n2;");
+            Result result = session.run(query);
+
+            while (result.hasNext()) //Mientras haya registros..
+            {
+                Record record = result.next();
+                String creator = record.get(0).asString();
+                Node node = record.get(1).asNode(); //Guardamos el registro
+                //recogemos los valores
+                String name = node.get("name").asString();
+                String description = node.get("description").asString();
+                List<Object> listSteps = node.get("steps").asList();
+                //convertimos la lista de objetos a array list de strings
+                ArrayList<String> arrayListSteps = new ArrayList<>();
+                for (Object obj : listSteps) {
+                    arrayListSteps.add(obj.toString());
+                }
+                String image = node.get("image").asString();
+                String dateCreated = node.get("dateCreated").asLocalDate().toString();
+                String country = node.get("country").asString();
+
+                int difficulty = node.get("difficulty").asInt();
+                List<Object> listTags = node.get("tags").asList();
+                ArrayList<String> arrayListTags = new ArrayList<>();
+                for (Object obj : listTags) {
+                    arrayListTags.add(obj.toString());
+                }
+                List<Object> listIngredients = node.get("ingredients").asList();
+                ArrayList<String> arrayListIngredients = new ArrayList<>();
+                for (Object obj : listIngredients) {
+                    arrayListIngredients.add(obj.toString());
+                }
+                //creamos una receta nueva
+                Recipe recipe = new Recipe(name, description, arrayListSteps, dateCreated, difficulty, creator, image, country, arrayListTags, arrayListIngredients); //Lo mostramos segun su tipo
+                listRecipes.add(recipe);
+            }
+            closeSession(session); //Cerramos la sesión
+            return listRecipes;
+        } catch (Neo4jException ex) {
+            LOGGER.log(Level.SEVERE, " raised an exception", ex);
+            throw ex;
+        } catch (NoSuchRecordException ex) {
+            LOGGER.log(Level.SEVERE, "No record found raised an exception", ex);
+            throw ex;
+        }
+    }
+
+    public HashMap<String, String> retrieveCommentsbyUid(String uid) {
+
+        HashMap<String, String> comments = new HashMap<>();
+
+        try {
+            //Iniciamos una sesion con la bd (el driver se configura en el constructor)
+            Session session = openSession();
+            //Creamos la sentencia que se ejecutara y guardamos el resultado
+            Query query = new Query("MATCH (n:User)-[n1:Commented]->(n2:User) WHERE n2.token = '" + uid + "' RETURN n.token, n1.comment;");
+            Result result = session.run(query);
+            while (result.hasNext()) //Mientras haya registros..
+            {
+                Record record = result.next(); //Guardamos el registro
+                String id = record.get(0).asString();
+                String comment = record.get(1).asString();
+                comments.put(id, comment);
+            }
+            closeSession(session); //Cerramos la sesión
+            return comments; //Retornamos el valor
+            // You should capture any errors along with the query and data for traceability
+        } catch (Neo4jException ex) {
+            LOGGER.log(Level.SEVERE, " raised an exception", ex);
+            throw ex;
+        } catch (NoSuchRecordException ex) {
+            LOGGER.log(Level.SEVERE, "No record found raised an exception", ex);
+            throw ex;
+        }
+    }
+
+    public User retrieveUserbyUid(String uid) {
+
+        User user = null;
+
+        try {
+            //Iniciamos una sesion con la bd (el driver se configura en el constructor)
+            Session session = openSession();
+            //Creamos la sentencia que se ejecutara y guardamos el resultado
+            Query query = new Query("MATCH (n:User) WHERE n.token = '" + uid + "' RETURN n.username, n.biography, n.imgProfile;");
+            Result result = session.run(query);
+            while (result.hasNext()) //Mientras haya registros..
+            {
+                Record record = result.next(); //Guardamos el registro
+                String name = record.get(0).asString();
+                String biography = record.get(1).asString();
+                String imgProfile = record.get(2).asString();
+                user = new User(name, biography, imgProfile);
+            }
+
+            closeSession(session); //Cerramos la sesión
+            return user; //Retornamos el valor
             // You should capture any errors along with the query and data for traceability
         } catch (Neo4jException ex) {
             LOGGER.log(Level.SEVERE, " raised an exception", ex);

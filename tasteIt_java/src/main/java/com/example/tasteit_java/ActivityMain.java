@@ -18,6 +18,7 @@ import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
@@ -32,8 +33,7 @@ public class ActivityMain extends AppCompatActivity {
     private AdapterRecyclerMain adapter2;
     public static ArrayList<Recipe> listRecipes = new ArrayList<>();
 
-    private User user;
-    private MenuItem iProfile;
+    private BdConnection app;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +44,7 @@ public class ActivityMain extends AppCompatActivity {
         //menu superior
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        BdConnection app = new BdConnection();  //Instanciamos la conexion
+        app = new BdConnection();  //Instanciamos la conexion
 
         //boton crear receta
         bCreate = findViewById(R.id.bCreate);
@@ -58,6 +58,9 @@ public class ActivityMain extends AppCompatActivity {
                 startActivity(i);
             }
         });
+
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        String uid = firebaseUser.getUid();
 
         //fragment menu inferior
         /*
@@ -125,10 +128,7 @@ public class ActivityMain extends AppCompatActivity {
                 return true;
             case R.id.iProfile:
                 //NEO4J
-                Bundle params = getIntent().getExtras();
-                user = (User) params.getSerializable("user");
                 Intent i = new Intent(ActivityMain.this, ActivityProfile.class);
-                i.putExtra("user", user);
                 startActivity(i);
                 //FIN NEO4J
 
