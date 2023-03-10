@@ -1,5 +1,7 @@
 package com.example.tasteit_java;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,6 +54,8 @@ public class FragmentIngredientsNewRecipe extends Fragment {
                 chip.setText(etIngredientName.getText().toString());
                 chip.setCloseIconResource(R.drawable.ic_close);
                 chip.setCloseIconVisible(true);
+                chip.setChipBackgroundColor(ColorStateList.valueOf(getResources().getColor(R.color.maroon)));
+                chip.setTextColor(Color.WHITE);
                 chip.setOnCloseIconClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

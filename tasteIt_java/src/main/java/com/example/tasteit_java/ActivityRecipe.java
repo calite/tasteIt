@@ -14,9 +14,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.Utils;
+import com.google.android.material.tabs.TabLayout;
 
 public class ActivityRecipe extends AppCompatActivity {
 
@@ -24,6 +26,9 @@ public class ActivityRecipe extends AppCompatActivity {
     private TextView tvRecipeName;
     private RatingBar rbRating;
     private TextView tvNameCreator;
+
+    private TabLayout tlRecipe;
+    private ViewPager2 vpPaginator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +51,35 @@ public class ActivityRecipe extends AppCompatActivity {
         ivRecipePhoto.setImageBitmap(bitmap);
         tvRecipeName.setText(recipe.getName());
         tvNameCreator.setText(recipe.getCreator());
+
+        tlRecipe = findViewById(R.id.tlRecipe);
+        vpPaginator = findViewById(R.id.vpPaginator);
+
+        vpPaginator.setAdapter(new AdapterFragmentRecipe(getSupportFragmentManager(),getLifecycle(), recipe));
+        tlRecipe.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                vpPaginator.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+        vpPaginator.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                //super.onPageSelected(position);
+                tlRecipe.selectTab(tlRecipe.getTabAt(position));
+            }
+        });
 
 
 
