@@ -9,36 +9,38 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.GridView;
+import android.widget.ListView;
 
-import com.example.tasteit_java.clases.Recipe;
+import com.example.tasteit_java.adapters.AdapterFragmentComments;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link FragmentPhotos#newInstance} factory method to
+ * Use the {@link FragmentComments#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FragmentPhotos extends Fragment {
+public class FragmentComments extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    //VARIABLES PARA EL GRID
-    private GridView gvPhotos;
-    private AdapterGridViewProfile adapter;
-
-
     // TODO: Rename and change types of parameters
-    private ArrayList<Recipe> recipes;
+    private String mParam1;
     private String mParam2;
 
-    public FragmentPhotos() {
+    private static ArrayList<String> uidsComments;
+    private static ArrayList<String> comments;
+
+    private AdapterFragmentComments adapter;
+    private ListView lvComments;
+
+    public FragmentComments() {
         // Required empty public constructor
     }
 
@@ -48,11 +50,11 @@ public class FragmentPhotos extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment PhotosFragment.
+     * @return A new instance of fragment VideosFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static FragmentPhotos newInstance(String param1, String param2) {
-        FragmentPhotos fragment = new FragmentPhotos();
+    public static FragmentComments newInstance(String param1, String param2) {
+        FragmentComments fragment = new FragmentComments();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -60,10 +62,10 @@ public class FragmentPhotos extends Fragment {
         return fragment;
     }
 
-    public static FragmentPhotos newInstance(ArrayList<Recipe> recipes) {
-        FragmentPhotos fragment = new FragmentPhotos();
+    public static FragmentComments newInstance(HashMap<String, String> userComments) {
+        FragmentComments fragment = new FragmentComments();
         Bundle args = new Bundle();
-        args.putSerializable(ARG_PARAM1, recipes);
+        args.putSerializable(ARG_PARAM1, userComments);
         fragment.setArguments(args);
         return fragment;
     }
@@ -72,7 +74,14 @@ public class FragmentPhotos extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            recipes = (ArrayList<Recipe>) getArguments().getSerializable(ARG_PARAM1);
+            HashMap<String, String> userComments = (HashMap<String, String>) getArguments().getSerializable(ARG_PARAM1);
+
+            Set<String> keySet = userComments.keySet();
+            uidsComments = new ArrayList<String>(keySet);
+
+            Collection<String> values = userComments.values();
+            comments = new ArrayList<String>(values);
+
             //mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
@@ -80,22 +89,22 @@ public class FragmentPhotos extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_photos, container, false);
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_comments, container, false);
 
-        adapter = new AdapterGridViewProfile(getContext(), recipes);
-        gvPhotos = view.findViewById(R.id.gvPhotos);
-        gvPhotos.setAdapter(adapter);
+        adapter = new AdapterFragmentComments(getContext(), uidsComments, comments);
+        lvComments = view.findViewById(R.id.lvComments);
+        lvComments.setAdapter(adapter);
 
-        gvPhotos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        lvComments.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(getContext(), ActivityRecipe.class);
-                intent.putExtra("recipe", recipes.get(i));
+                Intent intent = new Intent(getActivity().getApplicationContext(), ActivityProfile.class);
+                intent.putExtra("uid", uidsComments.get(i));
                 startActivity(intent);
             }
         });
 
         return view;
-
     }
 }

@@ -1,10 +1,12 @@
 package com.example.tasteit_java;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,14 +16,22 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.tasteit_java.bdConnection.BdConnection;
+import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.User;
+import com.example.tasteit_java.clases.Utils;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import org.neo4j.driver.Query;
+import org.neo4j.driver.Record;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.Session;
+import org.neo4j.driver.types.Node;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ActivityProfile extends AppCompatActivity {
 
@@ -32,25 +42,33 @@ public class ActivityProfile extends AppCompatActivity {
 
     private User user;
     private TextView tvUserName, tvReciperCounter, tvFollowersCounter, tvFollowingCounter, tvLikesCounter;
+    private ImageView ivUserPicture;
     private BdConnection connection;
+    private String uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        Bundle params = getIntent().getExtras();
-        user = (User) params.getSerializable("user");
-
         initializeViews();
-        retrieveData();
+
+        if(getIntent().getExtras() != null) {
+            Bundle params = getIntent().getExtras();
+            uid = params.getString("uid");
+        } else {
+            FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+            uid = firebaseUser.getUid();
+        }
+
+        retrieveData(uid);
 
         //menu superior
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Profile");
 
         //bio, photo and comments Fragments
-        vpPaginator.setAdapter(new AdapterFragmentProfile(getSupportFragmentManager(),getLifecycle(), user.getBiography()));
+        vpPaginator.setAdapter(new AdapterFragmentProfile(getSupportFragmentManager(),getLifecycle(), user));
 
         tlUser.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -96,18 +114,26 @@ public class ActivityProfile extends AppCompatActivity {
         tvFollowingCounter = findViewById(R.id.tvFollowingCounter);
         tvLikesCounter = findViewById(R.id.tvLikesCounter);
 
+        ivUserPicture = findViewById(R.id.ivUserPicture);
+
         vpPaginator = findViewById(R.id.vpPaginator);
         tlUser = findViewById(R.id.tlUser);
     }
 
-    private void retrieveData() {
+    private void retrieveData(String uid) {
+        connection = new BdConnection();
+
+        user = connection.retrieveUserbyUid(uid);
+
         tvUserName.setText(user.getUsername());
 
-        connection = new BdConnection();
-        Session session = connection.openSession();
+        Bitmap bitmap = Utils.decodeBase64(user.getImgProfile());
+        ivUserPicture.setImageBitmap(bitmap);
 
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        String uid = firebaseUser.getUid();
+        user.setUserRecipes(connection.retrieveAllRecipesbyUid(uid));
+        user.setUserComments(connection.retrieveCommentsbyUid(uid));
+
+        Session session = connection.openSession();
 
         Query query = new Query("MATCH (n1:User)-[:Created]-(n2:Recipe) WHERE n1.token = '" + uid + "' RETURN COUNT(n2);");
         Result result = session.run(query);
@@ -132,6 +158,8 @@ public class ActivityProfile extends AppCompatActivity {
 
         counter = String.valueOf(result.single().get(0).asInt());
         tvLikesCounter.setText(counter);
+
+        connection.closeSession(session);
     }
 
 
