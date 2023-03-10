@@ -104,6 +104,10 @@ public class ActivityNewRecipe extends AppCompatActivity {
             }
         });
 
+        //ñapa
+        tlRecipe.selectTab(tlRecipe.getTabAt(2));
+        tlRecipe.selectTab(tlRecipe.getTabAt(0));
+
         //seleccionar foto perfil
         ibPickPhoto = findViewById(R.id.ibPickPhoto);
         ivRecipePhoto = findViewById(R.id.ivRecipePhoto);
@@ -119,7 +123,6 @@ public class ActivityNewRecipe extends AppCompatActivity {
         bSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 //fecha
                 Calendar c = Calendar.getInstance();
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -144,7 +147,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
                 if(checkFields()){
                     Recipe r = new Recipe(name, description, listSteps, dateCreated, difficulty, userName, imgBase64, country, listTags, listIngredients);
                     //insercion en neo
-                    app.createRecipe(r, uid);
+                    //app.createRecipe(r, uid);
                     //redireccionamos al main
                     startActivity(new Intent(ActivityNewRecipe.this, ActivityMain.class));
                 } else{
