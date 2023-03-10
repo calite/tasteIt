@@ -1,4 +1,4 @@
-package com.example.tasteit_java;
+package com.example.tasteit_java.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;

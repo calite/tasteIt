@@ -1,24 +1,20 @@
-package com.example.tasteit_java;
+package com.example.tasteit_java.fragments;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import androidx.fragment.app.Fragment;
+
+import com.example.tasteit_java.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link FragmentBio#newInstance} factory method to
+ * Use the {@link FragmentCommentsRecipe#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FragmentBio extends Fragment {
-
-    private TextView tvBiography;
+public class FragmentCommentsRecipe extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,10 +22,10 @@ public class FragmentBio extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String biography;
+    private String mParam1;
     private String mParam2;
 
-    public FragmentBio() {
+    public FragmentCommentsRecipe() {
         // Required empty public constructor
     }
 
@@ -39,22 +35,14 @@ public class FragmentBio extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment BioFragment.
+     * @return A new instance of fragment FragmentCommentsRecipe.
      */
     // TODO: Rename and change types and number of parameters
-    public static FragmentBio newInstance(String param1, String param2) {
-        FragmentBio fragment = new FragmentBio();
+    public static FragmentCommentsRecipe newInstance(String param1, String param2) {
+        FragmentCommentsRecipe fragment = new FragmentCommentsRecipe();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    public static FragmentBio newInstance(String bio) {
-        FragmentBio fragment = new FragmentBio();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, bio);
         fragment.setArguments(args);
         return fragment;
     }
@@ -63,8 +51,8 @@ public class FragmentBio extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            biography = getArguments().getString(ARG_PARAM1);
-            //mParam2 = getArguments().getString(ARG_PARAM2);
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -72,9 +60,6 @@ public class FragmentBio extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_bio, container, false);
-        tvBiography = view.findViewById(R.id.tvBiography);
-        tvBiography.setText(biography);
-        return view;
+        return inflater.inflate(R.layout.fragment_comments_recipe, container, false);
     }
 }

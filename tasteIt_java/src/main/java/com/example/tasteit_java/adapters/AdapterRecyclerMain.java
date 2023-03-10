@@ -1,4 +1,4 @@
-package com.example.tasteit_java;
+package com.example.tasteit_java.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.tasteit_java.R;
 import com.example.tasteit_java.clases.Recipe;
 
 import java.util.ArrayList;

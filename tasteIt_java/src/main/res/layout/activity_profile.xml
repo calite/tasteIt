@@ -176,7 +176,7 @@
     <!--si no ves nada comenta este fragment container -->
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fcMainMenu"
-        android:name="com.example.tasteit_java.FragmentMainMenu"
+        android:name="com.example.tasteit_java.fragments.FragmentMainMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

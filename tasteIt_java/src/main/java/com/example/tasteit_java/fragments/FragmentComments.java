@@ -1,4 +1,4 @@
-package com.example.tasteit_java;
+package com.example.tasteit_java.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.example.tasteit_java.ActivityProfile;
+import com.example.tasteit_java.R;
 import com.example.tasteit_java.adapters.AdapterFragmentComments;
 
 import java.util.ArrayList;

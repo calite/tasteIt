@@ -9,10 +9,11 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.tasteit_java.adapters.AdapterGridViewMain;
+import com.example.tasteit_java.adapters.AdapterRecyclerMain;
 import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.User;
@@ -90,9 +91,6 @@ public class ActivityMain extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int posicion, long l) {
                 Intent i = new Intent(ActivityMain.this, ActivityRecipe.class);
                 i.putExtra("recipe", listRecipes.get(posicion));
-                Bundle params = getIntent().getExtras();
-                User user = (User) params.getSerializable("user");
-                i.putExtra("user",user);
                 startActivity(i);
             }
         });

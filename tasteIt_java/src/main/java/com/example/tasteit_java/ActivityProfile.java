@@ -8,30 +8,24 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.tasteit_java.adapters.AdapterFragmentProfile;
 import com.example.tasteit_java.bdConnection.BdConnection;
-import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
+import com.example.tasteit_java.fragments.FragmentMainMenu;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import org.neo4j.driver.Query;
-import org.neo4j.driver.Record;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.Session;
-import org.neo4j.driver.types.Node;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ActivityProfile extends AppCompatActivity {
 

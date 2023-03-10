@@ -1,4 +1,4 @@
-package com.example.tasteit_java;
+package com.example.tasteit_java.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,11 +11,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import com.example.tasteit_java.ActivityRecipe;
+import com.example.tasteit_java.R;
+import com.example.tasteit_java.adapters.AdapterGridViewProfile;
 import com.example.tasteit_java.clases.Recipe;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
