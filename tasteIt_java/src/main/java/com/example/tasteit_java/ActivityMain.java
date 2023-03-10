@@ -51,7 +51,11 @@ public class ActivityMain extends AppCompatActivity {
         bCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(ActivityMain.this, ActivityNewRecipe.class));
+                Intent i = new Intent(ActivityMain.this, ActivityNewRecipe.class);
+                Bundle params = getIntent().getExtras();
+                User user = (User) params.getSerializable("user");
+                i.putExtra("user",user);
+                startActivity(i);
             }
         });
 
@@ -83,6 +87,9 @@ public class ActivityMain extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int posicion, long l) {
                 Intent i = new Intent(ActivityMain.this, ActivityRecipe.class);
                 i.putExtra("recipe", listRecipes.get(posicion));
+                Bundle params = getIntent().getExtras();
+                User user = (User) params.getSerializable("user");
+                i.putExtra("user",user);
                 startActivity(i);
             }
         });

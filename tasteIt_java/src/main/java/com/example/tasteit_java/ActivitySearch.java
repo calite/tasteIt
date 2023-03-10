@@ -19,6 +19,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.Recipe;
+import com.example.tasteit_java.clases.User;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -142,6 +143,9 @@ public class ActivitySearch extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent i = new Intent(getApplicationContext(), ActivityRecipe.class);
                 i.putExtra("recipe",listRecipes.get(position));
+                Bundle params = getIntent().getExtras();
+                User user = (User) params.getSerializable("user");
+                i.putExtra("user",user);
                 startActivity(i);
             }
         });
