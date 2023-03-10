@@ -56,6 +56,7 @@ public class ActivityMain extends AppCompatActivity {
         });
 
         //fragment menu inferior
+        /*
         FragmentManager fm = this.getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         FragmentMainMenu mainMenuFargment = new FragmentMainMenu();

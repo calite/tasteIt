@@ -125,14 +125,17 @@ public class ActivitySearch extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Search");
         //fragment menu inferior
+        /*
         FragmentManager fm = this.getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         FragmentMainMenu mainMenuFargment = new FragmentMainMenu();
+
         //comprobamos si existe
         if(savedInstanceState == null) {
             ft.add(R.id.fcMainMenu, mainMenuFargment);
             ft.commit();
         }
+        */
 
         gvRecipes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

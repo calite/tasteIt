@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.tasteit_java.clases.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 /**
@@ -69,7 +70,11 @@ public class FragmentMainMenu extends Fragment {
         bHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity().getApplicationContext(), ActivityMain.class));
+                Intent i = new Intent(getActivity().getApplicationContext(), ActivityMain.class);
+                Bundle params = getActivity().getIntent().getExtras();
+                User user = (User) params.getSerializable("user");
+                i.putExtra("user",user);
+                startActivity(i);
             }
         });
         //search button
@@ -77,7 +82,11 @@ public class FragmentMainMenu extends Fragment {
         bSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity().getApplicationContext(), ActivitySearch.class));
+                Intent i = new Intent(getActivity().getApplicationContext(), ActivitySearch.class);
+                Bundle params = getActivity().getIntent().getExtras();
+                User user = (User) params.getSerializable("user");
+                i.putExtra("user",user);
+                startActivity(i);
             }
         });
         //Random button
@@ -85,7 +94,11 @@ public class FragmentMainMenu extends Fragment {
         bRandom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity().getApplicationContext(), ActivityRandom.class));
+                Intent i = new Intent(getActivity().getApplicationContext(), ActivityRandom.class);
+                Bundle params = getActivity().getIntent().getExtras();
+                User user = (User) params.getSerializable("user");
+                i.putExtra("user",user);
+                startActivity(i);
             }
         });
         //my book button
@@ -93,7 +106,11 @@ public class FragmentMainMenu extends Fragment {
         bMyBook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity().getApplicationContext(), ActivityProfile.class));
+                Intent i = new Intent(getActivity().getApplicationContext(), ActivityProfile.class);
+                Bundle params = getActivity().getIntent().getExtras();
+                User user = (User) params.getSerializable("user");
+                i.putExtra("user",user);
+                startActivity(i);
             }
         });
 
