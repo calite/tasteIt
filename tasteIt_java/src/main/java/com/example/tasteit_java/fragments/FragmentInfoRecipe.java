@@ -1,4 +1,4 @@
-package com.example.tasteit_java;
+package com.example.tasteit_java.fragments;
 
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
+import com.example.tasteit_java.R;
 import com.example.tasteit_java.clases.Recipe;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;

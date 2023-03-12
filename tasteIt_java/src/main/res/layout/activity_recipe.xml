@@ -100,7 +100,7 @@
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/vpPaginator"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="400dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/fcvMainMenu"
@@ -131,7 +131,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fcvMainMenu"
-        android:name="com.example.tasteit_java.FragmentMainMenu"
+        android:name="com.example.tasteit_java.fragments.FragmentMainMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

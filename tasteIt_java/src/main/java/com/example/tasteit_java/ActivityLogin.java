@@ -250,19 +250,17 @@ public class ActivityLogin extends AppCompatActivity {
         //por ultimos creamos y mostramos el dialogo
         builder.create().show();
 
-
-
     }
 
     private void goHome() {
         Intent i = new Intent(this, ActivityMain.class);
-        //NEO4J
+
+        //NEO
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         String uid = firebaseUser.getUid();
-        User usuario = app.login(uid); //Intentamos el login
-        i.putExtra("user", usuario);
         log.log(Level.INFO,uid+" "+firebaseUser.getEmail());
         //FIN NEO
+
         startActivity(i);
     }
 

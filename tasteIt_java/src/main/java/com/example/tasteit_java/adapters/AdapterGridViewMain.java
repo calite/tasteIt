@@ -1,4 +1,4 @@
-package com.example.tasteit_java;
+package com.example.tasteit_java.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.tasteit_java.R;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.Utils;
 

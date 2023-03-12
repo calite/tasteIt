@@ -14,9 +14,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
+import com.example.tasteit_java.adapters.AdapterGridViewMain;
 import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.User;
@@ -43,7 +42,7 @@ public class ActivitySearch extends AppCompatActivity {
         setContentView(R.layout.activity_search);
 
         BdConnection app = new BdConnection();  //Instanciamos la conexion
-        //FIN NEO
+
         ArrayList<Recipe> recipes = app.retrieveAllRecipes();
         ArrayList<Recipe> listRecipes = new ArrayList<>();
         //LOG RECIPES COUNTRY & NAME

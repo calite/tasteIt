@@ -107,25 +107,24 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
         android:layout_marginTop="4dp"
         android:text="Likes"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.507"
+        app:layout_constraintHorizontal_bias="0.500"
         app:layout_constraintStart_toEndOf="@+id/textView2"
-        app:layout_constraintTop_toBottomOf="@+id/tvLikesCounter" />
+        app:layout_constraintTop_toBottomOf="@+id/tvLikesCounter"/>
 
     <TextView
         android:id="@+id/tvLikesCounter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="23dp"
         android:text="0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.589"
         app:layout_constraintStart_toEndOf="@+id/tvFollowingCounter"
-        app:layout_constraintTop_toBottomOf="@+id/ivUserPicture" />
+        app:layout_constraintBaseline_toBaselineOf="@+id/tvFollowingCounter"/>
 
     <View
         android:id="@+id/vSeparator"
@@ -177,7 +176,7 @@
     <!--si no ves nada comenta este fragment container -->
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fcMainMenu"
-        android:name="com.example.tasteit_java.FragmentMainMenu"
+        android:name="com.example.tasteit_java.fragments.FragmentMainMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

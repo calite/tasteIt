@@ -1,10 +1,14 @@
-package com.example.tasteit_java;
+package com.example.tasteit_java.adapters;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
+
+import com.example.tasteit_java.fragments.FragmentInfoNewRecipe;
+import com.example.tasteit_java.fragments.FragmentIngredientsNewRecipe;
+import com.example.tasteit_java.fragments.FragmentStepsNewRecipe;
 
 public class AdapterFragmentNewRecipe extends FragmentStateAdapter {
 

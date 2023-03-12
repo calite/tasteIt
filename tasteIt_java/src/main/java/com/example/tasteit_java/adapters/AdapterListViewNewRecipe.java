@@ -1,4 +1,4 @@
-package com.example.tasteit_java;
+package com.example.tasteit_java.adapters;
 
 import android.content.Context;
 import android.text.Editable;
@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.example.tasteit_java.R;
 
 import java.util.ArrayList;
 

@@ -21,9 +21,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.tasteit_java.adapters.AdapterFragmentNewRecipe;
 import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.Utils;
+import com.example.tasteit_java.fragments.FragmentInfoNewRecipe;
+import com.example.tasteit_java.fragments.FragmentIngredientsNewRecipe;
+import com.example.tasteit_java.fragments.FragmentStepsNewRecipe;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabLayout;

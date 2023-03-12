@@ -1,4 +1,4 @@
-package com.example.tasteit_java;
+package com.example.tasteit_java.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,6 +8,9 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
+
+import com.example.tasteit_java.R;
+import com.example.tasteit_java.adapters.AdapterListViewNewRecipe;
 
 import java.util.ArrayList;
 

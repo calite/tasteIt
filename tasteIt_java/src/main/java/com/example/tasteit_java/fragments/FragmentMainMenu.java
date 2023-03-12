@@ -1,4 +1,4 @@
-package com.example.tasteit_java;
+package com.example.tasteit_java.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,7 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.tasteit_java.clases.User;
+import com.example.tasteit_java.ActivityMain;
+import com.example.tasteit_java.ActivityProfile;
+import com.example.tasteit_java.ActivityRandom;
+import com.example.tasteit_java.ActivitySearch;
+import com.example.tasteit_java.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 /**
@@ -70,11 +74,12 @@ public class FragmentMainMenu extends Fragment {
         bHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getActivity().getApplicationContext(), ActivityMain.class);
-                Bundle params = getActivity().getIntent().getExtras();
-                User user = (User) params.getSerializable("user");
-                i.putExtra("user",user);
-                startActivity(i);
+                if(!getActivity().getLocalClassName().equals("ActivityMain")) {
+                    Intent i = new Intent(getActivity().getApplicationContext(), ActivityMain.class);
+                    startActivity(i);
+                } else {
+                    //Si estamos en la main activity ya podemos actualizar simplemente las recetas
+                }
             }
         });
         //search button
@@ -83,9 +88,6 @@ public class FragmentMainMenu extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getActivity().getApplicationContext(), ActivitySearch.class);
-                Bundle params = getActivity().getIntent().getExtras();
-                User user = (User) params.getSerializable("user");
-                i.putExtra("user",user);
                 startActivity(i);
             }
         });
@@ -95,9 +97,6 @@ public class FragmentMainMenu extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getActivity().getApplicationContext(), ActivityRandom.class);
-                Bundle params = getActivity().getIntent().getExtras();
-                User user = (User) params.getSerializable("user");
-                i.putExtra("user",user);
                 startActivity(i);
             }
         });
@@ -107,9 +106,6 @@ public class FragmentMainMenu extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getActivity().getApplicationContext(), ActivityProfile.class);
-                Bundle params = getActivity().getIntent().getExtras();
-                User user = (User) params.getSerializable("user");
-                i.putExtra("user",user);
                 startActivity(i);
             }
         });

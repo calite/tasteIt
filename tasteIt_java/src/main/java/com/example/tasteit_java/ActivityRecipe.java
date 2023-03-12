@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.tasteit_java.adapters.AdapterFragmentRecipe;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.Utils;
 import com.google.android.material.tabs.TabLayout;

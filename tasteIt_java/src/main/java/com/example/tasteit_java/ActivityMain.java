@@ -9,15 +9,17 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.tasteit_java.adapters.AdapterGridViewMain;
+import com.example.tasteit_java.adapters.AdapterRecyclerMain;
 import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
@@ -32,8 +34,7 @@ public class ActivityMain extends AppCompatActivity {
     private AdapterRecyclerMain adapter2;
     public static ArrayList<Recipe> listRecipes = new ArrayList<>();
 
-    private User user;
-    private MenuItem iProfile;
+    private BdConnection app;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +45,7 @@ public class ActivityMain extends AppCompatActivity {
         //menu superior
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        BdConnection app = new BdConnection();  //Instanciamos la conexion
+        app = new BdConnection();  //Instanciamos la conexion
 
         //boton crear receta
         bCreate = findViewById(R.id.bCreate);
@@ -58,6 +59,9 @@ public class ActivityMain extends AppCompatActivity {
                 startActivity(i);
             }
         });
+
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        String uid = firebaseUser.getUid();
 
         //fragment menu inferior
         /*
@@ -87,9 +91,6 @@ public class ActivityMain extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int posicion, long l) {
                 Intent i = new Intent(ActivityMain.this, ActivityRecipe.class);
                 i.putExtra("recipe", listRecipes.get(posicion));
-                Bundle params = getIntent().getExtras();
-                User user = (User) params.getSerializable("user");
-                i.putExtra("user",user);
                 startActivity(i);
             }
         });
@@ -125,10 +126,7 @@ public class ActivityMain extends AppCompatActivity {
                 return true;
             case R.id.iProfile:
                 //NEO4J
-                Bundle params = getIntent().getExtras();
-                user = (User) params.getSerializable("user");
                 Intent i = new Intent(ActivityMain.this, ActivityProfile.class);
-                i.putExtra("user", user);
                 startActivity(i);
                 //FIN NEO4J
 
