@@ -1,13 +1,17 @@
 package com.example.tasteit_java;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,6 +40,7 @@ public class ActivityMain extends AppCompatActivity {
 
     private BdConnection app;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -54,7 +59,7 @@ public class ActivityMain extends AppCompatActivity {
             public void onClick(View view) {
                 Intent i = new Intent(ActivityMain.this, ActivityNewRecipe.class);
                 Bundle params = getIntent().getExtras();
-                User user = (User) params.getSerializable("user");
+                User user = BdConnection.retrieveUserbyUid(FirebaseAuth.getInstance().getCurrentUser().getUid());
                 i.putExtra("user",user);
                 startActivity(i);
             }
@@ -105,6 +110,42 @@ public class ActivityMain extends AppCompatActivity {
         rvRecipes.setAdapter(adapter2);
         */
 
+        gvRecipes.setOnScrollListener(new AbsListView.OnScrollListener(){
+            int currentScrollState, currentVisibleItemCount, currentFirstVisibleItem, currentTotalItemCount, mLastFirstVisibleItem;
+            boolean canScrollV, scrollingUp;
+            @Override
+            public void onScrollStateChanged (AbsListView view,int scrollState){
+                 currentScrollState = scrollState;
+
+                if (scrollingUp && !canScrollV) {
+                    if (currentFirstVisibleItem == 0) {
+
+                        listRecipes = app.retrieveAllRecipes();
+                        Toast.makeText(ActivityMain.this, "Refreshing...", Toast.LENGTH_SHORT).show();
+                        adapter.notifyDataSetChanged();
+                        scrollingUp = false;
+                    }
+                }
+            }
+
+            @Override
+            public void onScroll (AbsListView view,int firstVisibleItem, int visibleItemCount,
+                                  int totalItemCount){
+                canScrollV = gvRecipes.canScrollVertically(-1);
+                if(mLastFirstVisibleItem < firstVisibleItem){
+                    // Scrolling down
+                    scrollingUp = false;
+                }
+                if(mLastFirstVisibleItem > firstVisibleItem){
+                    // scrolling up
+                    scrollingUp = true;
+                }
+                mLastFirstVisibleItem = firstVisibleItem;
+                currentFirstVisibleItem = firstVisibleItem;
+                currentVisibleItemCount = visibleItemCount;
+                currentTotalItemCount = totalItemCount;
+            }
+        });
     }
 
 

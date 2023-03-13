@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 public class BdConnection implements AutoCloseable {
 
     private static final Logger LOGGER = Logger.getLogger(BdConnection.class.getName());
-    private final Driver driver;
+    private static Driver driver;
 
     //NEO4J
     private final String uri = "neo4j+s://dc95b24b.databases.neo4j.io"; //URL conexion Neo4j
@@ -53,11 +53,11 @@ public class BdConnection implements AutoCloseable {
         driver.close();
     }
 
-    public Session openSession() {
+    public static Session openSession() {
         return driver.session();
     }
 
-    public void closeSession(Session session) {
+    public static void closeSession(Session session) {
         session.close();
     }
 
@@ -311,7 +311,7 @@ public class BdConnection implements AutoCloseable {
         }
     }
 
-    public User retrieveUserbyUid(String uid) {
+    public static User retrieveUserbyUid(String uid) {
 
         User user = null;
 
