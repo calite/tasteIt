@@ -29,7 +29,7 @@ public class AdapterFragmentRecipe extends FragmentStateAdapter {
             case 1:
                 return FragmentStepsRecipe.newInstance(recipe);
             case 2:
-                return new FragmentCommentsRecipe(); //under construction
+                return FragmentCommentsRecipe.newInstance(recipe);
             default:
                 return FragmentInfoRecipe.newInstance(recipe);
         }

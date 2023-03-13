@@ -11,15 +11,17 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.tasteit_java.adapters.AdapterFragmentRecipe;
+import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.Utils;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class ActivityRecipe extends AppCompatActivity {
 
@@ -31,14 +33,25 @@ public class ActivityRecipe extends AppCompatActivity {
     private TabLayout tlRecipe;
     private ViewPager2 vpPaginator;
 
+    private BdConnection connection;
+    private Recipe recipe;
+    private String uid;
+
+    private FloatingActionButton bLike;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe);
 
-        //recogemos la receta pasada como parametro
-        Bundle params = getIntent().getExtras();
-        Recipe recipe = (Recipe) params.getSerializable("recipe");
+        //recogemos la receta pasada como parametro y el uid
+        if(getIntent().getExtras() != null) {
+            Bundle params = getIntent().getExtras();
+            recipe = (Recipe) params.getSerializable("recipe");
+        }
+        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        connection = new BdConnection();
 
         //menu superior
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -82,7 +95,14 @@ public class ActivityRecipe extends AppCompatActivity {
             }
         });
 
-
+        //boton de me gusta
+        bLike = findViewById(R.id.bLike);
+        bLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                connection.likeRecipe(recipe.getId(),uid);
+            }
+        });
 
     }
 
@@ -112,8 +132,8 @@ public class ActivityRecipe extends AppCompatActivity {
                 builderRate.setPositiveButton("Send!", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        //aqui hacemos cositas
-                        Toast.makeText(ActivityRecipe.this, rbRating.getRating() + " " + etComment.getText(), Toast.LENGTH_SHORT).show();
+                        //comentario en receta segun ID
+                        connection.commentRecipe(recipe.getId(),uid, etComment.getText().toString(), rbRating.getRating());
                     }
                 });
                 builderRate.setNegativeButton("Cancel",null);
@@ -128,8 +148,8 @@ public class ActivityRecipe extends AppCompatActivity {
                 builderReport.setPositiveButton("Send!", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        //aqui hacemos cositas
-                        Toast.makeText(ActivityRecipe.this, etCommentReport.getText(), Toast.LENGTH_SHORT).show();
+                        //report receta segun ID
+                        connection.reportRecipe(recipe.getId(),uid,etCommentReport.getText().toString());
                     }
                 });
                 builderReport.setNegativeButton("Cancel",null);

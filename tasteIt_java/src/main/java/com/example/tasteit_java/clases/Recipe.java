@@ -15,6 +15,7 @@ public class Recipe implements Serializable {
     private String country;
     private ArrayList<String> tags;
     private ArrayList<String> ingredients;
+    private int id;
     //temp
     private int img;
     public int getImg() {
@@ -27,6 +28,20 @@ public class Recipe implements Serializable {
     }
 
     //constructor de new recipe para neo
+    public Recipe(String name, String description, ArrayList<String> steps, String dateCreated, int difficulty, String creator, String image, String country, ArrayList<String> tags, ArrayList<String> ingredients, int id) {
+        this.name = name;
+        this.description = description;
+        this.steps = steps;
+        this.dateCreated = dateCreated;
+        this.difficulty = difficulty;
+        this.creator = creator;
+        this.image = image;
+        this.country = country;
+        this.tags = tags;
+        this.ingredients = ingredients;
+        this.id = id;
+    }
+
     public Recipe(String name, String description, ArrayList<String> steps, String dateCreated, int difficulty, String creator, String image, String country, ArrayList<String> tags, ArrayList<String> ingredients) {
         this.name = name;
         this.description = description;
@@ -122,5 +137,7 @@ public class Recipe implements Serializable {
 
     public void setIngredients(ArrayList<String> ingredients) { this.ingredients = ingredients; }
 
+    public int getId() { return id; }
 
+    public void setId(int id) { this.id = id; }
 }
