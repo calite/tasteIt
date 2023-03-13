@@ -59,7 +59,7 @@ public class ActivityMain extends AppCompatActivity {
             public void onClick(View view) {
                 Intent i = new Intent(ActivityMain.this, ActivityNewRecipe.class);
                 Bundle params = getIntent().getExtras();
-                User user = (User) params.getSerializable("user");
+                User user = BdConnection.retrieveUserbyUid(FirebaseAuth.getInstance().getCurrentUser().getUid());
                 i.putExtra("user",user);
                 startActivity(i);
             }
