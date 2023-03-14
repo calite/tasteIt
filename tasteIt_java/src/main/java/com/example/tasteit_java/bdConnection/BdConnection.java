@@ -442,7 +442,34 @@ public class BdConnection implements AutoCloseable {
         }
     }
 
-    public void likeRecipe(int rid, String uid) {
+
+    public boolean isLiked(int rid, String uid){
+        try {
+            //Iniciamos una sesion con la bd
+            Session session = openSession();
+            //fecha
+            Calendar c = Calendar.getInstance();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            String dateCreated = sdf.format(c.getTime());
+
+            List<Record> nResult = session.run("MATCH (u:User)-[c:Liked]->(r:Recipe) WHERE ID(r) = "+rid+" AND u.token = '"+uid+"'  RETURN ID(c)")
+                    .list();
+            if(nResult.size() != 0){
+                closeSession(session); //Cerramos la sesión
+                return true;
+            }else{
+                closeSession(session); //Cerramos la sesión
+                return false;
+            }
+
+
+            // You should capture any errors along with the query and data for traceability
+        } catch (Neo4jException ex) {
+            LOGGER.log(Level.SEVERE, " raised an exception", ex);
+            throw ex;
+        }
+    }
+    public boolean likeRecipe(int rid, String uid) {
 
         try {
             //Iniciamos una sesion con la bd
@@ -452,13 +479,28 @@ public class BdConnection implements AutoCloseable {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             String dateCreated = sdf.format(c.getTime());
 
-            session.writeTransaction(tx -> {
-                Query query = new Query("MATCH (u:User),(r:Recipe) WHERE ID(r) =" + rid +" AND u.token = '" + uid + "'  CREATE (u)-[c:Liked{dateCreated:'"+dateCreated+"'}]->(r) RETURN type(c)");
-                tx.run(query);
-                return null;
-            });
+                List<Record> nResult = session.run("MATCH (u:User)-[c:Liked]->(r:Recipe) WHERE ID(r) = "+rid+" AND u.token = '"+uid+"'  RETURN ID(c)")
+                        .list();
+                if(nResult.size() != 0){
+                    int id = nResult.get(0).get(0).asInt();
+                    session.writeTransaction(tx -> {
+                        Query query = new Query("MATCH (u:User)-[c:Liked]->(r:Recipe) WHERE ID(r) = "+rid+" AND u.token = '"+uid+"' AND ID(c) = "+id+"  DELETE c");
+                        tx.run(query);
+                        return false;
+                    });
+                    closeSession(session); //Cerramos la sesión
+                    return false;
+                }else{
+                    session.writeTransaction(tx -> {
+                        Query query = new Query("MATCH (u:User),(r:Recipe) WHERE ID(r) =" + rid +" AND u.token = '" + uid + "'  CREATE (u)-[c:Liked{dateCreated:'"+dateCreated+"'}]->(r) RETURN type(c)");
+                        tx.run(query);
+                        return false;
+                    });
+                    closeSession(session); //Cerramos la sesión
+                    return true;
+                }
 
-            closeSession(session); //Cerramos la sesión
+
             // You should capture any errors along with the query and data for traceability
         } catch (Neo4jException ex) {
             LOGGER.log(Level.SEVERE, " raised an exception", ex);

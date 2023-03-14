@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
@@ -100,10 +101,20 @@ public class ActivityRecipe extends AppCompatActivity {
         bLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                connection.likeRecipe(recipe.getId(),uid);
+
+                if(connection.likeRecipe(recipe.getId(),uid)){
+                    Toast.makeText(ActivityRecipe.this, "Liked", Toast.LENGTH_SHORT).show();
+                    bLike.setRotationX(180);
+                }else{
+                    Toast.makeText(ActivityRecipe.this, "Disliked", Toast.LENGTH_SHORT).show();
+                    bLike.setRotationX(0);
+                };
             }
         });
 
+        if(connection.isLiked(recipe.getId(),uid)){
+            bLike.setRotationX(180);
+        }else{bLike.setRotationX(0);}
     }
 
     //MENU superior
