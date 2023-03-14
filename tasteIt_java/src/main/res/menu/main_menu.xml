@@ -12,6 +12,10 @@
     <item
         android:id="@+id/iCloseSesion"
         android:title="Close Session"/>
+
+        <item
+            android:id="@+id/iDarkMode"
+            android:title="Dark/Light Mode"/>
     </group>
 
 
