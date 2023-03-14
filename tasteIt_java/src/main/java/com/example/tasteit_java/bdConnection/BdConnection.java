@@ -194,7 +194,7 @@ public class BdConnection implements AutoCloseable {
                     arrayListSteps.add(obj.toString());
                 }
                 String image = record.get(3).asString();
-                String dateCreated = record.get(4).asLocalDate().toString();
+                String dateCreated = record.get(4).toString();
                 String country = record.get(5).asString();
                 String creator = record.get(6).asString();
                 int difficulty = record.get(7).asInt();

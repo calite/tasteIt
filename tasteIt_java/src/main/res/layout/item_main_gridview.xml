@@ -2,9 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/recipeItem"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/s_rectangle">
 
     <ImageView
         android:id="@+id/ivPhotoRecipe"
@@ -59,7 +59,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="12dp"
         app:layout_constraintStart_toEndOf="@+id/ivPhotoRecipe"
         app:layout_constraintTop_toTopOf="parent">
@@ -67,30 +67,34 @@
 
         <TextView
             android:id="@+id/tvNameCreator"
-            android:layout_width="118dp"
+            android:layout_width="wrap_content"
             android:layout_height="20dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="72dp"
             android:text="Name Creator"
+            android:inputType="textMultiLine"
             android:textStyle="italic"
             app:layout_constraintEnd_toEndOf="@+id/tvDescriptionRecipe"
             app:layout_constraintTop_toBottomOf="@+id/tvNameRecipe" />
 
         <TextView
             android:id="@+id/tvDescriptionRecipe"
-            android:layout_width="192dp"
+            android:layout_width="200dp"
             android:layout_height="116dp"
             android:layout_marginTop="12dp"
+            android:inputType="textMultiLine"
             android:text="@string/lorem_ipsum"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvNameCreator" />
 
         <TextView
             android:id="@+id/tvNameRecipe"
-            android:layout_width="118dp"
-            android:layout_height="20dp"
+            android:layout_width="191dp"
+            android:layout_height="0dp"
             android:layout_marginTop="4dp"
+            android:inputType="textMultiLine"
             android:text="Recipe Name"
+            android:textColor="@color/black"
             style="@style/recipeName"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

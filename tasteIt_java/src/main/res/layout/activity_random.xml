@@ -17,8 +17,8 @@
         android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@+id/fcMainMenu"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.142"
-        tools:layout_editor_absoluteX="0dp" />
+        app:layout_constraintVertical_bias="0.345"
+        tools:layout_editor_absoluteX="16dp" />
 
     <Button
         android:id="@+id/btnShuffle"
@@ -31,19 +31,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView11" />
 
-    <GridView
-        android:id="@+id/gvRecipes"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginBottom="285dp"
-        android:horizontalSpacing="10dp"
-        android:numColumns="1"
-        android:padding="10dp"
-        android:verticalSpacing="10dp"
+    <androidx.fragment.app.FragmentContainerView
+        android:name="com.example.tasteit_java.fragments.FragmentRandom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/fcMainMenu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnShuffle" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fcMainMenu"
