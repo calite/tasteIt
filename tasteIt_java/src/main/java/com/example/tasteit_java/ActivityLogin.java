@@ -1,24 +1,17 @@
 package com.example.tasteit_java;
 
-import android.app.ProgressDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,7 +22,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
 import com.example.tasteit_java.bdConnection.BdConnection;
-import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -66,6 +58,8 @@ public class ActivityLogin extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         app = new BdConnection();
+
+        tryLoggin();
 
         getSupportActionBar().hide();
 
@@ -116,7 +110,7 @@ public class ActivityLogin extends AppCompatActivity {
         bShowPass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(etPassword.getInputType() != InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) {
+                if (etPassword.getInputType() != InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) {
                     etPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                 } else {
                     etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
@@ -127,7 +121,7 @@ public class ActivityLogin extends AppCompatActivity {
         bShowPass2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(etConfirmPassword.getInputType() != InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) {
+                if (etConfirmPassword.getInputType() != InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) {
                     etConfirmPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                 } else {
                     etConfirmPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
@@ -135,35 +129,30 @@ public class ActivityLogin extends AppCompatActivity {
             }
         });
 
-
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        AlertDialog dialog = setProgressDialog();
 
-        if(!tryLoggin()){dialog.dismiss();}
-    }
-    public boolean tryLoggin(){
+    public void tryLoggin() {
+
+        Dialog dialog = setProgressDialog();
+
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        if (currentUser != null){
-
+        if (currentUser != null) {
             currentUser.reload().addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
-                    if(task.isSuccessful()){
-                        log.log(Level.INFO,currentUser.getUid()+" "+currentUser.getEmail());
+                    if (task.isSuccessful()) {
+                        log.log(Level.INFO, currentUser.getUid() + " " + currentUser.getEmail());
                         goHome();
-
-                    }else {
-                        log.log(Level.INFO,"Logged user doesn't exist anymore");
+                    } else {
+                        log.log(Level.INFO, "Logged user doesn't exist anymore");
                     }
                 }
             });
-            return true;
-        }else{return false;}
+        } else {
+            dialog.dismiss();
+        }
     }
 
     @Override
@@ -202,9 +191,10 @@ public class ActivityLogin extends AppCompatActivity {
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()){//waitingForConection();
-                            goHome();}
-                        else {
+                        if (task.isSuccessful()) {
+                            waitingForConection();
+                            goHome();
+                        } else {
                             if (lyTerms.getVisibility() == View.INVISIBLE && etConfirmPassword.getVisibility() == View.INVISIBLE) {
                                 lyTerms.setVisibility(View.VISIBLE);
                                 etConfirmPassword.setVisibility(View.VISIBLE);
@@ -227,10 +217,11 @@ public class ActivityLogin extends AppCompatActivity {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
                                                 userName = etUsername.getText().toString();
-                                                if(!userName.equals("")){
+                                                if (!userName.equals("")) {
                                                     dialog.dismiss();
-                                                    //waitingForConection();
-                                                    register(); }else{
+                                                    waitingForConection();
+                                                    register();
+                                                } else {
                                                     Toast.makeText(ActivityLogin.this, "You must choose a valid username", Toast.LENGTH_SHORT).show();
                                                 }
                                             }
@@ -252,16 +243,13 @@ public class ActivityLogin extends AppCompatActivity {
 
     }
 
-    private void waitingForConection(){
+    private void waitingForConection() {
 
         View view = View.inflate(ActivityLogin.this, R.layout.item_waiting_for_login, null);
-
-        //creamos el alert dialog
-        androidx.appcompat.app.AlertDialog.Builder builder = new AlertDialog.Builder(ActivityLogin.this);
-        builder.setView(view);
-
-        //por ultimos creamos y mostramos el dialogo
-        builder.create().show();
+        Dialog dialog = new Dialog(ActivityLogin.this, R.style.DialogTheme);
+        dialog.setContentView(view);
+        dialog.create();
+        dialog.show();
 
     }
 
@@ -271,7 +259,7 @@ public class ActivityLogin extends AppCompatActivity {
         //NEO
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         String uid = firebaseUser.getUid();
-        log.log(Level.INFO,uid+" "+firebaseUser.getEmail());
+        log.log(Level.INFO, uid + " " + firebaseUser.getEmail());
         //FIN NEO
 
         startActivity(i);
@@ -291,7 +279,7 @@ public class ActivityLogin extends AppCompatActivity {
                     app.register(userName, uid);
                     //FIN NEO
                     //pantalla de carga
-                    //waitingForConection();
+                    waitingForConection();
                     goHome();
                 } else
                     Toast.makeText(ActivityLogin.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
@@ -334,90 +322,18 @@ public class ActivityLogin extends AppCompatActivity {
         return password.equals(confirmPassword);
     }
 
-    private AlertDialog setProgressDialog() {
+    private Dialog setProgressDialog() {
 
         View view = View.inflate(ActivityLogin.this, R.layout.item_waiting_for_login, null);
 
-        //creamos el alert dialog
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(ActivityLogin.this, R.style.DialogTheme);
-        builder.setView(view);
-
-
-
-        //por ultimos creamos y mostramos el dialogo
-
-        AlertDialog dialog = builder.create();
-
-        builder.show();
-
-
-        /*
-
-        // Creating a Linear Layout
-        int llPadding = 30;
-        LinearLayout ll = new LinearLayout(this);
-        ll.setOrientation(LinearLayout.HORIZONTAL);
-        ll.setPadding(llPadding, llPadding, llPadding, llPadding);
-        ll.setGravity(Gravity.CENTER);
-        LinearLayout.LayoutParams llParam = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        llParam.gravity = Gravity.CENTER;
-        ll.setLayoutParams(llParam);
-
-        // Creating a ProgressBar inside the layout
-        ProgressBar progressBar = new ProgressBar(this);
-        progressBar.setIndeterminate(true);
-        progressBar.setPadding(0, 0, llPadding, 0);
-        progressBar.setLayoutParams(llParam);
-        llParam = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        );
-        llParam.gravity = Gravity.CENTER;
-
-        // Creating a TextView inside the layout
-        TextView tvText = new TextView(this);
-        tvText.setText("Connecting...");
-        tvText.setTextColor(Color.BLACK);
-        tvText.setTextSize(20f);
-        tvText.setLayoutParams(llParam);
-        ll.addView(progressBar);
-        ll.addView(tvText);
-
-        // Setting the AlertDialog Builder view
-        // as the Linear layout created above
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setView(ll);
-        builder.setCancelable(false);
-
-        // Displaying the dialog
-        AlertDialog dialog = builder.create();
-        dialog.getWindow().setGravity(Gravity.CENTER);
-
-
-        Window window= dialog.getWindow();
-        if (window != null) {
-            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-            layoutParams.copyFrom(window.getAttributes());
-            layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT;
-            layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
-            dialog.getWindow().setAttributes(layoutParams);
-
-            // Disabling screen touch to avoid exiting the Dialog
-            window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-        }
-
+        Dialog dialog = new Dialog(ActivityLogin.this, R.style.DialogTheme);
+        dialog.setContentView(view);
+        dialog.create();
         dialog.show();
-
-         */
 
         return dialog;
 
     }
-
 
     //POR REPARAR
     /*
