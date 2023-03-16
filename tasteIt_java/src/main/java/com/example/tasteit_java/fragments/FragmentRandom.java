@@ -1,6 +1,7 @@
 package com.example.tasteit_java.fragments;
 
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.GestureDetector;
@@ -8,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -15,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import com.example.tasteit_java.ActivityRandom;
 import com.example.tasteit_java.R;
 import com.example.tasteit_java.clases.Recipe;
+import com.example.tasteit_java.clases.Utils;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
@@ -53,6 +56,7 @@ public class FragmentRandom extends Fragment {
         if(getArguments() != null){
 
 
+            ImageView ivPhoto = view.findViewById(R.id.ivRecipePhoto);
             TextView tvRecipeName = view.findViewById(R.id.tvRecipeName);
             TextView tvNameCreator = view.findViewById(R.id.tvNameCreator);
             TextView tvDescription = view.findViewById(R.id.tvDescription);
@@ -60,6 +64,8 @@ public class FragmentRandom extends Fragment {
             TextView tvCountry = view.findViewById(R.id.tvCountry);
             ChipGroup cgIngredients = view.findViewById(R.id.cgIngredients);
 
+            Bitmap bitmap = Utils.decodeBase64(recipe.getImage());
+            ivPhoto.setImageBitmap(bitmap);
             tvRecipeName.setText(recipe.getName());
             tvNameCreator.setText(recipe.getCreator());
             tvDescription.setText(recipe.getDescription());
