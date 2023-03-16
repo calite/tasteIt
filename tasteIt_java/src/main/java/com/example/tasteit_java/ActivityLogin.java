@@ -1,16 +1,24 @@
 package com.example.tasteit_java;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -133,7 +141,11 @@ public class ActivityLogin extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
+        AlertDialog dialog = setProgressDialog();
 
+        if(!tryLoggin()){dialog.dismiss();}
+    }
+    public boolean tryLoggin(){
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         if (currentUser != null){
@@ -150,8 +162,8 @@ public class ActivityLogin extends AppCompatActivity {
                     }
                 }
             });
-        }
-
+            return true;
+        }else{return false;}
     }
 
     @Override
@@ -190,7 +202,8 @@ public class ActivityLogin extends AppCompatActivity {
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()){waitingForConection(); goHome();}
+                        if (task.isSuccessful()){//waitingForConection();
+                            goHome();}
                         else {
                             if (lyTerms.getVisibility() == View.INVISIBLE && etConfirmPassword.getVisibility() == View.INVISIBLE) {
                                 lyTerms.setVisibility(View.VISIBLE);
@@ -216,7 +229,7 @@ public class ActivityLogin extends AppCompatActivity {
                                                 userName = etUsername.getText().toString();
                                                 if(!userName.equals("")){
                                                     dialog.dismiss();
-                                                    waitingForConection();
+                                                    //waitingForConection();
                                                     register(); }else{
                                                     Toast.makeText(ActivityLogin.this, "You must choose a valid username", Toast.LENGTH_SHORT).show();
                                                 }
@@ -278,7 +291,7 @@ public class ActivityLogin extends AppCompatActivity {
                     app.register(userName, uid);
                     //FIN NEO
                     //pantalla de carga
-                    waitingForConection();
+                    //waitingForConection();
                     goHome();
                 } else
                     Toast.makeText(ActivityLogin.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
@@ -319,6 +332,90 @@ public class ActivityLogin extends AppCompatActivity {
         confirmPassword = etConfirmPassword.getText().toString();
 
         return password.equals(confirmPassword);
+    }
+
+    private AlertDialog setProgressDialog() {
+
+        View view = View.inflate(ActivityLogin.this, R.layout.item_waiting_for_login, null);
+
+        //creamos el alert dialog
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(ActivityLogin.this, R.style.DialogTheme);
+        builder.setView(view);
+
+
+
+        //por ultimos creamos y mostramos el dialogo
+
+        AlertDialog dialog = builder.create();
+
+        builder.show();
+
+
+        /*
+
+        // Creating a Linear Layout
+        int llPadding = 30;
+        LinearLayout ll = new LinearLayout(this);
+        ll.setOrientation(LinearLayout.HORIZONTAL);
+        ll.setPadding(llPadding, llPadding, llPadding, llPadding);
+        ll.setGravity(Gravity.CENTER);
+        LinearLayout.LayoutParams llParam = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        llParam.gravity = Gravity.CENTER;
+        ll.setLayoutParams(llParam);
+
+        // Creating a ProgressBar inside the layout
+        ProgressBar progressBar = new ProgressBar(this);
+        progressBar.setIndeterminate(true);
+        progressBar.setPadding(0, 0, llPadding, 0);
+        progressBar.setLayoutParams(llParam);
+        llParam = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        llParam.gravity = Gravity.CENTER;
+
+        // Creating a TextView inside the layout
+        TextView tvText = new TextView(this);
+        tvText.setText("Connecting...");
+        tvText.setTextColor(Color.BLACK);
+        tvText.setTextSize(20f);
+        tvText.setLayoutParams(llParam);
+        ll.addView(progressBar);
+        ll.addView(tvText);
+
+        // Setting the AlertDialog Builder view
+        // as the Linear layout created above
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(ll);
+        builder.setCancelable(false);
+
+        // Displaying the dialog
+        AlertDialog dialog = builder.create();
+        dialog.getWindow().setGravity(Gravity.CENTER);
+
+
+        Window window= dialog.getWindow();
+        if (window != null) {
+            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+            layoutParams.copyFrom(window.getAttributes());
+            layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT;
+            layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+            dialog.getWindow().setAttributes(layoutParams);
+
+            // Disabling screen touch to avoid exiting the Dialog
+            window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        }
+
+        dialog.show();
+
+         */
+
+        return dialog;
+
     }
 
 
