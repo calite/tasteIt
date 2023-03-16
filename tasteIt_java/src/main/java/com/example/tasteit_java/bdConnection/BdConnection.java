@@ -442,7 +442,6 @@ public class BdConnection implements AutoCloseable {
         }
     }
 
-
     public boolean isLiked(int rid, String uid){
         try {
             //Iniciamos una sesion con la bd
@@ -469,6 +468,7 @@ public class BdConnection implements AutoCloseable {
             throw ex;
         }
     }
+
     public boolean likeRecipe(int rid, String uid) {
 
         try {
@@ -506,6 +506,122 @@ public class BdConnection implements AutoCloseable {
             LOGGER.log(Level.SEVERE, " raised an exception", ex);
             throw ex;
         }
+    }
+
+    public ArrayList<Recipe> recipesLiked(String uid) {
+
+        //MATCH (u:User)-[c:Liked]->(r:Recipe) WHERE  u.token = "xmg10sMQgMS4392zORWGW7TQ1Qg2" Return r
+
+        ArrayList<Recipe> listRecipes = new ArrayList<>();
+
+        try {
+            //Iniciamos una sesion con la bd (el driver se configura en el constructor)
+            Session session = openSession();
+            //Creamos la sentencia que se ejecutara y guardamos el resultado
+            Query query = new Query("MATCH (u:User)-[c:Liked]->(r:Recipe) WHERE  u.token = '"+uid+"' Return u.username,r");
+            Result result = session.run(query);
+
+            while (result.hasNext()) //Mientras haya registros..
+            {
+                Record record = result.next();
+                String creator = record.get(0).asString();
+                Node node = record.get(1).asNode(); //Guardamos el registro
+                //recogemos los valores
+                String name = node.get("name").asString();
+                String description = node.get("description").asString();
+                List<Object> listSteps = node.get("steps").asList();
+                //convertimos la lista de objetos a array list de strings
+                ArrayList<String> arrayListSteps = new ArrayList<>();
+                for (Object obj : listSteps) {
+                    arrayListSteps.add(obj.toString());
+                }
+                String image = node.get("image").asString();
+                String dateCreated = node.get("dateCreated").toString();
+                String country = node.get("country").asString();
+
+                int difficulty = node.get("difficulty").asInt();
+                List<Object> listTags = node.get("tags").asList();
+                ArrayList<String> arrayListTags = new ArrayList<>();
+                for (Object obj : listTags) {
+                    arrayListTags.add(obj.toString());
+                }
+                List<Object> listIngredients = node.get("ingredients").asList();
+                ArrayList<String> arrayListIngredients = new ArrayList<>();
+                for (Object obj : listIngredients) {
+                    arrayListIngredients.add(obj.toString());
+                }
+                //creamos una receta nueva
+                Recipe recipe = new Recipe(name, description, arrayListSteps, dateCreated, difficulty, creator, image, country, arrayListTags, arrayListIngredients); //Lo mostramos segun su tipo
+                listRecipes.add(recipe);
+            }
+            closeSession(session); //Cerramos la sesión
+            return listRecipes;
+        } catch (Neo4jException ex) {
+            LOGGER.log(Level.SEVERE, " raised an exception", ex);
+            throw ex;
+        } catch (NoSuchRecordException ex) {
+            LOGGER.log(Level.SEVERE, "No record found raised an exception", ex);
+            throw ex;
+        }
+
+    }
+
+    public ArrayList<Recipe> recipesFollowed(String uid) {
+
+        //MATCH (u1:User)-[f:Following]->(u2:User)-[c:Created]->(r:Recipe) WHERE  u1.token = 'xmg10sMQgMS4392zORWGW7TQ1Qg2' Return r
+
+        ArrayList<Recipe> listRecipes = new ArrayList<>();
+
+        try {
+            //Iniciamos una sesion con la bd (el driver se configura en el constructor)
+            Session session = openSession();
+            //Creamos la sentencia que se ejecutara y guardamos el resultado
+            Query query = new Query("MATCH (u1:User)-[f:Following]->(u2:User)-[c:Created]->(r:Recipe) WHERE  u1.token = '"+uid+"' Return u2.username,r");
+            Result result = session.run(query);
+
+            while (result.hasNext()) //Mientras haya registros..
+            {
+                Record record = result.next();
+                String creator = record.get(0).asString();
+                Node node = record.get(1).asNode(); //Guardamos el registro
+                //recogemos los valores
+                String name = node.get("name").asString();
+                String description = node.get("description").asString();
+                List<Object> listSteps = node.get("steps").asList();
+                //convertimos la lista de objetos a array list de strings
+                ArrayList<String> arrayListSteps = new ArrayList<>();
+                for (Object obj : listSteps) {
+                    arrayListSteps.add(obj.toString());
+                }
+                String image = node.get("image").asString();
+                String dateCreated = node.get("dateCreated").toString();
+                String country = node.get("country").asString();
+
+                int difficulty = node.get("difficulty").asInt();
+                List<Object> listTags = node.get("tags").asList();
+                ArrayList<String> arrayListTags = new ArrayList<>();
+                for (Object obj : listTags) {
+                    arrayListTags.add(obj.toString());
+                }
+                List<Object> listIngredients = node.get("ingredients").asList();
+                ArrayList<String> arrayListIngredients = new ArrayList<>();
+                for (Object obj : listIngredients) {
+                    arrayListIngredients.add(obj.toString());
+                }
+                //creamos una receta nueva
+                Recipe recipe = new Recipe(name, description, arrayListSteps, dateCreated, difficulty, creator, image, country, arrayListTags, arrayListIngredients); //Lo mostramos segun su tipo
+                listRecipes.add(recipe);
+            }
+            closeSession(session); //Cerramos la sesión
+            return listRecipes;
+        } catch (Neo4jException ex) {
+            LOGGER.log(Level.SEVERE, " raised an exception", ex);
+            throw ex;
+        } catch (NoSuchRecordException ex) {
+            LOGGER.log(Level.SEVERE, "No record found raised an exception", ex);
+            throw ex;
+        }
+
     }
 
     public ArrayList<Comment> getCommentsOnRecipe(int rid) {

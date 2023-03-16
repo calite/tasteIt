@@ -66,7 +66,7 @@ public class ActivityMain extends AppCompatActivity {
                 startActivity(i);
             }
         });
-
+        //recoger token usuario firebase
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         String uid = firebaseUser.getUid();
 

@@ -6,8 +6,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.FragmentRandom">
 
-
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"

@@ -111,7 +111,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tlRecipe"
         app:layout_constraintVertical_bias="0.0"
-        android:layout_weight="1"/>/>
+        android:layout_weight="1"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/bLike"

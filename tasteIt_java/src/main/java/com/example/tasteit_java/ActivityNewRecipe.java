@@ -77,7 +77,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
 
-        //bio, photo and video Fragments
+        //info, steps and ingredients Fragments
         vpPaginator = findViewById(R.id.vpPaginator);
         tlRecipe = findViewById(R.id.tlRecipe);
 

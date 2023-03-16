@@ -67,21 +67,21 @@
 
         <TextView
             android:id="@+id/tvNameCreator"
-            android:layout_width="wrap_content"
-            android:layout_height="20dp"
+            android:layout_width="200dp"
+            android:layout_height="0dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="72dp"
-            android:text="Name Creator"
             android:inputType="textMultiLine"
+            android:text="Name Creator"
             android:textStyle="italic"
             app:layout_constraintEnd_toEndOf="@+id/tvDescriptionRecipe"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvNameRecipe" />
 
         <TextView
             android:id="@+id/tvDescriptionRecipe"
             android:layout_width="200dp"
-            android:layout_height="116dp"
-            android:layout_marginTop="12dp"
+            android:layout_height="115dp"
+            android:layout_marginTop="8dp"
             android:inputType="textMultiLine"
             android:text="@string/lorem_ipsum"
             app:layout_constraintEnd_toEndOf="parent"
@@ -89,7 +89,7 @@
 
         <TextView
             android:id="@+id/tvNameRecipe"
-            android:layout_width="191dp"
+            android:layout_width="200dp"
             android:layout_height="0dp"
             android:layout_marginTop="4dp"
             android:inputType="textMultiLine"
