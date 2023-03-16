@@ -1,14 +1,12 @@
 package com.example.tasteit_java;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -17,7 +15,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -28,20 +25,13 @@ import com.example.tasteit_java.clases.Utils;
 import com.example.tasteit_java.fragments.FragmentInfoNewRecipe;
 import com.example.tasteit_java.fragments.FragmentIngredientsNewRecipe;
 import com.example.tasteit_java.fragments.FragmentStepsNewRecipe;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.UUID;
 
 public class ActivityNewRecipe extends AppCompatActivity {
 
@@ -50,10 +40,6 @@ public class ActivityNewRecipe extends AppCompatActivity {
     private TabLayout tlRecipe;
     private ViewPager2 vpPaginator;
     private Button bSave;
-    //firebase fotos
-    private FirebaseStorage storage;
-    private StorageReference storageReference;
-    private static final int SELECT_PICTURE = 101;
     private Uri filePath;
 
     @Override
@@ -72,10 +58,6 @@ public class ActivityNewRecipe extends AppCompatActivity {
         //menu superior
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("New Recipe");
-
-        //firebase storege
-        storage = FirebaseStorage.getInstance();
-        storageReference = storage.getReference();
 
         //info, steps and ingredients Fragments
         vpPaginator = findViewById(R.id.vpPaginator);
@@ -112,13 +94,38 @@ public class ActivityNewRecipe extends AppCompatActivity {
         tlRecipe.selectTab(tlRecipe.getTabAt(2));
         tlRecipe.selectTab(tlRecipe.getTabAt(0));
 
-        //seleccionar foto perfil
+        //seleccionar foto
         ibPickPhoto = findViewById(R.id.ibPickPhoto);
         ivRecipePhoto = findViewById(R.id.ivRecipePhoto);
         ibPickPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                selectImage();
+
+                View v = View.inflate(ActivityNewRecipe.this, R.layout.item_photo_picker, null);
+                Dialog dialog = new Dialog(ActivityNewRecipe.this);
+
+                Button bFromGallery = v.findViewById(R.id.bFromGallery);
+                Button bFromCamera = v.findViewById(R.id.bFromCamera);
+
+                bFromGallery.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Utils.selectImageFromMedia(ActivityNewRecipe.this);
+                    }
+                });
+
+                bFromCamera.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Utils.takePicture(ActivityNewRecipe.this);
+                    }
+                });
+
+                dialog.setContentView(v);
+                dialog.setTitle("Select an option: ");
+                dialog.create();
+                dialog.show();
+
             }
         });
 
@@ -204,68 +211,18 @@ public class ActivityNewRecipe extends AppCompatActivity {
         return status;
     }
 
-    //PHOTO PICKER
-    private void selectImage() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select a Picture"), SELECT_PICTURE);
-    }
-
+    //necesario para el selector de fotos
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == SELECT_PICTURE) {
-            if (resultCode == Activity.RESULT_OK) {
-                if (data != null) {
-                    try {
-                        //creamos imagen
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
-                        //almacenamos el path
-                        filePath = data.getData();
-                        //cambiamos imagen del perfil
-                        ivRecipePhoto.setImageBitmap(bitmap);
-                        //subimos la imagen a firebase
-                        //uploadImage(); DESCOMENTAR!
-                        //el upload se debe hacer en el save
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            } else if (resultCode == Activity.RESULT_CANCELED) {
-                Toast.makeText(getApplicationContext(), "Canceled", Toast.LENGTH_SHORT).show();
-            }
+        if(requestCode == 101) {
+            Utils.onActivityResult(this, requestCode, resultCode, data, filePath, ivRecipePhoto);
         }
-    }
+        if(requestCode == 202) {
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
+            ivRecipePhoto.setImageBitmap(photo);
+        }
 
-    //subir foto a firebase -> posiblemente no se usara, se cambia a base64
-    private void uploadImage() {
-        if (filePath != null) { //se podria simplificar mas
-            //mostrara un dialog con el progreso
-            ProgressDialog progressDialog = new ProgressDialog(this);
-            progressDialog.setTitle("Uploading...");
-            progressDialog.show();
-            //alojamiento en el servidor
-            StorageReference ref = storageReference.child("images/" + UUID.randomUUID().toString());
-            //listeners para el resultado de la subida
-            ref.putFile(filePath)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(
-                                UploadTask.TaskSnapshot taskSnapshot) {
-                            //correcto
-                            progressDialog.dismiss();
-                            Toast.makeText(ActivityNewRecipe.this, "Image Uploaded!!", Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            //fail
-                            progressDialog.dismiss();
-                            Toast.makeText(ActivityNewRecipe.this, "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-        }
     }
 
     //MENU SUPERIOR
