@@ -87,6 +87,7 @@ public class ActivityRandom extends AppCompatActivity implements GestureDetector
                 ft.commit();
                 fcRandom.setVisibility(View.VISIBLE);
                 btnShuffle.setVisibility(View.INVISIBLE);
+                findViewById(R.id.textView11).setVisibility(View.INVISIBLE);
                 /*
                 MOVES THE BUTTOM
                 ConstraintLayout cl = findViewById(R.id.cl);
