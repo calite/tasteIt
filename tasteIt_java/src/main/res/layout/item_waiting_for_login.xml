@@ -19,7 +19,6 @@
         android:id="@+id/textView10"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="250dp"
         android:text="Login in to the server"
         android:textAlignment="center"
         android:textColor="@color/white"
