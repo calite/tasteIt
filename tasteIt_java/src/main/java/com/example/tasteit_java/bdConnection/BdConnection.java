@@ -660,6 +660,26 @@ public class BdConnection implements AutoCloseable {
 
     }
 
+    public void changeDataUser(String uid, String username, String imgProfile, String bio) {
+        //MATCH (n:User) WHERE n.token = 'jj85oho2sXgPMNuQKkTORWs8gVF2' SET n.username = 'prueba'
+        try {
+            //Iniciamos una sesion con la bd
+            Session session = openSession();
+
+            session.writeTransaction(tx -> {
+                Query query = new Query("MATCH (n:User) WHERE n.token = '" + uid + "' SET n.username = '" + username + "', n.imgProfile = '" + imgProfile + "', n.biography = '" + bio + "'");
+                tx.run(query);
+                return null;
+            });
+
+            closeSession(session); //Cerramos la sesión
+            // You should capture any errors along with the query and data for traceability
+        } catch (Neo4jException ex) {
+            LOGGER.log(Level.SEVERE, " raised an exception", ex);
+            throw ex;
+        }
+    }
+
     /*
     MATCH (n:Users) WHERE n.username = '" + username + "' AND n.password = '" + password + "' RETURN CASE WHEN n IS NOT NULL THEN true ELSE false END AS n;
     MATCH (n:Users) WHERE n.username = $username AND n.password = $password RETURN CASE WHEN n IS NOT NULL THEN true ELSE false END AS n; //Devolver BOOLEAN si se encuentra o no

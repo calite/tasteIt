@@ -169,7 +169,7 @@ public class ActivityLogin extends AppCompatActivity {
         password = etPassword.getText().toString();
         confirmPassword = etConfirmPassword.getText().toString();
         //HAY QUE COMPROBAR LA CLASE VALIDATE EMAIL CON SU METODO
-        if (password.length() < 6 || !Utils.isEmail(email)) {
+        if ( password.length() < 6 || !Utils.isEmail(email)) {
             bLogin.setBackgroundColor(ContextCompat.getColor(this, R.color.gray));
             bLogin.setEnabled(false);
         } else {

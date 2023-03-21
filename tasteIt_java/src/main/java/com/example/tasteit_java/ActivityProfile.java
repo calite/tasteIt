@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -192,5 +193,15 @@ public class ActivityProfile extends AppCompatActivity {
     private void signOut(){
         FirebaseAuth.getInstance().signOut();
         startActivity (new Intent(this, ActivityLogin.class));
+        finish();
+    }
+
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if(hasFocus){
+            //Toast.makeText(this, "Se ejecuta", Toast.LENGTH_SHORT).show();
+            retrieveData(uid);
+            vpPaginator.setAdapter(new AdapterFragmentProfile(getSupportFragmentManager(),getLifecycle(), user));
+        }
     }
 }

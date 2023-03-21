@@ -4,144 +4,215 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ActivityEditProfile"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".ActivityEditProfile">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/mainLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/lyGeneral"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="@color/maroon"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/ivProfilePhoto"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@drawable/ic_default_profile"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/lyGeneral"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:background="@color/maroon"
+            android:paddingLeft="20dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
 
+            <ImageView
+                android:id="@+id/ivProfilePhoto"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@drawable/ic_default_profile"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <TextView
+                android:id="@+id/tvUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="70dp"
+                android:fontFamily="@font/comfortaa_bold"
+                android:text="USERNAME"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.811"
+                app:layout_constraintStart_toEndOf="@+id/ivProfilePhoto"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.496" />
+
+            <ImageButton
+                android:id="@+id/ibPickPhoto"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="60dp"
+                android:backgroundTint="@color/maroon"
+                android:src="@drawable/ic_change_photo"
+                app:layout_constraintStart_toEndOf="@+id/ivProfilePhoto"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/white" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginEnd="40dp"
+            android:layout_marginTop="25dp"
             android:fontFamily="@font/comfortaa_bold"
-            android:text="USERNAME"
-            android:textColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.811"
-            app:layout_constraintStart_toEndOf="@+id/ivProfilePhoto"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.496" />
+            android:paddingLeft="20dp"
+            android:text="Username"
+            app:layout_constraintTop_toBottomOf="@+id/lyGeneral"
+            tools:layout_editor_absoluteX="16dp" />
 
-        <ImageButton
-            android:id="@+id/ibPickPhoto"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="48dp"
-            android:backgroundTint="@color/maroon"
-            android:src="@drawable/ic_change_photo"
-            app:layout_constraintStart_toEndOf="@+id/ivProfilePhoto"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/white" />
+        <EditText
+            android:id="@+id/etUsername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:ems="10"
+            android:fontFamily="@font/comfortaa_light"
+            android:hint="Username"
+            android:inputType="text"
+            android:minHeight="48dp"
+            android:textAlignment="center"
+            app:layout_constraintTop_toBottomOf="@+id/textView3"
+            tools:layout_editor_absoluteX="0dp"
+            android:singleLine="true"/>
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/comfortaa_bold"
+            android:paddingLeft="20dp"
+            android:text="Biography"
+            app:layout_constraintTop_toBottomOf="@+id/etUsername"
+            tools:layout_editor_absoluteX="16dp" />
+
+        <EditText
+            android:id="@+id/etBiography"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:ems="10"
+            android:fontFamily="@font/comfortaa_light"
+            android:hint="Biography"
+            android:textAlignment="center"
+            android:minHeight="48dp"
+            app:layout_constraintTop_toBottomOf="@+id/textView6"
+            tools:layout_editor_absoluteX="0dp"
+
+            android:inputType="textMultiLine"
+            android:lines="3"
+            android:scrollbars="vertical"
+            android:maxLength="140"/>
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/comfortaa_bold"
+            android:paddingLeft="20dp"
+            android:text="Email"
+            app:layout_constraintTop_toBottomOf="@+id/etBiography" />
+
+        <EditText
+            android:id="@+id/etEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginVertical="7dp"
+            android:background="@color/gray"
+            android:ems="10"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:fontFamily="@font/comfortaa_light"
+            android:hint="@string/email"
+            android:inputType="textEmailAddress"
+            android:minHeight="48dp"
+            android:textAlignment="center"
+            app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="20dp"
+            android:text="Password"
+            app:layout_constraintTop_toBottomOf="@+id/etEmail" />
+
+
+        <EditText
+            android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:ems="10"
+            android:fontFamily="@font/comfortaa_light"
+            android:hint="@string/password"
+            android:inputType="textPassword"
+            android:minHeight="48dp"
+            android:textAlignment="center"
+            app:layout_constraintTop_toBottomOf="@+id/textView5"
+            android:singleLine="true"/>
+
+        <TextView
+            android:id="@+id/tvConfirmPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="20dp"
+            android:text="Confirm Password"
+            android:visibility="invisible"
+            app:layout_constraintTop_toBottomOf="@+id/etPassword" />
+
+
+        <EditText
+            android:id="@+id/etConfirmPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:ems="10"
+            android:fontFamily="@font/comfortaa_light"
+            android:hint="@string/Confirm_password"
+            android:inputType="textPassword"
+            android:minHeight="48dp"
+            android:textAlignment="center"
+            android:visibility="invisible"
+            app:layout_constraintTop_toBottomOf="@+id/tvConfirmPassword"
+            android:singleLine="true"/>
+
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="30dp"
+            android:fontFamily="@font/comfortaa_bold"
+            android:text="save changes"
+            app:layout_constraintTop_toBottomOf="@+id/etPassword"
+            tools:layout_editor_absoluteX="0dp" />
+
+        <!--<Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="callSignOut"
+            android:text="logout"
+            app:layout_constraintTop_toBottomOf="@+id/btnSave"
+            android:fontFamily="@font/comfortaa_bold"
+            android:layout_marginHorizontal="20dp"/>-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        android:text="Username"
-        android:fontFamily="@font/comfortaa_bold"
-        app:layout_constraintTop_toBottomOf="@+id/lyGeneral"
-        tools:layout_editor_absoluteX="16dp" />
-
-    <EditText
-        android:id="@+id/editText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:fontFamily="@font/comfortaa_light"
-        android:hint="Username"
-        android:inputType="text"
-        android:minHeight="48dp"
-        android:textAlignment="center"
-        app:layout_constraintTop_toBottomOf="@+id/textView3"
-        tools:layout_editor_absoluteX="0dp" />
-
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Email"
-        android:fontFamily="@font/comfortaa_bold"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
-
-    <EditText
-        android:id="@+id/etEmail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/gray"
-        android:ems="10"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:fontFamily="@font/comfortaa_light"
-        android:hint="@string/email"
-        android:inputType="textEmailAddress"
-        android:minHeight="48dp"
-        android:textAlignment="center"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
-
-    <TextView
-        android:id="@+id/textView5"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Password"
-        app:layout_constraintTop_toBottomOf="@+id/etEmail" />
-
-
-    <EditText
-        android:id="@+id/editText2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:fontFamily="@font/comfortaa_light"
-        android:hint="@string/password"
-        android:inputType="textPassword"
-        android:minHeight="48dp"
-        android:textAlignment="center"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
-        android:text="save changes"
-        app:layout_constraintTop_toBottomOf="@+id/editText2"
-        tools:layout_editor_absoluteX="0dp"
-        android:fontFamily="@font/comfortaa_bold"/>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="callSignOut"
-        android:text="logout"
-        app:layout_constraintTop_toBottomOf="@+id/button2"
-        android:fontFamily="@font/comfortaa_bold"/>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>
 
