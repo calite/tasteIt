@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,14 +32,14 @@ import org.neo4j.driver.Session;
 
 public class ActivityProfile extends AppCompatActivity {
 
-
     private FragmentTransaction ft;
     private TabLayout tlUser;
     private ViewPager2 vpPaginator;
-
+    private AdapterFragmentProfile adapter;
     private User user;
     private TextView tvUserName, tvReciperCounter, tvFollowersCounter, tvFollowingCounter, tvLikesCounter;
     private ImageView ivUserPicture;
+    private Button btnFollow;
     private BdConnection connection;
     private String uid;
 
@@ -47,16 +48,15 @@ public class ActivityProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        initializeViews();
-
         if(getIntent().getExtras() != null) {
             Bundle params = getIntent().getExtras();
             uid = params.getString("uid");
         } else {
-            FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-            uid = firebaseUser.getUid();
+            uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         }
 
+        connection = new BdConnection();
+        initializeViews();
         retrieveData(uid);
 
         //menu superior
@@ -64,7 +64,8 @@ public class ActivityProfile extends AppCompatActivity {
         getSupportActionBar().setTitle("Profile");
 
         //bio, photo and comments Fragments
-        vpPaginator.setAdapter(new AdapterFragmentProfile(getSupportFragmentManager(),getLifecycle(), user));
+        adapter = new AdapterFragmentProfile(getSupportFragmentManager(),getLifecycle(), user);
+        vpPaginator.setAdapter(adapter);
 
         tlUser.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -91,7 +92,6 @@ public class ActivityProfile extends AppCompatActivity {
             }
         });
 
-
         //fragment menu inferior
         FragmentManager fm = this.getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
@@ -101,6 +101,29 @@ public class ActivityProfile extends AppCompatActivity {
             ft.add(R.id.fcMainMenu, mainMenuFargment,"main_menu");
             ft.commit();
         }
+
+        btnFollow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(connection.isFollowing(FirebaseAuth.getInstance().getCurrentUser().getUid(), uid)) {
+                    connection.unFollowUser(FirebaseAuth.getInstance().getCurrentUser().getUid(), uid);
+                    Toast.makeText(ActivityProfile.this, "Has dejado de seguir al usuario " + user.getUsername(), Toast.LENGTH_SHORT).show();
+                    btnFollow.setText("FOLLOW");
+                } else {
+                    connection.followUser(FirebaseAuth.getInstance().getCurrentUser().getUid(), uid);
+                    Toast.makeText(ActivityProfile.this, "Ahora sigues al usuario " + user.getUsername(), Toast.LENGTH_SHORT).show();
+                    btnFollow.setText("UNFOLLOW");
+                }
+            }
+        });
+        tvReciperCounter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getApplicationContext(), ActivityProfileData.class);
+                i.putExtra("uid", uid);
+                startActivity(i);
+            }
+        });
     }
 
     private void initializeViews() {
@@ -112,13 +135,23 @@ public class ActivityProfile extends AppCompatActivity {
 
         ivUserPicture = findViewById(R.id.ivUserPicture);
 
+        btnFollow = findViewById(R.id.btnFollow);
+        if (uid.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+            btnFollow.setVisibility(View.INVISIBLE);
+            btnFollow.setEnabled(false);
+        } else {
+            if(connection.isFollowing(FirebaseAuth.getInstance().getCurrentUser().getUid(), uid)) {
+                btnFollow.setText("UNFOLLOW");
+            }
+            btnFollow.setVisibility(View.VISIBLE);
+            btnFollow.setEnabled(true);
+        }
+
         vpPaginator = findViewById(R.id.vpPaginator);
         tlUser = findViewById(R.id.tlUser);
     }
 
     private void retrieveData(String uid) {
-        connection = new BdConnection();
-
         user = connection.retrieveUserbyUid(uid);
 
         tvUserName.setText(user.getUsername());
@@ -163,6 +196,11 @@ public class ActivityProfile extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.profile_menu, menu);
+        if (uid.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+            menu.getItem(0).setVisible(true);
+        } else {
+            menu.getItem(0).setVisible(false);
+        }
         return true;
     }
 
@@ -201,7 +239,8 @@ public class ActivityProfile extends AppCompatActivity {
         if(hasFocus){
             //Toast.makeText(this, "Se ejecuta", Toast.LENGTH_SHORT).show();
             retrieveData(uid);
-            vpPaginator.setAdapter(new AdapterFragmentProfile(getSupportFragmentManager(),getLifecycle(), user));
+            adapter = new AdapterFragmentProfile(getSupportFragmentManager(),getLifecycle(), user);
+            vpPaginator.setAdapter(adapter);
         }
     }
 }

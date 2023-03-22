@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".ActivityProfile">
 
-
     <ImageView
         android:id="@+id/ivUserPicture"
         android:layout_width="150dp"
@@ -18,7 +17,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.027" />
-
 
     <TextView
         android:id="@+id/tvUserName"
@@ -33,98 +31,116 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.12" />
 
-    <TextView
-        android:id="@+id/textView2"
+    <Button
+        android:id="@+id/btnFollow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="Followings"
-        android:textColor="@color/black"
+        android:layout_marginTop="24dp"
+        android:visibility="invisible"
+        android:enabled="false"
+        android:textSize="11dp"
+        android:text="Follow"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.682"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvFollowingCounter" />
+        app:layout_constraintHorizontal_bias="0.419"
+        app:layout_constraintStart_toEndOf="@+id/ivUserPicture"
+        app:layout_constraintTop_toBottomOf="@+id/tvUserName"/>
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/tvReciperCounter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="0"
+        app:layout_constraintBottom_toTopOf="@+id/fcMainMenu"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.142"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivUserPicture"
+        app:layout_constraintVertical_bias="0.057" />
+
+    <TextView
+        android:id="@+id/tvRecipe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="Followers"
+        android:text="Recipes"
         android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.365"
+        app:layout_constraintEnd_toStartOf="@+id/tvFollowers"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvFollowersCounter" />
+        app:layout_constraintTop_toBottomOf="@+id/tvReciperCounter" />
 
     <TextView
         android:id="@+id/tvFollowersCounter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="0"
+        android:layout_marginTop="5dp"
         app:layout_constraintBottom_toTopOf="@+id/fcMainMenu"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.274"
+        app:layout_constraintHorizontal_bias="0.265"
         app:layout_constraintStart_toEndOf="@+id/tvReciperCounter"
         app:layout_constraintTop_toBottomOf="@+id/ivUserPicture"
         app:layout_constraintVertical_bias="0.057" />
+
+    <TextView
+        android:id="@+id/tvFollowers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Followers"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toStartOf="@+id/tvFollowing"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@+id/tvRecipe"
+        app:layout_constraintTop_toBottomOf="@+id/tvFollowersCounter" />
 
     <TextView
         android:id="@+id/tvFollowingCounter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="0"
+        android:layout_marginTop="5dp"
         app:layout_constraintBottom_toTopOf="@+id/fcMainMenu"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.431"
+        app:layout_constraintHorizontal_bias="0.41"
         app:layout_constraintStart_toEndOf="@+id/tvFollowersCounter"
         app:layout_constraintTop_toBottomOf="@+id/ivUserPicture"
-        app:layout_constraintVertical_bias="0.057" />
+        app:layout_constraintVertical_bias="0.057"/>
 
     <TextView
-        android:id="@+id/tvReciperCounter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="0"
-        app:layout_constraintBottom_toTopOf="@+id/fcMainMenu"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.129"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivUserPicture"
-        app:layout_constraintVertical_bias="0.057" />
-
-    <TextView
+        android:id="@+id/tvFollowing"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="Recipes"
+        android:text="Followings"
         android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.09"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvReciperCounter" />
+        app:layout_constraintEnd_toStartOf="@+id/tvLikes"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@+id/tvFollowers"
+        app:layout_constraintTop_toBottomOf="@+id/tvFollowingCounter" />
 
     <TextView
+        android:id="@+id/tvLikesCounter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.62"
+        app:layout_constraintStart_toEndOf="@+id/tvFollowingCounter"
+        app:layout_constraintBaseline_toBaselineOf="@+id/tvFollowingCounter"/>
+
+    <TextView
+        android:id="@+id/tvLikes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="Likes"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.500"
-        app:layout_constraintStart_toEndOf="@+id/textView2"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@+id/tvFollowing"
         app:layout_constraintTop_toBottomOf="@+id/tvLikesCounter"/>
-
-    <TextView
-        android:id="@+id/tvLikesCounter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="23dp"
-        android:text="0"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.589"
-        app:layout_constraintStart_toEndOf="@+id/tvFollowingCounter"
-        app:layout_constraintBaseline_toBaselineOf="@+id/tvFollowingCounter"/>
 
     <View
         android:id="@+id/vSeparator"
@@ -133,7 +149,7 @@
         android:backgroundTint="@color/maroon"
         android:background="@android:color/darker_gray"
         app:layout_constraintBottom_toTopOf="@+id/fcMainMenu"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/tvFollowers"
         app:layout_constraintVertical_bias="0.103"
         tools:layout_editor_absoluteX="-1dp" />
 

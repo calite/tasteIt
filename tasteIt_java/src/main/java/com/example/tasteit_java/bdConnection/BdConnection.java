@@ -518,7 +518,7 @@ public class BdConnection implements AutoCloseable {
             //Iniciamos una sesion con la bd (el driver se configura en el constructor)
             Session session = openSession();
             //Creamos la sentencia que se ejecutara y guardamos el resultado
-            Query query = new Query("MATCH (u:User)-[c:Liked]->(r:Recipe) WHERE  u.token = '"+uid+"' Return u.username,r");
+            Query query = new Query("MATCH (u:User)-[c:Liked]->(r:Recipe) WHERE u.token = '"+uid+"' Return u.username,r");
             Result result = session.run(query);
 
             while (result.hasNext()) //Mientras haya registros..
@@ -678,6 +678,71 @@ public class BdConnection implements AutoCloseable {
             LOGGER.log(Level.SEVERE, " raised an exception", ex);
             throw ex;
         }
+    }
+
+    public void followUser(String uidCurrent, String uidUser) {
+        // MATCH (a:User {token: 'x'}), (b:User {token: 'y'}) MERGE (a)-[following:Following {dateCreated:'" + today + "'}]->(b) //El usuario a sigue al usuario b
+        try {
+            //Iniciamos una sesion con la bd
+            Session session = openSession();
+            //fecha
+            Calendar c = Calendar.getInstance();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            String today = sdf.format(c.getTime());
+
+            session.writeTransaction(tx -> {
+                Query query = new Query("MATCH (a:User {token: '" + uidCurrent + "'}), (b:User {token: '" + uidUser + "'}) MERGE (a)-[following:Following {dateFollow:'" + today + "'}]->(b)");
+                tx.run(query);
+                return null;
+            });
+
+            closeSession(session); //Cerramos la sesión
+            // You should capture any errors along with the query and data for traceability
+        } catch (Neo4jException ex) {
+            LOGGER.log(Level.SEVERE, " raised an exception", ex);
+            throw ex;
+        }
+    }
+
+    public void unFollowUser(String uidCurrent, String uidUser) {
+        //MATCH (a:User {username:"prueba"})-[following:Following]->(b:User{username:"verito"}) DELETE following
+        try {
+            //Iniciamos una sesion con la bd
+            Session session = openSession();
+
+            session.writeTransaction(tx -> {
+                Query query = new Query("MATCH (a:User {token:'" + uidCurrent + "'})-[following:Following]->(b:User{token:'" + uidUser + "'}) DELETE following");
+                tx.run(query);
+                return null;
+            });
+
+            closeSession(session); //Cerramos la sesión
+            // You should capture any errors along with the query and data for traceability
+        } catch (Neo4jException ex) {
+            LOGGER.log(Level.SEVERE, " raised an exception", ex);
+            throw ex;
+        }
+    }
+
+    public boolean isFollowing(String uidCurrent, String uidUser) {
+        //MATCH (a:User {token:'" + uidCurrent + "'}), (b:User {token:'" + uidUser + "'}) RETURN exists((a)-[:Following]->(b))
+        try {
+            //Iniciamos una sesion con la bd
+            Session session = openSession();
+
+            Query query = new Query("MATCH (a:User {token:'" + uidCurrent + "'}), (b:User {token:'" + uidUser + "'}) RETURN exists((a)-[:Following]->(b))");
+            Result result = session.run(query);
+
+            boolean following = result.single().get(0).asBoolean();
+            closeSession(session); //Cerramos la sesión
+
+            return following;
+            // You should capture any errors along with the query and data for traceability
+        } catch (Neo4jException ex) {
+            LOGGER.log(Level.SEVERE, " raised an exception", ex);
+            throw ex;
+        }
+
     }
 
     /*
