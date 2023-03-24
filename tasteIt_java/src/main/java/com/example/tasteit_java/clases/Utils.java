@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -85,5 +86,18 @@ public class Utils {
     }
     //fin selector de fotos
 
+    //buscador de tags
+    public static ArrayList<String> searchTags(ArrayList<String> listaPalabras, ArrayList<String> listaDiccionario) {
+
+        ArrayList<String> tagsEncontrados = new ArrayList<>();
+
+        for (String palabra : listaPalabras) {
+            if (listaDiccionario.contains(palabra) && !tagsEncontrados.contains(palabra)) {
+                tagsEncontrados.add(palabra);
+            }
+        }
+
+        return tagsEncontrados;
+    }
 
 }

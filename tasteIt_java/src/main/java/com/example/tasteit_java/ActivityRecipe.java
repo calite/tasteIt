@@ -48,7 +48,7 @@ public class ActivityRecipe extends AppCompatActivity {
         //recogemos la receta pasada como parametro y el uid
         if(getIntent().getExtras() != null) {
             Bundle params = getIntent().getExtras();
-            recipe = (Recipe) params.getSerializable("recipe");
+            recipe = (Recipe) params.getParcelable("recipe");
         }
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 

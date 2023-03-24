@@ -32,7 +32,7 @@ public class FragmentCommentsRecipe extends Fragment {
     public static FragmentCommentsRecipe newInstance(Recipe recipe) {
         FragmentCommentsRecipe fragment = new FragmentCommentsRecipe();
         Bundle args = new Bundle();
-        args.putSerializable("recipe", recipe);
+        args.putParcelable("recipe", recipe);
         fragment.setArguments(args);
         return fragment;
     }
@@ -41,7 +41,7 @@ public class FragmentCommentsRecipe extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            recipe = (Recipe) getArguments().getSerializable("recipe");
+            recipe = (Recipe) getArguments().getParcelable("recipe");
         }
     }
 

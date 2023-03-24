@@ -1,7 +1,5 @@
 package com.example.tasteit_java.fragments;
 
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +13,6 @@ import android.widget.Spinner;
 import androidx.fragment.app.Fragment;
 
 import com.example.tasteit_java.R;
-import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
@@ -65,9 +62,11 @@ public class FragmentInfoNewRecipe extends Fragment {
         adapterSpinnerCountries.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spCountries.setAdapter(adapterSpinnerCountries);
         //tags
+        /*
         cgTags = view.findViewById(R.id.cgTags);
         bAddTag = view.findViewById(R.id.bAddTag);
         etTagName = view.findViewById(R.id.etTagName);
+
         bAddTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -89,7 +88,7 @@ public class FragmentInfoNewRecipe extends Fragment {
                 etTagName.setText("");
             }
         });
-
+        */
         return view;
     }
 

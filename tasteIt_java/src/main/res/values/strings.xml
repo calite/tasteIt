@@ -170,5 +170,34 @@
     </string>
     <string name="action_settings">Settings</string>
 
+    <string-array name="tags_array">
+        <item>carne</item>
+        <item>pescado</item>
+        <item>pollo</item>
+        <item>pan</item>
+        <item>arroz</item>
+        <item>fideos</item>
+        <item>huevos</item>
+        <item>queso</item>
+        <item>leche</item>
+        <item>salsa</item>
+        <item>especias</item>
+        <item>hierbas</item>
+        <item>limón</item>
+        <item>asar</item>
+        <item>freír</item>
+        <item>hervir</item>
+        <item>saltear</item>
+        <item>sofreír</item>
+        <item>hornear</item>
+        <item>marinar</item>
+        <item>gratinar</item>
+        <item>glasear</item>
+        <item>guisar</item>
+        <item>escalfar</item>
+        <item>tostar</item>
+        <item>flambear</item>
+    </string-array>
+
 
 </resources>

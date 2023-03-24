@@ -1,9 +1,5 @@
 package com.example.tasteit_java;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.GestureDetector;
@@ -11,24 +7,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.FragmentContainerView;
-import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.tasteit_java.adapters.AdapterGridViewMain;
 import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.Recipe;
-import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.fragments.FragmentRandom;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ActivityRandom extends AppCompatActivity implements GestureDetector.OnGestureListener{
@@ -79,7 +73,7 @@ public class ActivityRandom extends AppCompatActivity implements GestureDetector
                 int recipeIndex = (int) (Math.random()*recipes.size());
                 FragmentRandom fr = new FragmentRandom();
                 Bundle arguments = new Bundle();
-                arguments.putSerializable("recipe", recipes.get(recipeIndex));
+                arguments.putParcelable("recipe", recipes.get(recipeIndex));
                 fr.setArguments(arguments);
                 FragmentManager fm = getSupportFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
@@ -170,7 +164,7 @@ public class ActivityRandom extends AppCompatActivity implements GestureDetector
             int recipeIndex = (int) (Math.random()*recipes.size());
             FragmentRandom fr = new FragmentRandom();
             Bundle arguments = new Bundle();
-            arguments.putSerializable("recipe", recipes.get(recipeIndex));
+            arguments.putParcelable("recipe", recipes.get(recipeIndex));
             fr.setArguments(arguments);
             FragmentManager fm = getSupportFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();

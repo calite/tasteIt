@@ -576,7 +576,7 @@ public class BdConnection implements AutoCloseable {
             //Iniciamos una sesion con la bd (el driver se configura en el constructor)
             Session session = openSession();
             //Creamos la sentencia que se ejecutara y guardamos el resultado
-            Query query = new Query("MATCH (u1:User)-[f:Following]->(u2:User)-[c:Created]->(r:Recipe) WHERE  u1.token = '"+uid+"' Return u2.username,r");
+            Query query = new Query("MATCH (u1:User)-[f:Following]->(u2:User) WHERE u1.token = '"+uid+"' MATCH (r:Recipe)-[c:Created]->(u2) RETURN u2.username,r");
             Result result = session.run(query);
 
             while (result.hasNext()) //Mientras haya registros..

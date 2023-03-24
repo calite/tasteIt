@@ -28,7 +28,7 @@ public class FragmentInfoRecipe extends Fragment {
     public static FragmentInfoRecipe newInstance(Recipe recipe) {
         FragmentInfoRecipe fragment = new FragmentInfoRecipe();
         Bundle args = new Bundle();
-        args.putSerializable("recipe", recipe);
+        args.putParcelable("recipe", recipe);
         fragment.setArguments(args);
         return fragment;
     }
@@ -37,7 +37,7 @@ public class FragmentInfoRecipe extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            recipe = (Recipe) getArguments().getSerializable("recipe");
+            recipe = (Recipe) getArguments().getParcelable("recipe");
         }
     }
 

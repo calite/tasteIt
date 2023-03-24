@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -14,14 +13,11 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
-import com.example.tasteit_java.ActivityRandom;
 import com.example.tasteit_java.R;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.Utils;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
-
-import java.util.logging.Level;
 
 public class FragmentRandom extends Fragment {
     GestureDetector gestureDetector;
@@ -35,7 +31,7 @@ public class FragmentRandom extends Fragment {
     public static FragmentRandom newInstance(Recipe recipe) {
         FragmentRandom fragment = new FragmentRandom();
         Bundle args = new Bundle();
-        args.putSerializable("recipe", recipe);
+        args.putParcelable("recipe", recipe);
         fragment.setArguments(args);
         return fragment;
     }
@@ -44,7 +40,7 @@ public class FragmentRandom extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            recipe = (Recipe) getArguments().getSerializable("recipe");
+            recipe = (Recipe) getArguments().getParcelable("recipe");
         }
 
     }

@@ -1,6 +1,7 @@
 package com.example.tasteit_java;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
@@ -9,19 +10,18 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tasteit_java.adapters.AdapterGridViewMain;
 import com.example.tasteit_java.adapters.AdapterRecyclerMain;
 import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.Recipe;
-import com.example.tasteit_java.clases.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -31,14 +31,15 @@ import java.util.ArrayList;
 public class ActivityMain extends AppCompatActivity {
 
     private FloatingActionButton bCreate;
-    private FragmentTransaction ft;
     //TEMPORAL GALERIA
     private GridView gvRecipes;
     private AdapterGridViewMain adapter;
     private RecyclerView rvRecipes;
     private AdapterRecyclerMain adapter2;
     public static ArrayList<Recipe> listRecipes = new ArrayList<>();
+    private ProgressBar pgMain;
 
+    //neo
     private BdConnection app;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -48,11 +49,12 @@ public class ActivityMain extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         //menu superior
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         app = new BdConnection();  //Instanciamos la conexion
+
+        pgMain = findViewById(R.id.pbMain);
 
         //boton crear receta
         bCreate = findViewById(R.id.bCreate);
@@ -60,9 +62,6 @@ public class ActivityMain extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(ActivityMain.this, ActivityNewRecipe.class);
-                Bundle params = getIntent().getExtras();
-                User user = BdConnection.retrieveUserbyUid(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                i.putExtra("user",user);
                 startActivity(i);
             }
         });
@@ -70,28 +69,9 @@ public class ActivityMain extends AppCompatActivity {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         String uid = firebaseUser.getUid();
 
-        //fragment menu inferior
-        /*
-        FragmentManager fm = this.getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        FragmentMainMenu mainMenuFargment = new FragmentMainMenu();
-        //comprobamos si existe
-        if(savedInstanceState == null) {
-            ft.add(R.id.fcMainMenu, mainMenuFargment,"main_menu");
-            ft.commit();
-        }
-        /*
-        //TEMPORAL - grid view
-        for(int i = 0; i < 5; i++) {
-            listRecipes.add(new Recipe("Pinneaple pizza","etc etc etc","chuck norris", "5.0", R.drawable.recipe_demo, new ArrayList<String>(), 3));
-        }
-        */
-
-        listRecipes = app.retrieveAllRecipes();
+        new TaskLoadRecipes().execute(listRecipes); //carga de recetas async
 
         gvRecipes = findViewById(R.id.gvRecipes);
-        adapter = new AdapterGridViewMain(this, listRecipes);
-        gvRecipes.setAdapter(adapter);
 
         gvRecipes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -185,13 +165,42 @@ public class ActivityMain extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-    //END MENU superior
     //LOGOUT
     public void callSignOut(View view){
         signOut();
     }
+
     private void signOut(){
         FirebaseAuth.getInstance().signOut();
         startActivity (new Intent(this, ActivityLogin.class));
     }
+
+    //carga de recetas asyncrona
+    class TaskLoadRecipes extends AsyncTask<ArrayList<Recipe>, Void,ArrayList<Recipe>> {
+
+        @Override
+        protected void onPreExecute() {
+
+        }
+
+        @Override
+        protected ArrayList<Recipe> doInBackground(ArrayList<Recipe>... arrayLists) {
+            return app.retrieveAllRecipes();
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Recipe> recipes) {
+            //super.onPostExecute(recipes);
+
+            pgMain.setVisibility(View.GONE);
+
+            listRecipes = recipes;
+
+            adapter = new AdapterGridViewMain(getApplicationContext(), listRecipes);
+            gvRecipes.setAdapter(adapter);
+
+            adapter.notifyDataSetChanged();
+        }
+    }
 }
+

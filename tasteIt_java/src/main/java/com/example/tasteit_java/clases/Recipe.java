@@ -1,9 +1,12 @@
 package com.example.tasteit_java.clases;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Recipe implements Serializable {
+public class Recipe implements Parcelable {
     private String name;
     private String description;
     private ArrayList<String> steps;
@@ -18,6 +21,35 @@ public class Recipe implements Serializable {
     private int id;
     //temp
     private int img;
+
+    protected Recipe(Parcel in) {
+        name = in.readString();
+        description = in.readString();
+        steps = in.createStringArrayList();
+        dateCreated = in.readString();
+        difficulty = in.readInt();
+        creator = in.readString();
+        rating = in.readString();
+        image = in.readString();
+        country = in.readString();
+        tags = in.createStringArrayList();
+        ingredients = in.createStringArrayList();
+        id = in.readInt();
+        img = in.readInt();
+    }
+
+    public static final Creator<Recipe> CREATOR = new Creator<Recipe>() {
+        @Override
+        public Recipe createFromParcel(Parcel in) {
+            return new Recipe(in);
+        }
+
+        @Override
+        public Recipe[] newArray(int size) {
+            return new Recipe[size];
+        }
+    };
+
     public int getImg() {
         return img;
     }
@@ -140,4 +172,26 @@ public class Recipe implements Serializable {
     public int getId() { return id; }
 
     public void setId(int id) { this.id = id; }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(name);
+        parcel.writeString(description);
+        parcel.writeStringList(steps);
+        parcel.writeString(dateCreated);
+        parcel.writeInt(difficulty);
+        parcel.writeString(creator);
+        parcel.writeString(rating);
+        parcel.writeString(image);
+        parcel.writeString(country);
+        parcel.writeStringList(tags);
+        parcel.writeStringList(ingredients);
+        parcel.writeInt(id);
+        parcel.writeInt(img);
+    }
 }

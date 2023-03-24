@@ -2,11 +2,14 @@ package com.example.tasteit_java;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -31,6 +34,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 
 public class ActivityNewRecipe extends AppCompatActivity {
@@ -39,21 +43,23 @@ public class ActivityNewRecipe extends AppCompatActivity {
     private ImageButton ibPickPhoto;
     private TabLayout tlRecipe;
     private ViewPager2 vpPaginator;
-    private Button bSave;
     private Uri filePath;
+    private BdConnection app;
+    private String uid;
+
+    private EditText etRecipeName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_recipe);
 
-        //gipsy fix
-        BdConnection app = new BdConnection();  //Instanciamos la conexion
+
+         app = new BdConnection();  //Instanciamos la conexion
 
         //firebase User
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        String uid = firebaseUser.getUid();
-
+        uid = firebaseUser.getUid();
 
         //menu superior
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -85,7 +91,6 @@ public class ActivityNewRecipe extends AppCompatActivity {
         vpPaginator.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
-                //super.onPageSelected(position);
                 tlRecipe.selectTab(tlRecipe.getTabAt(position));
             }
         });
@@ -129,49 +134,61 @@ public class ActivityNewRecipe extends AppCompatActivity {
             }
         });
 
-        //boton guardado
-        bSave = findViewById(R.id.bSave);
-        bSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //fecha
-                Calendar c = Calendar.getInstance();
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                String dateCreated = sdf.format(c.getTime());
-                //img to base64
-                Drawable drawable = ivRecipePhoto.getDrawable();
-                Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
-                String imgBase64 = Utils.encodeTobase64(bitmap);
-                //recogemos datos de fragment info
-                String name = FragmentInfoNewRecipe.getRecipeName().getText().toString();
-                String description = FragmentInfoNewRecipe.getDescriptionRecipe().getText().toString();
-                String country = FragmentInfoNewRecipe.getCountry();
-                int difficulty = FragmentInfoNewRecipe.getDificulty();
-                ArrayList<String> listTags = FragmentInfoNewRecipe.getTags();
-                //recogemos datos de fragment pasos
-                ArrayList<String> listSteps = FragmentStepsNewRecipe.getSteps();
-                //recogemos datos del fragment ingredientes
-                ArrayList<String> listIngredients = FragmentIngredientsNewRecipe.getIngredients();
-                //recogemos el userName
-                String userName = app.retrieveNameCurrentUser(uid);
-                //instanciacion de receta
-                if(checkFields()){
-                    Recipe r = new Recipe(name, description, listSteps, dateCreated, difficulty, userName, imgBase64, country, listTags, listIngredients);
-                    //insercion en neo
-                    app.createRecipe(r, uid);
-                    //redireccionamos al main
-                    startActivity(new Intent(ActivityNewRecipe.this, ActivityMain.class));
-                } else{
-                    Toast.makeText(ActivityNewRecipe.this, "Fill the required Fields", Toast.LENGTH_SHORT).show();
-                }
-
-
-            }
-        });
-
-
     }
 
+    private void saveRecipe(String uid, BdConnection app){
+        //fecha
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String dateCreated = sdf.format(c.getTime());
+        //img to base64
+        Drawable drawable = ivRecipePhoto.getDrawable();
+        Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+        String imgBase64 = Utils.encodeTobase64(bitmap);
+        //recogemos datos de fragment info
+        String name = FragmentInfoNewRecipe.getRecipeName().getText().toString();
+        String description = FragmentInfoNewRecipe.getDescriptionRecipe().getText().toString();
+        String country = FragmentInfoNewRecipe.getCountry();
+        int difficulty = FragmentInfoNewRecipe.getDificulty();
+        //ArrayList<String> listTags = FragmentInfoNewRecipe.getTags();
+        //recogemos datos de fragment pasos
+        ArrayList<String> listSteps = FragmentStepsNewRecipe.getSteps();
+        //recogemos datos del fragment ingredientes
+        ArrayList<String> listIngredients = FragmentIngredientsNewRecipe.getIngredients();
+        //recogemos el userName
+        String userName = app.retrieveNameCurrentUser(uid);
+
+        //generacion automatica de tags
+        ArrayList<String> listTags = new ArrayList<>();
+        ArrayList<String> diccionario = new ArrayList<>();
+        //traemos el diccionario
+        Resources res = getResources();
+        TypedArray tagsArray = res.obtainTypedArray(R.array.tags_array);
+        for (int i = 0; i < tagsArray.length(); i++) {
+            diccionario.add(tagsArray.getString(i));
+        }
+        tagsArray.recycle(); //liberamos el recurso
+        ArrayList<String> palabras = new ArrayList<>();
+        //recogemos todas las palabras escritas por el usuario
+        palabras.addAll(Arrays.asList(name.split("\\s+")));
+        palabras.addAll(Arrays.asList(description.split("\\s+")));
+        palabras.addAll(listIngredients);
+        palabras.addAll(listSteps);
+        listTags = Utils.searchTags(palabras,diccionario);
+
+        //instanciacion de receta
+        if(checkFields()){
+            Recipe r = new Recipe(name, description, listSteps, dateCreated, difficulty, userName, imgBase64, country, listTags, listIngredients);
+            //insercion en neo
+            app.createRecipe(r, uid);
+            //redireccionamos al main
+            startActivity(new Intent(ActivityNewRecipe.this, ActivityMain.class));
+        } else{
+            Toast.makeText(ActivityNewRecipe.this, "Fill the required Fields", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    //comprobacion de campos
     private boolean checkFields() {
 
         boolean status = true;
@@ -192,12 +209,14 @@ public class ActivityNewRecipe extends AppCompatActivity {
             status = false;
             etDescriptionRecipe.setError("Please enter a Recipe Description");
         }
+        /*
         //tags
         EditText etTagName = FragmentInfoNewRecipe.getEtTagName();
         if(FragmentInfoNewRecipe.getTags().size() == 0) {
             status = false;
             etTagName.setError("");
         }
+        */
         //steps
         if(FragmentStepsNewRecipe.getSteps().size() == 0) {
             status = false;
@@ -211,6 +230,24 @@ public class ActivityNewRecipe extends AppCompatActivity {
         return status;
     }
 
+    //MENU superior
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.new_recipe_menu, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            case R.id.iSaveRecipe:
+                saveRecipe(uid,app);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
     //necesario para el selector de fotos
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -225,13 +262,6 @@ public class ActivityNewRecipe extends AppCompatActivity {
 
     }
 
-    //MENU SUPERIOR
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+
+
 }
