@@ -173,7 +173,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
         palabras.addAll(Arrays.asList(name.split("\\s+")));
         palabras.addAll(Arrays.asList(description.split("\\s+")));
         palabras.addAll(listIngredients);
-        palabras.addAll(listSteps);
+        palabras.addAll(listSteps); //esto hay que splitearlo tb @TODO
         listTags = Utils.searchTags(palabras,diccionario);
 
         //instanciacion de receta
