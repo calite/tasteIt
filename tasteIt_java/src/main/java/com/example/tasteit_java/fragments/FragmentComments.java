@@ -1,6 +1,7 @@
 package com.example.tasteit_java.fragments;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -10,10 +11,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.tasteit_java.ActivityProfile;
 import com.example.tasteit_java.R;
 import com.example.tasteit_java.adapters.AdapterFragmentComments;
+import com.example.tasteit_java.bdConnection.BdConnection;
+
+import org.neo4j.driver.Query;
+import org.neo4j.driver.Result;
+import org.neo4j.driver.Session;
 
 import java.util.ArrayList;
 import java.util.Collection;

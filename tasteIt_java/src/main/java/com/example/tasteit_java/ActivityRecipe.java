@@ -2,7 +2,9 @@ package com.example.tasteit_java;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,12 +19,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.tasteit_java.adapters.AdapterFragmentRecipe;
+import com.example.tasteit_java.adapters.AdapterGridViewMain;
 import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.Recipe;
+import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
+
+import org.neo4j.driver.Query;
+import org.neo4j.driver.Result;
+import org.neo4j.driver.Session;
+
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ActivityRecipe extends AppCompatActivity {
 
@@ -115,6 +127,13 @@ public class ActivityRecipe extends AppCompatActivity {
         if(connection.isLiked(recipe.getId(),uid)){
             bLike.setRotationX(180);
         }else{bLike.setRotationX(0);}
+
+        tvNameCreator.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new TaskLoadUser().execute();
+            }
+        });
     }
 
     //MENU superior
@@ -168,5 +187,34 @@ public class ActivityRecipe extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    class TaskLoadUser extends AsyncTask<Void, Void,String> {
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            Session session = connection.openSession();
+            Query query = new Query("MATCH (r:Recipe)-[:Created]->(u:User) where ID(r) = "+recipe.getId()+" RETURN u.token;");
+            Result result = session.run(query);
+
+            String userid = result.single().get(0).asString();
+            connection.closeSession(session);
+            return userid;
+        }
+
+        @Override
+        protected void onPreExecute() {
+
+        }
+
+        @Override
+        protected void onPostExecute(String userid) {
+            //super.onPostExecute(recipes);
+            Logger log = Logger.getLogger(ActivityRecipe.class.getName());
+            log.log(Level.INFO, "RECIPE ID: "+String.valueOf(recipe.getId()));
+            Intent i = new Intent(getApplicationContext(), ActivityProfile.class);
+            i.putExtra("uid", userid);
+            startActivity(i);
+        }
     }
 }

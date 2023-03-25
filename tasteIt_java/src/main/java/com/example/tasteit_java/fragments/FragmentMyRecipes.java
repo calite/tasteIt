@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
@@ -56,7 +57,6 @@ public class FragmentMyRecipes extends Fragment {
         app = new BdConnection();  //Instanciamos la conexion
 
         listRecipes = app.retrieveAllRecipesbyUid(token);
-
         gvRecipes = view.findViewById(R.id.gvRecipes);
         adapter = new AdapterGridViewMain(getContext(), listRecipes);
         gvRecipes.setAdapter(adapter);
@@ -66,6 +66,7 @@ public class FragmentMyRecipes extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int posicion, long l) {
                 Intent i = new Intent(getContext(), ActivityRecipe.class);
                 i.putExtra("recipe", listRecipes.get(posicion));
+                Toast.makeText(getContext(), ""+listRecipes.get(posicion).getId(), Toast.LENGTH_SHORT).show();
                 startActivity(i);
             }
         });

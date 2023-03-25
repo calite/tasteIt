@@ -233,7 +233,7 @@ public class BdConnection implements AutoCloseable {
             //Iniciamos una sesion con la bd (el driver se configura en el constructor)
             Session session = openSession();
             //Creamos la sentencia que se ejecutara y guardamos el resultado
-            Query query = new Query("MATCH (n1:User)-[:Created]-(n2:Recipe) WHERE n1.token = '" + uid + "' RETURN n1.username, n2;");
+            Query query = new Query("MATCH (n1:User)-[:Created]-(n2:Recipe) WHERE n1.token = '" + uid + "' RETURN n1.username, n2, ID(n2);");
             Result result = session.run(query);
 
             while (result.hasNext()) //Mientras haya registros..
@@ -265,8 +265,9 @@ public class BdConnection implements AutoCloseable {
                 for (Object obj : listIngredients) {
                     arrayListIngredients.add(obj.toString());
                 }
+                int idRecipe = record.get(2).asInt();
                 //creamos una receta nueva
-                Recipe recipe = new Recipe(name, description, arrayListSteps, dateCreated, difficulty, creator, image, country, arrayListTags, arrayListIngredients); //Lo mostramos segun su tipo
+                Recipe recipe = new Recipe(name, description, arrayListSteps, dateCreated, difficulty, creator, image, country, arrayListTags, arrayListIngredients,idRecipe); //Lo mostramos segun su tipo
                 listRecipes.add(recipe);
             }
             closeSession(session); //Cerramos la sesión
