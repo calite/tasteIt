@@ -1,13 +1,16 @@
 package com.example.tasteit_java.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
 
+import com.example.tasteit_java.ActivityProfile;
 import com.example.tasteit_java.R;
 import com.example.tasteit_java.adapters.AdapterListViewComments;
 import com.example.tasteit_java.bdConnection.BdConnection;
@@ -58,7 +61,15 @@ public class FragmentCommentsRecipe extends Fragment {
         adapter = new AdapterListViewComments(getContext(), listComments);
         lvComments = view.findViewById(R.id.lvComments);
         lvComments.setAdapter(adapter);
-
+        lvComments.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(getActivity().getApplicationContext(), ActivityProfile.class);
+                intent.putExtra("uid", listComments.get(i).getTokenUser());
+                startActivity(intent);
+            }
+        });
         return view;
     }
+
 }

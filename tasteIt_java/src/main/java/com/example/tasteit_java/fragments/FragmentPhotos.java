@@ -95,7 +95,6 @@ public class FragmentPhotos extends Fragment {
                 startActivity(intent);
             }
         });
-
         return view;
 
     }

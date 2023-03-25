@@ -66,7 +66,6 @@ public class FragmentMyRecipes extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int posicion, long l) {
                 Intent i = new Intent(getContext(), ActivityRecipe.class);
                 i.putExtra("recipe", listRecipes.get(posicion));
-                Toast.makeText(getContext(), ""+listRecipes.get(posicion).getId(), Toast.LENGTH_SHORT).show();
                 startActivity(i);
             }
         });
