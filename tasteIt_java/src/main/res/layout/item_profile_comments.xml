@@ -23,6 +23,7 @@
             android:layout_height="wrap_content"
             android:text="Author"
             android:textSize="20dp"
+            android:textColor="@color/black"
             android:fontFamily="@font/comfortaa_bold"
             android:layout_marginHorizontal="10dp"/>
 

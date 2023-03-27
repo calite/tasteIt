@@ -1,17 +1,14 @@
 package com.example.tasteit_java;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -27,39 +24,30 @@ import android.widget.Toast;
 import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.EmailAuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-
-import org.neo4j.driver.Query;
-import org.neo4j.driver.Result;
-import org.neo4j.driver.Session;
-
-import java.io.IOException;
-import java.util.UUID;
 
 public class ActivityEditProfile extends AppCompatActivity {
 
-    private FirebaseStorage storage;
-    private StorageReference storageReference;
-
     private ImageButton ibPickPhoto;
+
     private ImageView ivProfilePhoto;
-    private static final int SELECT_PICTURE = 101;
+
+    private TextView tvUsername, tvConfirmPassword;
+
+    private EditText etUsername, etEmail, etPassword, etConfirmPassword, etBiography;
+
+    private Button btnSave;
+
+    private BdConnection connection;
+
+    private User user;
+
+    private Bitmap newProfileImage;
 
     private Uri filePath;
-    private TextView tvUsername, tvConfirmPassword;
-    private EditText etUsername, etEmail, etPassword, etConfirmPassword, etBiography;
-    private Button btnSave;
-    private BdConnection connection;
-    private User user;
-    private Bitmap newProfileImage;
+
     private ConstraintLayout constraintLayout;
+
     private ConstraintSet constraintSet;
 
     @Override
@@ -71,19 +59,37 @@ public class ActivityEditProfile extends AppCompatActivity {
         initializeViews();
         retrieveData();
 
-        //menu superior
+        //Menu superior
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Edit Profile");
 
-        //firebase storege
-        storage = FirebaseStorage.getInstance();
-        storageReference = storage.getReference();
-
-        //seleccionar foto perfil
+        //Cambiar foto de perfil
         ibPickPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                selectImage();
+                View v = View.inflate(ActivityEditProfile.this, R.layout.item_photo_picker, null);
+                Dialog dialog = new Dialog(ActivityEditProfile.this);
+
+                Button bFromGallery = v.findViewById(R.id.bFromGallery);
+                Button bFromCamera = v.findViewById(R.id.bFromCamera);
+
+                bFromGallery.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Utils.selectImageFromMedia(ActivityEditProfile.this);
+                    }
+                });
+                bFromCamera.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Utils.takePicture(ActivityEditProfile.this);
+                    }
+                });
+
+                dialog.setContentView(v);
+                dialog.setTitle("Select an option: ");
+                dialog.create();
+                dialog.show();
             }
         });
 
@@ -96,6 +102,7 @@ public class ActivityEditProfile extends AppCompatActivity {
             }
         });
 
+        //Agregamos un listener a la password
         etPassword.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -124,8 +131,6 @@ public class ActivityEditProfile extends AppCompatActivity {
 
                     constraintSet.connect(btnSave.getId(), ConstraintSet.TOP, etPassword.getId(), ConstraintSet.BOTTOM, 30);
                     constraintSet.applyTo(constraintLayout);
-
-
                 }
             }
 
@@ -137,7 +142,7 @@ public class ActivityEditProfile extends AppCompatActivity {
 
     }
 
-    //Recogida de datos
+    //Metodo para instanciar los elementos de la UI
     private void initializeViews() {
         ibPickPhoto = findViewById(R.id.ibPickPhoto);
         ivProfilePhoto = findViewById(R.id.ivProfilePhoto);
@@ -152,7 +157,7 @@ public class ActivityEditProfile extends AppCompatActivity {
         btnSave = findViewById(R.id.btnSave);
     }
 
-
+    //Metodo para traer los datos del perfil
     private void retrieveData() {
         connection = new BdConnection();
 
@@ -199,7 +204,7 @@ public class ActivityEditProfile extends AppCompatActivity {
     //END GUARDADO DE DATOS
 
     //PHOTO PICKER
-    private void selectImage() {
+    /*private void selectImage() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_PICK);
@@ -234,34 +239,20 @@ public class ActivityEditProfile extends AppCompatActivity {
                         }
                     });
         }
-    }
+    }*/
 
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == SELECT_PICTURE) {
-            if (resultCode == Activity.RESULT_OK) {
-                if (data != null) {
-                    try {
-                        //creamos imagen
-                        newProfileImage = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
-                        //almacenamos el path
-                        filePath = data.getData();
-                        //cambiamos imagen del perfil
-                        ivProfilePhoto.setImageBitmap(newProfileImage);
-                        //subimos la imagen a firebase
-                        uploadImage(); //DESCOMENTAR
-                        //El upload lo tendria que hacer el boton de guardar cambios
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            } else if (resultCode == Activity.RESULT_CANCELED) {
-                Toast.makeText(getApplicationContext(), "Canceled", Toast.LENGTH_SHORT).show();
-            }
+        if(requestCode == 101) {
+            Utils.onActivityResult(this, requestCode, resultCode, data, filePath, ivProfilePhoto);
+        }
+        if(requestCode == 202) {
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
+            ivProfilePhoto.setImageBitmap(photo);
         }
     }
     //END PHOTO PICKER
-
 
     //MENU superior
     @Override

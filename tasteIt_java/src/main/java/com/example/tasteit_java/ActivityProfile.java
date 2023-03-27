@@ -2,6 +2,7 @@ package com.example.tasteit_java;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,7 +19,9 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.tasteit_java.adapters.AdapterFragmentProfile;
+import com.example.tasteit_java.adapters.AdapterGridViewMain;
 import com.example.tasteit_java.bdConnection.BdConnection;
+import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
 import com.example.tasteit_java.fragments.FragmentMainMenu;
@@ -29,6 +32,9 @@ import com.google.firebase.auth.FirebaseUser;
 import org.neo4j.driver.Query;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.Session;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ActivityProfile extends AppCompatActivity {
 
@@ -64,9 +70,6 @@ public class ActivityProfile extends AppCompatActivity {
         getSupportActionBar().setTitle("Profile");
 
         //bio, photo and comments Fragments
-        adapter = new AdapterFragmentProfile(getSupportFragmentManager(),getLifecycle(), user);
-        vpPaginator.setAdapter(adapter);
-
         tlUser.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -126,6 +129,7 @@ public class ActivityProfile extends AppCompatActivity {
         });
     }
 
+    //Metodo para instanciar los elementos de la UI
     private void initializeViews() {
         tvUserName = findViewById(R.id.tvUserName);
         tvReciperCounter = findViewById(R.id.tvReciperCounter);
@@ -151,6 +155,7 @@ public class ActivityProfile extends AppCompatActivity {
         tlUser = findViewById(R.id.tlUser);
     }
 
+    //Metodo para traer los datos del perfil
     private void retrieveData(String uid) {
         user = connection.retrieveUserbyUid(uid);
 
@@ -159,8 +164,10 @@ public class ActivityProfile extends AppCompatActivity {
         Bitmap bitmap = Utils.decodeBase64(user.getImgProfile());
         ivUserPicture.setImageBitmap(bitmap);
 
-        user.setUserRecipes(connection.retrieveAllRecipesbyUid(uid));
-        user.setUserComments(connection.retrieveCommentsbyUid(uid));
+        new TaskLoadRecipes().execute();
+        new TaskLoadComments().execute();
+        //user.setUserRecipes(connection.retrieveAllRecipesbyUid(uid));
+        //user.setUserComments(connection.retrieveCommentsbyUid(uid));
 
         Session session = connection.openSession();
 
@@ -224,6 +231,7 @@ public class ActivityProfile extends AppCompatActivity {
         }
     }
     //END MENU superior
+
     //LOGOUT
     public void callSignOut(View view){
         signOut();
@@ -234,13 +242,50 @@ public class ActivityProfile extends AppCompatActivity {
         finish();
     }
 
+    //Cuando se cambie el focus (principalmente cuando volvamos a esta actividad) actualizamos los datos
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if(hasFocus){
             //Toast.makeText(this, "Se ejecuta", Toast.LENGTH_SHORT).show();
             retrieveData(uid);
+            adapter.updateFragments(user.getBiography());
+        }
+    }
+
+    //Tareas asincronas para la carga de los datos del usuario (peticiones a la bbdd)
+    class TaskLoadRecipes extends AsyncTask<ArrayList<Recipe>, Void,ArrayList<Recipe>> {
+        @Override
+        protected void onPreExecute() {
+
+        }
+        @Override
+        protected ArrayList<Recipe> doInBackground(ArrayList<Recipe>... arrayLists) {
+            return connection.retrieveAllRecipesbyUid(uid);
+        }
+        @Override
+        protected void onPostExecute(ArrayList<Recipe> recipes) {
+            //super.onPostExecute(recipes);
+            user.setUserRecipes(recipes);
+        }
+    }
+
+    class TaskLoadComments extends AsyncTask<HashMap<String, String>, Void,HashMap<String, String>> {
+        @Override
+        protected void onPreExecute() {
+
+        }
+        @Override
+        protected HashMap<String, String> doInBackground(HashMap<String, String>... hashMaps) {
+            return connection.retrieveCommentsbyUid(uid);
+        }
+        @Override
+        protected void onPostExecute(HashMap<String, String> comments) {
+            //super.onPostExecute(recipes);
+            user.setUserComments(comments);
             adapter = new AdapterFragmentProfile(getSupportFragmentManager(),getLifecycle(), user);
             vpPaginator.setAdapter(adapter);
+
+            adapter.notifyDataSetChanged();
         }
     }
 }

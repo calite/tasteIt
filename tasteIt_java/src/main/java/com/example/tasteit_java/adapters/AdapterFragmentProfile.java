@@ -20,6 +20,7 @@ public class AdapterFragmentProfile extends FragmentStateAdapter {
     private String biography;
     private ArrayList<Recipe> recipes;
     private HashMap<String, String> comments;
+    private FragmentBio fragmentBio;
 
     public AdapterFragmentProfile(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, User user) {
         super(fragmentManager, lifecycle);
@@ -33,7 +34,8 @@ public class AdapterFragmentProfile extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch(position) {
             case 0:
-                return FragmentBio.newInstance(biography);
+                fragmentBio = FragmentBio.newInstance(biography);
+                return fragmentBio;
             case 1:
                 return FragmentPhotos.newInstance(recipes);
             case 2:
@@ -47,5 +49,10 @@ public class AdapterFragmentProfile extends FragmentStateAdapter {
     @Override
     public int getItemCount() {
         return 3;
+    }
+
+    public void updateFragments(String biography) {
+        fragmentBio.updateBio(biography);
+        this.notifyDataSetChanged();
     }
 }

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.tasteit_java.R;
 
@@ -76,5 +77,12 @@ public class FragmentBio extends Fragment {
         tvBiography = view.findViewById(R.id.tvBiography);
         tvBiography.setText(biography);
         return view;
+    }
+
+    public void updateBio(String biography) {
+        if(!this.biography.equals(biography)) {
+            this.biography = biography;
+            tvBiography.setText(biography);
+        }
     }
 }
