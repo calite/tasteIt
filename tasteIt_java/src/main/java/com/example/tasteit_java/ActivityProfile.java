@@ -19,7 +19,6 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.tasteit_java.adapters.AdapterFragmentProfile;
-import com.example.tasteit_java.adapters.AdapterGridViewMain;
 import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.User;
@@ -27,7 +26,6 @@ import com.example.tasteit_java.clases.Utils;
 import com.example.tasteit_java.fragments.FragmentMainMenu;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import org.neo4j.driver.Query;
 import org.neo4j.driver.Result;
@@ -63,7 +61,6 @@ public class ActivityProfile extends AppCompatActivity {
 
         connection = new BdConnection();
         initializeViews();
-        retrieveData(uid);
 
         //menu superior
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -127,6 +124,8 @@ public class ActivityProfile extends AppCompatActivity {
                 startActivity(i);
             }
         });
+
+        retrieveData(uid);
     }
 
     //Metodo para instanciar los elementos de la UI
@@ -242,14 +241,13 @@ public class ActivityProfile extends AppCompatActivity {
         finish();
     }
 
-    //Cuando se cambie el focus (principalmente cuando volvamos a esta actividad) actualizamos los datos
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if(hasFocus){
-            //Toast.makeText(this, "Se ejecuta", Toast.LENGTH_SHORT).show();
-            retrieveData(uid);
-            adapter.updateFragments(user.getBiography());
-        }
+    //Cuando se cambia a otra actividad y se vuelve a esta (ya creada) actualizamos los datos
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        retrieveData(uid);
+        adapter.updateFragments(user.getBiography());
+        Toast.makeText(this, "Se ejecuta", Toast.LENGTH_SHORT).show();
     }
 
     //Tareas asincronas para la carga de los datos del usuario (peticiones a la bbdd)
@@ -260,12 +258,12 @@ public class ActivityProfile extends AppCompatActivity {
         }
         @Override
         protected ArrayList<Recipe> doInBackground(ArrayList<Recipe>... arrayLists) {
-            return connection.retrieveAllRecipesbyUid(uid);
+            user.setUserRecipes(connection.retrieveAllRecipesbyUid(uid));
+            return user.getUserRecipes();
         }
         @Override
         protected void onPostExecute(ArrayList<Recipe> recipes) {
             //super.onPostExecute(recipes);
-            user.setUserRecipes(recipes);
         }
     }
 
@@ -276,12 +274,12 @@ public class ActivityProfile extends AppCompatActivity {
         }
         @Override
         protected HashMap<String, String> doInBackground(HashMap<String, String>... hashMaps) {
-            return connection.retrieveCommentsbyUid(uid);
+            user.setUserComments(connection.retrieveCommentsbyUid(uid));
+            return user.getUserComments();
         }
         @Override
         protected void onPostExecute(HashMap<String, String> comments) {
             //super.onPostExecute(recipes);
-            user.setUserComments(comments);
             adapter = new AdapterFragmentProfile(getSupportFragmentManager(),getLifecycle(), user);
             vpPaginator.setAdapter(adapter);
 

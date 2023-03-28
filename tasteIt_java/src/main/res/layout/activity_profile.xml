@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".ActivityProfile">
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/ivUserPicture"
         android:layout_width="150dp"
         android:layout_height="150dp"
@@ -16,7 +16,11 @@
         app:layout_constraintHorizontal_bias="0.122"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.027" />
+        app:layout_constraintVertical_bias="0.027"
+        app:strokeColor="@color/maroon"
+        app:strokeWidth="2dp"
+        android:padding="2dp"
+        app:shapeAppearanceOverlay="@style/roundedImageView"/>
 
     <TextView
         android:id="@+id/tvUserName"
@@ -34,12 +38,13 @@
     <Button
         android:id="@+id/btnFollow"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginTop="24dp"
         android:visibility="invisible"
         android:enabled="false"
         android:textSize="11dp"
         android:text="Follow"
+        android:background="@drawable/btn_follow"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.419"
         app:layout_constraintStart_toEndOf="@+id/ivUserPicture"

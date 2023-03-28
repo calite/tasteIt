@@ -21,10 +21,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/ivProfilePhoto"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
+                app:shapeAppearanceOverlay="@style/roundedImageView"
+                app:strokeColor="@color/black"
+                app:strokeWidth="2dp"
+                android:padding="2dp"
                 android:src="@drawable/ic_default_profile"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

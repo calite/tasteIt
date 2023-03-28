@@ -17,6 +17,7 @@ import com.example.tasteit_java.ActivityProfile;
 import com.example.tasteit_java.R;
 import com.example.tasteit_java.adapters.AdapterFragmentComments;
 import com.example.tasteit_java.bdConnection.BdConnection;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.neo4j.driver.Query;
 import org.neo4j.driver.Result;
@@ -45,7 +46,7 @@ public class FragmentComments extends Fragment {
 
     private static ArrayList<String> uidsComments;
     private static ArrayList<String> comments;
-
+    private FloatingActionButton btnComment;
     private AdapterFragmentComments adapter;
     private ListView lvComments;
 
@@ -103,6 +104,7 @@ public class FragmentComments extends Fragment {
 
         adapter = new AdapterFragmentComments(getContext(), uidsComments, comments);
         lvComments = view.findViewById(R.id.lvComments);
+        btnComment = view.findViewById(R.id.btnComment);
         lvComments.setAdapter(adapter);
 
         lvComments.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -111,6 +113,13 @@ public class FragmentComments extends Fragment {
                 Intent intent = new Intent(getActivity().getApplicationContext(), ActivityProfile.class);
                 intent.putExtra("uid", uidsComments.get(i));
                 startActivity(intent);
+            }
+        });
+
+        btnComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getContext(), "Comenta!", Toast.LENGTH_SHORT).show();
             }
         });
 
