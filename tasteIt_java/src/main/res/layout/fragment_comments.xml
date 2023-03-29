@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragments.FragmentComments"
-    android:layout_margin="5dp">
+    tools:context=".fragments.FragmentComments">
 
     <ListView
         android:id="@+id/lvComments"
@@ -14,7 +13,7 @@
         android:layout_margin="10dp"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <!--<com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnComment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -23,6 +22,8 @@
         android:layout_marginBottom="20dp"
         android:backgroundTint="@color/maroon"
         android:background="@drawable/s_oval"
+        android:visibility="invisible"
+        android:enabled="false"
         app:borderWidth="0dp"
         app:elevation="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -31,6 +32,80 @@
         app:layout_constraintVertical_bias="0.884"
         app:srcCompat="@drawable/ic_comment"
         app:maxImageSize="30dp"
-        app:tint="@color/white" />
+        app:tint="@color/white" />-->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clComment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1"
+        app:layout_constraintHorizontal_bias="0"
+        android:background="#EB000000"
+        android:padding="3dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivMyPhoto"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:padding="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/etComment"
+            app:layout_constraintHorizontal_bias="0"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5"
+            app:shapeAppearanceOverlay="@style/roundedImageView"
+            app:strokeColor="@color/maroon"
+            app:strokeWidth="2dp" />
+
+        <EditText
+            android:id="@+id/etComment"
+            android:layout_width="0dp"
+            app:layout_constraintHorizontal_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:backgroundTint="@color/white"
+            android:hint="@string/add_your_comment"
+            android:inputType="textMultiLine"
+            android:lines="2"
+            android:maxLength="140"
+
+            android:scrollbars="vertical"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            android:textSize="12sp"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnAddComment"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@+id/ivMyPhoto"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5" />
+
+        <Button
+            android:id="@+id/btnAddComment"
+            android:layout_width="0dp"
+            app:layout_constraintHorizontal_weight="0.4"
+            android:layout_height="35dp"
+            android:visibility="visible"
+            android:enabled="true"
+            android:textSize="9dp"
+            android:text="Add"
+            android:background="@drawable/btn_follow"
+            android:includeFontPadding="false"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/etComment"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5"
+            app:layout_constraintHorizontal_bias="0"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

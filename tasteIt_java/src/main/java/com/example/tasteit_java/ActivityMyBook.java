@@ -66,7 +66,7 @@ public class ActivityMyBook extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(ActivityMyBook.this, ActivityNewRecipe.class);
-                User user = BdConnection.retrieveUserbyUid(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                User user = new BdConnection().retrieveUserbyUid(FirebaseAuth.getInstance().getCurrentUser().getUid());
                 i.putExtra("user",user);
                 startActivity(i);
             }

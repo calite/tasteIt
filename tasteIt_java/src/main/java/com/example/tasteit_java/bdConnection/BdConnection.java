@@ -310,7 +310,39 @@ public class BdConnection implements AutoCloseable {
         }
     }
 
-    public static User retrieveUserbyUid(String uid) {
+    //Metodo para traer TODOS los datos de un usuario
+    public User retrieveAllUserbyUid(String uid) {
+
+        User user = null;
+
+        try {
+            //Iniciamos una sesion con la bd (el driver se configura en el constructor)
+            Session session = openSession();
+            //Creamos la sentencia que se ejecutara y guardamos el resultado
+            Query query = new Query("MATCH (n:User) WHERE n.token = '" + uid + "' RETURN n.username, n.biography, n.imgProfile;");
+            Result result = session.run(query);
+            while (result.hasNext()) //Mientras haya registros..
+            {
+                Record record = result.next(); //Guardamos el registro
+                String name = record.get(0).asString();
+                String biography = record.get(1).asString();
+                String imgProfile = record.get(2).asString();
+                user = new User(name, biography, imgProfile, retrieveAllRecipesbyUid(uid), retrieveCommentsbyUid(uid));
+            }
+
+            closeSession(session); //Cerramos la sesión
+            return user; //Retornamos el valor
+            // You should capture any errors along with the query and data for traceability
+        } catch (Neo4jException ex) {
+            LOGGER.log(Level.SEVERE, " raised an exception", ex);
+            throw ex;
+        } catch (NoSuchRecordException ex) {
+            LOGGER.log(Level.SEVERE, "No record found raised an exception", ex);
+            throw ex;
+        }
+    }
+
+    public User retrieveUserbyUid(String uid) {
 
         User user = null;
 
@@ -430,7 +462,7 @@ public class BdConnection implements AutoCloseable {
             String dateCreated = sdf.format(c.getTime());
 
             session.writeTransaction(tx -> {
-                Query query = new Query("MATCH (u:User),(r:User) WHERE u.token ='" + senderId +"' AND r.token = '" + receiverId + "'  CREATE (u)-[c:Commented{comment:'" + comment + "', dateCreated:'"+dateCreated+"'}]->(r) RETURN type(c)");
+                Query query = new Query("MATCH (u:User),(r:User) WHERE u.token ='" + senderId +"' AND r.token ='" + receiverId + "' CREATE (u)-[c:Commented{comment:'" + comment + "', dateCreated:'"+dateCreated+"'}]->(r) RETURN type(c)");
                 tx.run(query);
                 return null;
             });

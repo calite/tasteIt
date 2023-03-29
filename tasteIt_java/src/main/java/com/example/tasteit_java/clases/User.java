@@ -19,6 +19,14 @@ public class User implements Serializable  {
         this.imgProfile = imgProfile;
     }
 
+    public User(String username, String biography, String imgProfile, ArrayList<Recipe> userRecipes, HashMap<String, String> userComments) {
+        this.username = username;
+        this.biography = biography;
+        this.imgProfile = imgProfile;
+        this.userRecipes = userRecipes;
+        this.userComments = userComments;
+    }
+
     public String getUsername() {
         return username;
     }

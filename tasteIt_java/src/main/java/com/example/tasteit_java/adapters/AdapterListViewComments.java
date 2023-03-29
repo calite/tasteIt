@@ -1,6 +1,6 @@
 package com.example.tasteit_java.adapters;
 
-import static com.example.tasteit_java.bdConnection.BdConnection.retrieveUserbyUid;
+import com.example.tasteit_java.bdConnection.BdConnection;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -58,7 +58,7 @@ public class AdapterListViewComments extends BaseAdapter {
         TextView tvUserName = view.findViewById(R.id.tvUserName);
         ImageView ivUserPicture = view.findViewById(R.id.ivUserPicture);
 
-        User user = retrieveUserbyUid(arrayListComments.get(i).getTokenUser());
+        User user = new BdConnection().retrieveUserbyUid(arrayListComments.get(i).getTokenUser());
 
         tvComment.setText(arrayListComments.get(i).getComment());
         tvDateCreated.setText(arrayListComments.get(i).getDateCreated());

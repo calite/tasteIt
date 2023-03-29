@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.widget.ViewPager2;
@@ -40,12 +41,14 @@ public class ActivityProfile extends AppCompatActivity {
     private TabLayout tlUser;
     private ViewPager2 vpPaginator;
     private AdapterFragmentProfile adapter;
-    private User user;
+    private User userProfile;
     private TextView tvUserName, tvReciperCounter, tvFollowersCounter, tvFollowingCounter, tvLikesCounter;
     private ImageView ivUserPicture;
     private Button btnFollow;
+    private ConstraintLayout tagRecipe;
     private BdConnection connection;
     private String uid;
+    private Boolean myProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,12 +58,15 @@ public class ActivityProfile extends AppCompatActivity {
         if(getIntent().getExtras() != null) {
             Bundle params = getIntent().getExtras();
             uid = params.getString("uid");
+            myProfile = false;
         } else {
             uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            myProfile = true;
         }
 
         connection = new BdConnection();
         initializeViews();
+        new TaskLoadUser().execute();
 
         //menu superior
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -71,6 +77,7 @@ public class ActivityProfile extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 vpPaginator.setCurrentItem(tab.getPosition());
+                Toast.makeText(ActivityProfile.this, "se ejecuta 2!", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -89,16 +96,17 @@ public class ActivityProfile extends AppCompatActivity {
             public void onPageSelected(int position) {
                 //super.onPageSelected(position);
                 tlUser.selectTab(tlUser.getTabAt(position));
+                Toast.makeText(ActivityProfile.this, "se ejecuta 1!", Toast.LENGTH_SHORT).show();
             }
         });
 
         //fragment menu inferior
         FragmentManager fm = this.getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        FragmentMainMenu mainMenuFargment = new FragmentMainMenu();
+        FragmentMainMenu mainMenuFragment = new FragmentMainMenu();
         //comprobamos si existe
         if(savedInstanceState == null) {
-            ft.add(R.id.fcMainMenu, mainMenuFargment,"main_menu");
+            ft.add(R.id.fcMainMenu, mainMenuFragment,"main_menu");
             ft.commit();
         }
 
@@ -107,16 +115,14 @@ public class ActivityProfile extends AppCompatActivity {
             public void onClick(View view) {
                 if(connection.isFollowing(FirebaseAuth.getInstance().getCurrentUser().getUid(), uid)) {
                     connection.unFollowUser(FirebaseAuth.getInstance().getCurrentUser().getUid(), uid);
-                    Toast.makeText(ActivityProfile.this, "Has dejado de seguir al usuario " + user.getUsername(), Toast.LENGTH_SHORT).show();
                     btnFollow.setText("FOLLOW");
                 } else {
                     connection.followUser(FirebaseAuth.getInstance().getCurrentUser().getUid(), uid);
-                    Toast.makeText(ActivityProfile.this, "Ahora sigues al usuario " + user.getUsername(), Toast.LENGTH_SHORT).show();
                     btnFollow.setText("UNFOLLOW");
                 }
             }
         });
-        tvReciperCounter.setOnClickListener(new View.OnClickListener() {
+        tagRecipe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getApplicationContext(), ActivityProfileData.class);
@@ -124,8 +130,6 @@ public class ActivityProfile extends AppCompatActivity {
                 startActivity(i);
             }
         });
-
-        retrieveData(uid);
     }
 
     //Metodo para instanciar los elementos de la UI
@@ -139,7 +143,7 @@ public class ActivityProfile extends AppCompatActivity {
         ivUserPicture = findViewById(R.id.ivUserPicture);
 
         btnFollow = findViewById(R.id.btnFollow);
-        if (uid.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+        if (myProfile) {
             btnFollow.setVisibility(View.INVISIBLE);
             btnFollow.setEnabled(false);
         } else {
@@ -152,19 +156,18 @@ public class ActivityProfile extends AppCompatActivity {
 
         vpPaginator = findViewById(R.id.vpPaginator);
         tlUser = findViewById(R.id.tlUser);
+
+        tagRecipe = findViewById(R.id.tagRecipe);
     }
 
     //Metodo para traer los datos del perfil
     private void retrieveData(String uid) {
-        user = connection.retrieveUserbyUid(uid);
 
-        tvUserName.setText(user.getUsername());
+        tvUserName.setText(userProfile.getUsername());
 
-        Bitmap bitmap = Utils.decodeBase64(user.getImgProfile());
+        Bitmap bitmap = Utils.decodeBase64(userProfile.getImgProfile());
         ivUserPicture.setImageBitmap(bitmap);
 
-        new TaskLoadRecipes().execute();
-        new TaskLoadComments().execute();
         //user.setUserRecipes(connection.retrieveAllRecipesbyUid(uid));
         //user.setUserComments(connection.retrieveCommentsbyUid(uid));
 
@@ -202,7 +205,7 @@ public class ActivityProfile extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.profile_menu, menu);
-        if (uid.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+        if (myProfile) {
             menu.getItem(0).setVisible(true);
         } else {
             menu.getItem(0).setVisible(false);
@@ -246,44 +249,33 @@ public class ActivityProfile extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
         retrieveData(uid);
-        adapter.updateFragments(user.getBiography());
-        Toast.makeText(this, "Se ejecuta", Toast.LENGTH_SHORT).show();
+        adapter.updateFragments(userProfile.getBiography());
     }
 
     //Tareas asincronas para la carga de los datos del usuario (peticiones a la bbdd)
-    class TaskLoadRecipes extends AsyncTask<ArrayList<Recipe>, Void,ArrayList<Recipe>> {
+    class TaskLoadUser extends AsyncTask<User, Void,User> {
         @Override
         protected void onPreExecute() {
 
         }
         @Override
-        protected ArrayList<Recipe> doInBackground(ArrayList<Recipe>... arrayLists) {
-            user.setUserRecipes(connection.retrieveAllRecipesbyUid(uid));
-            return user.getUserRecipes();
+        protected User doInBackground(User... hashMaps) {
+            return connection.retrieveAllUserbyUid(uid);
         }
         @Override
-        protected void onPostExecute(ArrayList<Recipe> recipes) {
+        protected void onPostExecute(User user) {
             //super.onPostExecute(recipes);
-        }
-    }
+            userProfile = user;
+            retrieveData(uid);
+            if(myProfile) {
+                adapter = new AdapterFragmentProfile(getSupportFragmentManager(),getLifecycle(), userProfile, myProfile);
+            } else {
+                adapter = new AdapterFragmentProfile(getSupportFragmentManager(),getLifecycle(), userProfile, myProfile, uid);
+            }
 
-    class TaskLoadComments extends AsyncTask<HashMap<String, String>, Void,HashMap<String, String>> {
-        @Override
-        protected void onPreExecute() {
-
-        }
-        @Override
-        protected HashMap<String, String> doInBackground(HashMap<String, String>... hashMaps) {
-            user.setUserComments(connection.retrieveCommentsbyUid(uid));
-            return user.getUserComments();
-        }
-        @Override
-        protected void onPostExecute(HashMap<String, String> comments) {
-            //super.onPostExecute(recipes);
-            adapter = new AdapterFragmentProfile(getSupportFragmentManager(),getLifecycle(), user);
             vpPaginator.setAdapter(adapter);
-
             adapter.notifyDataSetChanged();
         }
     }
+
 }

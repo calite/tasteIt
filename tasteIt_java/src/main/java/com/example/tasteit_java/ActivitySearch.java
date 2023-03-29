@@ -144,7 +144,7 @@ public class ActivitySearch extends AppCompatActivity {
                 Intent i = new Intent(getApplicationContext(), ActivityRecipe.class);
                 i.putExtra("recipe",listRecipes.get(position));
                 Bundle params = getIntent().getExtras();
-                User user = BdConnection.retrieveUserbyUid(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                User user = new BdConnection().retrieveUserbyUid(FirebaseAuth.getInstance().getCurrentUser().getUid());
                 i.putExtra("user",user);
                 startActivity(i);
             }

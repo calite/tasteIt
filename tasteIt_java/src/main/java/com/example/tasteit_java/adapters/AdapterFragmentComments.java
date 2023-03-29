@@ -8,13 +8,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.tasteit_java.ActivityLogin;
 import com.example.tasteit_java.R;
 import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -56,10 +59,19 @@ public class AdapterFragmentComments extends BaseAdapter {
         ImageView ivAuthor = view.findViewById(R.id.ivAuthor);
         TextView tvAuthor = view.findViewById(R.id.tvAuthor);
         TextView tvComment = view.findViewById(R.id.tvComment);
+        LinearLayout llComment = view.findViewById(R.id.llComment);
 
-        BdConnection connection = new BdConnection();
+        User user = new BdConnection().retrieveUserbyUid(uidsComments.get(i));
 
-        User user = connection.retrieveUserbyUid(uidsComments.get(i));
+        if(uidsComments.get(i).equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+            llComment.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    Toast.makeText(context, "Este comentario es tuyo y pronto lo podras editar!", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            });
+        }
 
         tvAuthor.setText(user.getUsername());
         tvComment.setText(comments.get(i));

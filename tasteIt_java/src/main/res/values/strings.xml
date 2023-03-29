@@ -169,6 +169,7 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="action_settings">Settings</string>
+    <string name="add_your_comment">Add your comment..</string>
 
     <string-array name="tags_array">
         <item>carne</item>
