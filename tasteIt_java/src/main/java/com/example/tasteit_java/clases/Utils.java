@@ -12,6 +12,9 @@ import android.util.Base64;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,12 +36,11 @@ public class Utils {
         imageEncoded = Base64.encodeToString(b, Base64.DEFAULT);
         return imageEncoded;
     }
-    public static Bitmap decodeBase64(String input)
-    {
+
+    public static Bitmap decodeBase64(String input) {
         byte[] decodedBytes = Base64.decode(input, 0);
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
-
     //validate Email
     public static boolean isEmail(String email) {
 
@@ -47,7 +49,6 @@ public class Utils {
 
         return mat.matches();
     }
-
     //selector de fotos
     public static void selectImageFromMedia(Activity activity) {
         Intent intent = new Intent();
@@ -98,6 +99,11 @@ public class Utils {
         }
 
         return tagsEncontrados;
+    }
+
+    public static String getUserToken() {
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        return firebaseUser.getUid();
     }
 
 }

@@ -64,6 +64,11 @@ dependencies {
 
     //picaso gallery
     implementation 'com.squareup.picasso:picasso:2.5.2'
+    //volley - json
+    implementation 'com.android.volley:volley:1.2.1'
+    //retrofit - json
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
     implementation group: 'org.neo4j.driver', name: 'neo4j-java-driver', version: '4.4.11'
     implementation group: 'org.reactivestreams', name: 'reactive-streams', version: '1.0.4'

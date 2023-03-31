@@ -3,7 +3,6 @@ package com.example.tasteit_java.clases;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Recipe implements Parcelable {
@@ -57,6 +56,10 @@ public class Recipe implements Parcelable {
         this.name = name;
         this.description = description;
         this.img = recipe_demo;
+    }
+
+    public Recipe(){
+
     }
 
     //constructor de new recipe para neo

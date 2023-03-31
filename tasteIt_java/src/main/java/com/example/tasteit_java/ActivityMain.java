@@ -1,7 +1,6 @@
 package com.example.tasteit_java;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
@@ -16,17 +15,26 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.tasteit_java.ApiService.ApiClient;
+import com.example.tasteit_java.ApiService.ApiRequests;
+import com.example.tasteit_java.ApiService.RecipeApi;
 import com.example.tasteit_java.adapters.AdapterGridViewMain;
 import com.example.tasteit_java.adapters.AdapterRecyclerMain;
-import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.Recipe;
+import com.example.tasteit_java.clases.Utils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ActivityMain extends AppCompatActivity {
 
@@ -35,12 +43,11 @@ public class ActivityMain extends AppCompatActivity {
     private GridView gvRecipes;
     private AdapterGridViewMain adapter;
     private RecyclerView rvRecipes;
-    private AdapterRecyclerMain adapter2;
+    private AdapterRecyclerMain adapterRecyclerView;
     public static ArrayList<Recipe> listRecipes = new ArrayList<>();
     private ProgressBar pgMain;
 
-    //neo
-    private BdConnection app;
+    private String token;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -49,15 +56,16 @@ public class ActivityMain extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        pgMain = findViewById(R.id.pbMain);
+        gvRecipes = findViewById(R.id.gvRecipes);
+        bCreate = findViewById(R.id.bCreate);
+
+        bringRecipes();
+
         //menu superior
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        app = new BdConnection();  //Instanciamos la conexion
-
-        pgMain = findViewById(R.id.pbMain);
-
         //boton crear receta
-        bCreate = findViewById(R.id.bCreate);
         bCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -66,46 +74,33 @@ public class ActivityMain extends AppCompatActivity {
             }
         });
         //recoger token usuario firebase
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        String uid = firebaseUser.getUid();
+        token = Utils.getUserToken();
 
-        new TaskLoadRecipes().execute(listRecipes); //carga de recetas async
-
-        gvRecipes = findViewById(R.id.gvRecipes);
-
+        //grid view
         gvRecipes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int posicion, long l) {
                 Intent i = new Intent(ActivityMain.this, ActivityRecipe.class);
-                i.putExtra("recipe", listRecipes.get(posicion));
+                i.putExtra("recipeId", listRecipes.get(posicion).getId());
                 startActivity(i);
             }
         });
-
-        //ya funciona, pero hace cosas raras en el scroll
-        /*
-        //TEMPORAL - recycler view
-        rvRecipes = findViewById(R.id.rvRecipes);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        rvRecipes.setLayoutManager(layoutManager);
-        adapter2 = new AdapterRecyclerMain(listRecipes);
-        rvRecipes.setAdapter(adapter2);
-        */
 
         gvRecipes.setOnScrollListener(new AbsListView.OnScrollListener(){
             int currentScrollState, currentVisibleItemCount, currentFirstVisibleItem, currentTotalItemCount, mLastFirstVisibleItem;
             boolean canScrollV, scrollingUp;
             @Override
             public void onScrollStateChanged (AbsListView view,int scrollState){
-                 currentScrollState = scrollState;
+                currentScrollState = scrollState;
 
                 if (scrollingUp && !canScrollV) {
                     if (currentFirstVisibleItem == 0) {
 
-                        listRecipes = app.retrieveAllRecipes();
+                        bringRecipes();
                         Toast.makeText(ActivityMain.this, "Refreshing...", Toast.LENGTH_SHORT).show();
                         adapter.notifyDataSetChanged();
                         scrollingUp = false;
+
                     }
                 }
             }
@@ -128,8 +123,18 @@ public class ActivityMain extends AppCompatActivity {
                 currentTotalItemCount = totalItemCount;
             }
         });
-    }
 
+        //ya funciona, pero hace cosas raras en el scroll
+        //TEMPORAL - recycler view
+        /*
+        rvRecipes = findViewById(R.id.rvRecipes);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        rvRecipes.setLayoutManager(layoutManager);
+        adapterRecyclerView = new AdapterRecyclerMain(listRecipes);
+        rvRecipes.setAdapter(adapterRecyclerView);
+        */
+
+    }
 
     //MENU superior
     @Override
@@ -138,7 +143,6 @@ public class ActivityMain extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -176,31 +180,84 @@ public class ActivityMain extends AppCompatActivity {
     }
 
     //carga de recetas asyncrona
-    class TaskLoadRecipes extends AsyncTask<ArrayList<Recipe>, Void,ArrayList<Recipe>> {
+    private class RecipesLoader {
 
-        @Override
-        protected void onPreExecute() {
+        private final ApiRequests apiRequests;
+        private final MutableLiveData<List<Recipe>> recipeLiveData;
 
+        public RecipesLoader(ApiRequests apiRequests) {
+            this.apiRequests = apiRequests;
+            recipeLiveData = new MutableLiveData<>();
         }
 
-        @Override
-        protected ArrayList<Recipe> doInBackground(ArrayList<Recipe>... arrayLists) {
-            return app.retrieveAllRecipes();
+        public LiveData<List<Recipe>> getRecipes() {
+            return recipeLiveData;
         }
 
-        @Override
-        protected void onPostExecute(ArrayList<Recipe> recipes) {
-            //super.onPostExecute(recipes);
+        public void loadRecipes() {
 
-            pgMain.setVisibility(View.GONE);
+            apiRequests.getAllRecipes().enqueue(new Callback<List<RecipeApi>>() {
+                @Override
+                public void onResponse(Call<List<RecipeApi>> call, Response<List<RecipeApi>> response) {
+                    if (response.isSuccessful()) {
+                        List<RecipeApi> recipeApis = response.body();
+                        List<Recipe> recipes = new ArrayList<>();
 
-            listRecipes = recipes;
+                        //tratamos los datos
+                        for (RecipeApi recipeApi : recipeApis) {
+                            Recipe recipe = new Recipe(
+                                    recipeApi.getRecipeDetails().getName(),
+                                    recipeApi.getRecipeDetails().getDescription(),
+                                    (ArrayList<String>) recipeApi.getRecipeDetails().getSteps(),
+                                    recipeApi.getRecipeDetails().getDateCreated(),
+                                    recipeApi.getRecipeDetails().getDifficulty(),
+                                    recipeApi.getUser().getUsername(),
+                                    recipeApi.getRecipeDetails().getImage(),
+                                    recipeApi.getRecipeDetails().getCountry(),
+                                    (ArrayList<String>) recipeApi.getRecipeDetails().getTags(),
+                                    (ArrayList<String>) recipeApi.getRecipeDetails().getIngredients(),
+                                    recipeApi.getRecipeId()
+                            );
+                            recipes.add(recipe);
+                        }
+                        recipeLiveData.postValue(recipes);
+                    } else {
+                        // La solicitud no fue exitosa
+                    }
+                }
 
-            adapter = new AdapterGridViewMain(getApplicationContext(), listRecipes);
-            gvRecipes.setAdapter(adapter);
+                @Override
+                public void onFailure(Call<List<RecipeApi>> call, Throwable t) {
+                    // Hubo un error en la solicitud
+                    Toast.makeText(ActivityMain.this, "Failed to load data", Toast.LENGTH_SHORT).show();
+                }
+            });
 
-            adapter.notifyDataSetChanged();
         }
     }
+
+    private void onRecipesLoaded(List<Recipe> recipes) {
+        // Actualizar la UI con la lista de recetas
+        pgMain.setVisibility(View.GONE);
+
+        listRecipes = (ArrayList<Recipe>) recipes;
+
+        adapter = new AdapterGridViewMain(getApplicationContext(), listRecipes);
+
+        gvRecipes.setAdapter(adapter);
+
+        adapter.notifyDataSetChanged();
+
+    }
+
+    private void bringRecipes() {
+        //olvidamos asynctask y metemos lifecycle, que es mas actual y esta mejor optimizado
+        RecipesLoader recipesLoader = new RecipesLoader(ApiClient.getInstance().getService());
+
+        recipesLoader.getRecipes().observe(this, this::onRecipesLoaded);
+
+        recipesLoader.loadRecipes();
+    }
+
 }
 

@@ -11,30 +11,38 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.tasteit_java.ApiService.ApiClient;
+import com.example.tasteit_java.ApiService.ApiRequests;
+import com.example.tasteit_java.ApiService.RecipeApi;
 import com.example.tasteit_java.adapters.AdapterFragmentRecipe;
-import com.example.tasteit_java.adapters.AdapterGridViewMain;
 import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.Recipe;
-import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.auth.FirebaseAuth;
 
 import org.neo4j.driver.Query;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.Session;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ActivityRecipe extends AppCompatActivity {
 
@@ -42,79 +50,54 @@ public class ActivityRecipe extends AppCompatActivity {
     private TextView tvRecipeName;
     private RatingBar rbRating;
     private TextView tvNameCreator;
-
     private TabLayout tlRecipe;
     private ViewPager2 vpPaginator;
-
-    private BdConnection connection;
-    private Recipe recipe;
-    private String uid;
-
+    private ProgressBar pgRecipe;
     private FloatingActionButton bLike;
+    private int recipeId;
+    private String token;
+    private Recipe recipe;
+    private ArrayList<Recipe> listRecipes;
+    private BdConnection connection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe);
 
+        listRecipes = new ArrayList<>();
+
+        ivRecipePhoto = findViewById(R.id.ivRecipePhoto);
+        tvRecipeName = findViewById(R.id.tvRecipeName);
+        rbRating = findViewById(R.id.rbRating);
+        tvNameCreator = findViewById(R.id.tvNameCreator);
+        tlRecipe = findViewById(R.id.tlRecipe);
+        vpPaginator = findViewById(R.id.vpPaginator);
+        pgRecipe = findViewById(R.id.pgRecipe);
+
         //recogemos la receta pasada como parametro y el uid
         if(getIntent().getExtras() != null) {
             Bundle params = getIntent().getExtras();
-            recipe = (Recipe) params.getParcelable("recipe");
+            recipeId = params.getInt("recipeId");
         }
-        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        bringRecipe();
+
+        token = Utils.getUserToken();
 
         connection = new BdConnection();
 
         //menu superior
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        ivRecipePhoto = findViewById(R.id.ivRecipePhoto);
-        tvRecipeName = findViewById(R.id.tvRecipeName);
-        rbRating = findViewById(R.id.rbRating);
-        tvNameCreator = findViewById(R.id.tvNameCreator);
-
-        Bitmap bitmap = Utils.decodeBase64(recipe.getImage());
-        ivRecipePhoto.setImageBitmap(bitmap);
-        tvRecipeName.setText(recipe.getName());
-        tvNameCreator.setText(recipe.getCreator());
-
-        tlRecipe = findViewById(R.id.tlRecipe);
-        vpPaginator = findViewById(R.id.vpPaginator);
-
-        vpPaginator.setAdapter(new AdapterFragmentRecipe(getSupportFragmentManager(),getLifecycle(), recipe));
-        tlRecipe.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                vpPaginator.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-
-        vpPaginator.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
-                //super.onPageSelected(position);
-                tlRecipe.selectTab(tlRecipe.getTabAt(position));
-            }
-        });
-
         //boton de me gusta
         bLike = findViewById(R.id.bLike);
+
         bLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                if(connection.likeRecipe(recipe.getId(),uid)){
+                if(connection.likeRecipe(recipe.getId(),token)){
                     Toast.makeText(ActivityRecipe.this, "Liked", Toast.LENGTH_SHORT).show();
                     bLike.setRotationX(180);
                 }else{
@@ -124,16 +107,13 @@ public class ActivityRecipe extends AppCompatActivity {
             }
         });
 
-        if(connection.isLiked(recipe.getId(),uid)){
-            bLike.setRotationX(180);
-        }else{bLike.setRotationX(0);}
-
         tvNameCreator.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 new TaskLoadUser().execute();
             }
         });
+
     }
 
     //MENU superior
@@ -163,7 +143,11 @@ public class ActivityRecipe extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         //comentario en receta segun ID
-                        connection.commentRecipe(recipe.getId(),uid, etComment.getText().toString(), rbRating.getRating());
+
+
+                        //connection.commentRecipe(recipe.getId(),uid, etComment.getText().toString(), rbRating.getRating());
+
+
                     }
                 });
                 builderRate.setNegativeButton("Cancel",null);
@@ -179,7 +163,10 @@ public class ActivityRecipe extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         //report receta segun ID
-                        connection.reportRecipe(recipe.getId(),uid,etCommentReport.getText().toString());
+
+                        //connection.reportRecipe(recipe.getId(),uid,etCommentReport.getText().toString());
+
+
                     }
                 });
                 builderReport.setNegativeButton("Cancel",null);
@@ -188,6 +175,7 @@ public class ActivityRecipe extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 
     class TaskLoadUser extends AsyncTask<Void, Void,String> {
 
@@ -217,4 +205,121 @@ public class ActivityRecipe extends AppCompatActivity {
             startActivity(i);
         }
     }
+
+
+    private class RecipeLoader {
+
+        private final ApiRequests apiRequests;
+        private final MutableLiveData<List<Recipe>> recipeLiveData;
+
+        public RecipeLoader(ApiRequests apiRequests) {
+            this.apiRequests = apiRequests;
+            recipeLiveData = new MutableLiveData<>();
+        }
+
+        public LiveData<List<Recipe>> getRecipe() {
+            return recipeLiveData;
+        }
+
+        public void loadRecipe() {
+
+            apiRequests.getRecipeById(recipeId).enqueue(new Callback<List<RecipeApi>>() {
+                @Override
+                public void onResponse(Call<List<RecipeApi>> call, Response<List<RecipeApi>> response) {
+                    if (response.isSuccessful()) {
+                        List<RecipeApi> recipeApis = response.body();
+                        List<Recipe> recipes = new ArrayList<>();
+
+                        //tratamos los datos
+                        for (RecipeApi recipeApi : recipeApis) {
+                            Recipe recipe = new Recipe(
+                                    recipeApi.getRecipeDetails().getName(),
+                                    recipeApi.getRecipeDetails().getDescription(),
+                                    (ArrayList<String>) recipeApi.getRecipeDetails().getSteps(),
+                                    recipeApi.getRecipeDetails().getDateCreated(),
+                                    recipeApi.getRecipeDetails().getDifficulty(),
+                                    recipeApi.getUser().getUsername(),
+                                    recipeApi.getRecipeDetails().getImage(),
+                                    recipeApi.getRecipeDetails().getCountry(),
+                                    (ArrayList<String>) recipeApi.getRecipeDetails().getTags(),
+                                    (ArrayList<String>) recipeApi.getRecipeDetails().getIngredients(),
+                                    recipeApi.getRecipeId()
+                            );
+                            recipes.add(recipe);
+                        }
+                        recipeLiveData.postValue(recipes);
+                    } else {
+                        // La solicitud no fue exitosa
+                        Toast.makeText(ActivityRecipe.this, "something went wrong", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+
+                @Override
+                public void onFailure(Call<List<RecipeApi>> call, Throwable t) {
+                    Toast.makeText(ActivityRecipe.this, "something went wrong", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        }
+    }
+
+    private void onRecipeLoaded(List<Recipe> recipes) {
+        // Actualizar la UI con la info de la recetas
+
+        listRecipes = (ArrayList<Recipe>) recipes;
+
+        recipe = listRecipes.get(0);
+
+        //UNA VEZ SE HACE LA CARGA DE LA RECETA SE RELLENA LA INFORMACION Y SE HA MOVIDO EL CODIGO QUE DEPENDIESE DE LA MISMA(PAGINATOR Y EL BOTON DE LIKE)
+
+        Bitmap bitmap = Utils.decodeBase64(recipe.getImage());
+        ivRecipePhoto.setImageBitmap(bitmap);
+        tvRecipeName.setText(recipe.getName());
+        tvNameCreator.setText(recipe.getCreator());
+
+        vpPaginator.setAdapter(new AdapterFragmentRecipe(getSupportFragmentManager(),getLifecycle(), recipe));
+        tlRecipe.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                vpPaginator.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+        vpPaginator.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                //super.onPageSelected(position);
+                tlRecipe.selectTab(tlRecipe.getTabAt(position));
+            }
+        });
+
+        if(connection.isLiked(recipe.getId(),token)){
+            bLike.setRotationX(180);
+        }else{bLike.setRotationX(0);}
+
+        pgRecipe.setVisibility(View.GONE);
+
+    }
+
+    private void bringRecipe() {
+        //olvidamos asynctask y metemos lifecycle, que es mas actual y esta mejor optimizado
+
+        RecipeLoader recipesLoader = new RecipeLoader(ApiClient.getInstance().getService());
+
+        recipesLoader.getRecipe().observe(this, this::onRecipeLoaded);
+
+        recipesLoader.loadRecipe();
+    }
+
 }
