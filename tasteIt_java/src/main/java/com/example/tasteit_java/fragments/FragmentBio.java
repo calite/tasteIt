@@ -80,6 +80,7 @@ public class FragmentBio extends Fragment {
     }
 
     public void updateBio(String biography) {
+        this.biography = "";
         if(!this.biography.equals(biography)) {
             this.biography = biography;
             tvBiography.setText(biography);

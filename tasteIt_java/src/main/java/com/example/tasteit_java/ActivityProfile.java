@@ -77,7 +77,7 @@ public class ActivityProfile extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 vpPaginator.setCurrentItem(tab.getPosition());
-                Toast.makeText(ActivityProfile.this, "se ejecuta 2!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(ActivityProfile.this, "se ejecuta 2!", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -96,7 +96,6 @@ public class ActivityProfile extends AppCompatActivity {
             public void onPageSelected(int position) {
                 //super.onPageSelected(position);
                 tlUser.selectTab(tlUser.getTabAt(position));
-                Toast.makeText(ActivityProfile.this, "se ejecuta 1!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -268,9 +267,9 @@ public class ActivityProfile extends AppCompatActivity {
             userProfile = user;
             retrieveData(uid);
             if(myProfile) {
-                adapter = new AdapterFragmentProfile(getSupportFragmentManager(),getLifecycle(), userProfile, myProfile);
+                adapter = new AdapterFragmentProfile(getSupportFragmentManager(),getLifecycle(), uid, myProfile);
             } else {
-                adapter = new AdapterFragmentProfile(getSupportFragmentManager(),getLifecycle(), userProfile, myProfile, uid);
+                adapter = new AdapterFragmentProfile(getSupportFragmentManager(),getLifecycle(), uid, myProfile);
             }
 
             vpPaginator.setAdapter(adapter);

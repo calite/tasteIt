@@ -1,5 +1,6 @@
 package com.example.tasteit_java.adapters;
 
+import android.os.AsyncTask;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,23 +29,11 @@ public class AdapterFragmentProfile extends FragmentStateAdapter {
     private FragmentBio fragmentBio;
     private FragmentComments fragmentComments;
 
-    public AdapterFragmentProfile(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, User user, Boolean myProfile) {
+    public AdapterFragmentProfile(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, String uid, Boolean myProfile) {
         super(fragmentManager, lifecycle);
-
-        this.biography = user.getBiography();
-        this.recipes = user.getUserRecipes();
-        this.comments = user.getUserComments();
-        this.myProfile = myProfile;
-    }
-
-    public AdapterFragmentProfile(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, User user, Boolean myProfile, String uid) {
-        super(fragmentManager, lifecycle);
-
-        this.biography = user.getBiography();
-        this.recipes = user.getUserRecipes();
-        this.comments = user.getUserComments();
-        this.myProfile = myProfile;
         this.uidProfile = uid;
+        new TaskLoadUser().execute();
+        this.myProfile = myProfile;
     }
 
     @NonNull
@@ -52,16 +41,12 @@ public class AdapterFragmentProfile extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch(position) {
             case 0:
-                fragmentBio = FragmentBio.newInstance(biography);
+                fragmentBio = new FragmentBio();
                 return fragmentBio;
             case 1:
-                return FragmentPhotos.newInstance(recipes);
+                return FragmentPhotos.newInstance(uidProfile);
             case 2:
-                if(myProfile) {
-                    fragmentComments = FragmentComments.newInstance(comments, myProfile);
-                } else {
-                    fragmentComments = FragmentComments.newInstance(comments, myProfile, uidProfile);
-                }
+                fragmentComments = FragmentComments.newInstance(uidProfile, myProfile);
                 return fragmentComments;
             default:
                 return new FragmentBio();
@@ -78,4 +63,24 @@ public class AdapterFragmentProfile extends FragmentStateAdapter {
         fragmentBio.updateBio(biography);
         this.notifyDataSetChanged();
     }
+
+    class TaskLoadUser extends AsyncTask<User, Void, User> {
+        @Override
+        protected void onPreExecute() {
+
+        }
+        @Override
+        protected User doInBackground(User... hashMaps) {
+            return new BdConnection().retrieveAllUserbyUid(uidProfile);
+        }
+        @Override
+        protected void onPostExecute(User user) {
+            //super.onPostExecute(recipes);
+            fragmentBio.updateBio(user.getBiography());
+            //recipes = user.getUserRecipes();
+            comments = user.getUserComments();
+
+        }
+    }
+
 }
