@@ -44,6 +44,7 @@ public class FragmentMainMenu extends Fragment {
             public void onClick(View view) {
                 if(!getActivity().getLocalClassName().equals("ActivityMain")) {
                     Intent i = new Intent(getActivity().getApplicationContext(), ActivityMain.class);
+                    getActivity().finish();
                     startActivity(i);
                 } else {
                     //Si estamos en la main activity ya podemos actualizar simplemente las recetas

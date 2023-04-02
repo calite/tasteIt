@@ -195,7 +195,7 @@ public class ActivityMain extends AppCompatActivity {
         }
 
         public void loadRecipes() {
-
+            Toast.makeText(ActivityMain.this, "Cargando recetas..", Toast.LENGTH_SHORT).show();
             apiRequests.getAllRecipes().enqueue(new Callback<List<RecipeApi>>() {
                 @Override
                 public void onResponse(Call<List<RecipeApi>> call, Response<List<RecipeApi>> response) {
@@ -247,7 +247,6 @@ public class ActivityMain extends AppCompatActivity {
         gvRecipes.setAdapter(adapter);
 
         adapter.notifyDataSetChanged();
-
     }
 
     private void bringRecipes() {
