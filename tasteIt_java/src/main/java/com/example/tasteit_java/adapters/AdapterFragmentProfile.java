@@ -77,9 +77,6 @@ public class AdapterFragmentProfile extends FragmentStateAdapter {
         protected void onPostExecute(User user) {
             //super.onPostExecute(recipes);
             fragmentBio.updateBio(user.getBiography());
-            //recipes = user.getUserRecipes();
-            comments = user.getUserComments();
-
         }
     }
 

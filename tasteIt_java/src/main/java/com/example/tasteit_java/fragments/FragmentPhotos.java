@@ -115,12 +115,13 @@ public class FragmentPhotos extends Fragment {
             public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
                 try {
                     View child = rv.findChildViewUnder(e.getX(), e.getY());
-
                     if (child != null && mGestureDetector.onTouchEvent(e)) {
 
                         int position = rv.getChildAdapterPosition(child);
 
-                        Toast.makeText(getContext(),"The Item Clicked is: "+ position ,Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getContext(), ActivityRecipe.class);
+                        intent.putExtra("recipeId", recipeIds.get(position));
+                        startActivity(intent);
 
                         return true;
                     }

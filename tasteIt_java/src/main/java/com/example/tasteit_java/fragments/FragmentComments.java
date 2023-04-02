@@ -6,11 +6,17 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -20,8 +26,11 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.tasteit_java.ActivityProfile;
+import com.example.tasteit_java.ActivityRecipe;
 import com.example.tasteit_java.R;
 import com.example.tasteit_java.adapters.AdapterFragmentComments;
+import com.example.tasteit_java.adapters.AdapterRecyclerCommentsProfile;
+import com.example.tasteit_java.adapters.AdapterRecyclerPhotosProfile;
 import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.User;
@@ -59,8 +68,12 @@ public class FragmentComments extends Fragment {
     private ArrayList<String> uidsComments;
     private String uidProfile;
     private Boolean myProfile;
-    private AdapterFragmentComments adapter;
-    private ListView lvComments;
+    //private AdapterFragmentComments adapter;
+    //private ListView lvComments;
+
+    private RecyclerView rvLvComments;
+    private AdapterRecyclerCommentsProfile adapter;
+
     private ConstraintLayout clComment;
     private ShapeableImageView ivMyPhoto;
     private EditText etComment;
@@ -84,25 +97,6 @@ public class FragmentComments extends Fragment {
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    public static FragmentComments newInstance(HashMap<String, String> userComments, Boolean myProfile) {
-        FragmentComments fragment = new FragmentComments();
-        Bundle args = new Bundle();
-        args.putSerializable(ARG_PARAM1, userComments);
-        args.putBoolean(ARG_PARAM2, myProfile);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    public static FragmentComments newInstance(HashMap<String, String> userComments, Boolean myProfile, String uid) {
-        FragmentComments fragment = new FragmentComments();
-        Bundle args = new Bundle();
-        args.putSerializable(ARG_PARAM1, userComments);
-        args.putBoolean(ARG_PARAM2, myProfile);
-        args.putString(ARG_PARAM3, uid);
         fragment.setArguments(args);
         return fragment;
     }
@@ -133,18 +127,59 @@ public class FragmentComments extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_comments, container, false);
 
-        adapter = new AdapterFragmentComments(getContext(), uidProfile);
-        lvComments = view.findViewById(R.id.lvComments);
-        lvComments.setAdapter(adapter);
+        adapter = new AdapterRecyclerCommentsProfile(getContext(), uidProfile);
+        rvLvComments = view.findViewById(R.id.rvLvComments);
+        rvLvComments.setAdapter(adapter);
 
-        lvComments.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        rvLvComments.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        final GestureDetector mGestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
+            @Override public boolean onSingleTapUp(MotionEvent e) {
+                return true;
+            }
+        });
+
+        rvLvComments.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            @Override
+            public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+                try {
+                    View child = rv.findChildViewUnder(e.getX(), e.getY());
+                    if (child != null && mGestureDetector.onTouchEvent(e)) {
+
+                        int position = rv.getChildAdapterPosition(child);
+
+                        Intent intent = new Intent(getActivity().getApplicationContext(), ActivityProfile.class);
+                        intent.putExtra("uid", uidsComments.get(position));
+                        startActivity(intent);
+
+                        return true;
+                    }
+                }catch (Exception ex){
+                    ex.printStackTrace();
+                }
+
+                return false;
+            }
+
+            @Override
+            public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+            }
+        });
+
+        /*lvComments.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(getActivity().getApplicationContext(), ActivityProfile.class);
                 intent.putExtra("uid", uidsComments.get(i));
                 startActivity(intent);
             }
-        });
+        });*/
 
         if(!myProfile) {
             ivMyPhoto = view.findViewById(R.id.ivMyPhoto);
@@ -171,8 +206,7 @@ public class FragmentComments extends Fragment {
                 public void onClick(View view) {
                     new BdConnection().commentUser(FirebaseAuth.getInstance().getCurrentUser().getUid(), uidProfile, etComment.getText().toString());
                     uidsComments.add(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                    //PDTE recargar los comentarios
-                    adapter.notifyDataSetChanged();
+                    adapter.updateComments();
                     etComment.setText("");
                 }
             });
