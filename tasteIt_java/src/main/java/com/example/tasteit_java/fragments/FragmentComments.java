@@ -23,6 +23,7 @@ import com.example.tasteit_java.ActivityProfile;
 import com.example.tasteit_java.R;
 import com.example.tasteit_java.adapters.AdapterFragmentComments;
 import com.example.tasteit_java.bdConnection.BdConnection;
+import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -56,10 +57,8 @@ public class FragmentComments extends Fragment {
     private String mParam2;
 
     private ArrayList<String> uidsComments;
-    private ArrayList<String> comments;
-    private String uid;
+    private String uidProfile;
     private Boolean myProfile;
-    private FloatingActionButton btnComment;
     private AdapterFragmentComments adapter;
     private ListView lvComments;
     private ConstraintLayout clComment;
@@ -108,24 +107,22 @@ public class FragmentComments extends Fragment {
         return fragment;
     }
 
+    public static FragmentComments newInstance(String uid, Boolean myProfile) {
+        FragmentComments fragment = new FragmentComments();
+        Bundle args = new Bundle();
+        args.putBoolean(ARG_PARAM2, myProfile);
+        args.putString(ARG_PARAM3, uid);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            HashMap<String, String> userComments = (HashMap<String, String>) getArguments().getSerializable(ARG_PARAM1);
-
-            Set<String> keySet = userComments.keySet();
-            uidsComments = new ArrayList<>(keySet);
-
-            Collection<String> values = userComments.values();
-            comments = new ArrayList<>(values);
-
             this.myProfile = getArguments().getBoolean(ARG_PARAM2);
-
-            if(getArguments().getString(ARG_PARAM3) != null) {
-                this.uid = getArguments().getString(ARG_PARAM3);
-            }
-
+            this.uidProfile = getArguments().getString(ARG_PARAM3);
+            new TaskLoadUserComments().execute();
             //mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
@@ -136,7 +133,7 @@ public class FragmentComments extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_comments, container, false);
 
-        adapter = new AdapterFragmentComments(getContext(), uidsComments, comments);
+        adapter = new AdapterFragmentComments(getContext(), uidProfile);
         lvComments = view.findViewById(R.id.lvComments);
         lvComments.setAdapter(adapter);
 
@@ -149,11 +146,12 @@ public class FragmentComments extends Fragment {
             }
         });
 
+        if(!myProfile) {
+            ivMyPhoto = view.findViewById(R.id.ivMyPhoto);
+            etComment = view.findViewById(R.id.etComment);
+            btnAddComment = view.findViewById(R.id.btnAddComment);
+        }
         clComment = view.findViewById(R.id.clComment);
-        ivMyPhoto = view.findViewById(R.id.ivMyPhoto);
-        etComment = view.findViewById(R.id.etComment);
-        btnAddComment = view.findViewById(R.id.btnAddComment);
-
         hideAddComment(myProfile);
 
         return view;
@@ -171,9 +169,9 @@ public class FragmentComments extends Fragment {
             btnAddComment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    new BdConnection().commentUser(FirebaseAuth.getInstance().getCurrentUser().getUid(), uid, etComment.getText().toString());
+                    new BdConnection().commentUser(FirebaseAuth.getInstance().getCurrentUser().getUid(), uidProfile, etComment.getText().toString());
                     uidsComments.add(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                    comments.add(etComment.getText().toString());
+                    //PDTE recargar los comentarios
                     adapter.notifyDataSetChanged();
                     etComment.setText("");
                 }
@@ -181,6 +179,25 @@ public class FragmentComments extends Fragment {
         } else {
             clComment.setVisibility(View.INVISIBLE);
             clComment.setClickable(false);
+        }
+    }
+
+    class TaskLoadUserComments extends AsyncTask<HashMap<String, String>, Void,HashMap<String, String>> {
+        @Override
+        protected void onPreExecute() {
+
+        }
+        @Override
+        protected HashMap<String, String> doInBackground(HashMap<String, String>... hashMaps) {
+            return new BdConnection().retrieveCommentsbyUid(uidProfile);
+        }
+        @Override
+        protected void onPostExecute(HashMap<String, String> userComments) {
+            //super.onPostExecute(recipes);
+            Set<String> keySet = userComments.keySet();
+            uidsComments = new ArrayList<>(keySet);
+
+            adapter.notifyDataSetChanged();
         }
     }
 

@@ -44,6 +44,7 @@ public class AdapterGridViewProfile extends BaseAdapter {
         LayoutInflater inflater = LayoutInflater.from(context);
         view = inflater.inflate(R.layout.item_profile_gridview, null);
 
+
         ImageView ivPhoto = view.findViewById(R.id.ivPhoto);
 
         Bitmap bitmap = Utils.decodeBase64(arrayListPhotos.get(i).getImage());
