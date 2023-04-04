@@ -1,5 +1,7 @@
 package com.example.tasteit_java.adapters;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,8 +10,10 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.tasteit_java.ActivityRecipe;
 import com.example.tasteit_java.R;
 import com.example.tasteit_java.clases.Recipe;
+import com.example.tasteit_java.clases.Utils;
 
 import java.util.ArrayList;
 
@@ -29,6 +33,8 @@ public class AdapterRecyclerMain extends RecyclerView.Adapter<AdapterRecyclerMai
         private final TextView tvNameCreator;
         private final TextView tvDescriptionRecipe;
 
+        private int recipeId;
+
         public ViewHolder(View view) {
             super(view);
             // Define click listener for the ViewHolder's View
@@ -37,6 +43,15 @@ public class AdapterRecyclerMain extends RecyclerView.Adapter<AdapterRecyclerMai
             tvNameRecipe = view.findViewById(R.id.tvNameRecipe);
             tvNameCreator = view.findViewById(R.id.tvNameCreator);
             tvDescriptionRecipe = view.findViewById(R.id.tvDescriptionRecipe);
+
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent i = new Intent(view.getContext(), ActivityRecipe.class);
+                    i.putExtra("recipeId", recipeId);
+                    view.getContext().startActivity(i);
+                }
+            });
         }
 
         public TextView getTvNameRecipe() {
@@ -79,7 +94,9 @@ public class AdapterRecyclerMain extends RecyclerView.Adapter<AdapterRecyclerMai
         viewHolder.tvNameCreator.setText(listRecipes.get(position).getCreator());
         viewHolder.tvDescriptionRecipe.setText(listRecipes.get(position).getDescription());
         viewHolder.tvRating.setText(listRecipes.get(position).getRating());
-        viewHolder.ivPhotoRecipe.setImageResource(listRecipes.get(position).getImg());
+        Bitmap bitmap = Utils.decodeBase64(listRecipes.get(position).getImage());
+        viewHolder.ivPhotoRecipe.setImageBitmap(bitmap);
+        viewHolder.recipeId = listRecipes.get(position).getId();
     }
 
     // Return the size of your dataset (invoked by the layout manager)

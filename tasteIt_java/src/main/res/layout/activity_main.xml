@@ -7,7 +7,7 @@
     android:orientation="vertical"
     tools:context=".ActivityMain">
 
-
+    <!--
     <GridView
         android:id="@+id/gvRecipes"
         android:layout_width="match_parent"
@@ -20,18 +20,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
-
+    -->
 
     <ProgressBar
         android:id="@+id/pbMain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/gvRecipes"
+        app:layout_constraintBottom_toTopOf="@+id/fcMainMenu"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/gvRecipes"
-        app:layout_constraintTop_toTopOf="@+id/gvRecipes" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <!--
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvRecipes"
         android:layout_width="match_parent"
@@ -40,7 +40,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/fcMainMenu"
         app:layout_constraintTop_toTopOf="parent"
         />
-    -->
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/bCreate"

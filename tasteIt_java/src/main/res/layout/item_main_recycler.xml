@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/s_rectangle">
 
     <ImageView
         android:id="@+id/ivPhotoRecipe"
@@ -22,7 +23,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:background="@color/white"
+        android:background="@drawable/s_oval"
         app:layout_constraintBottom_toBottomOf="@+id/ivPhotoRecipe"
         app:layout_constraintEnd_toEndOf="@+id/ivPhotoRecipe"
         app:layout_constraintHorizontal_bias="0.949"
@@ -34,10 +35,22 @@
             android:id="@+id/tvRating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="5.0"
+            android:text="5"
+            android:textColor="@color/white"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.27"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/ic_star"
+            app:layout_constraintStart_toEndOf="@+id/tvRating"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -46,41 +59,45 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="12dp"
         app:layout_constraintStart_toEndOf="@+id/ivPhotoRecipe"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/tvNameRecipe"
-            android:layout_width="118dp"
-            android:layout_height="20dp"
-            android:layout_marginTop="4dp"
-            android:text="Recipe Name"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tvNameCreator"
-            android:layout_width="118dp"
-            android:layout_height="20dp"
-
+            android:layout_width="200dp"
+            android:layout_height="0dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="72dp"
+            android:inputType="textMultiLine"
             android:text="Name Creator"
+            android:textStyle="italic"
             app:layout_constraintEnd_toEndOf="@+id/tvDescriptionRecipe"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvNameRecipe" />
 
         <TextView
             android:id="@+id/tvDescriptionRecipe"
-            android:layout_width="192dp"
-            android:layout_height="116dp"
-            android:layout_marginTop="12dp"
+            android:layout_width="200dp"
+            android:layout_height="115dp"
+            android:layout_marginTop="8dp"
+            android:inputType="textMultiLine"
             android:text="@string/lorem_ipsum"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvNameCreator" />
 
-
+        <TextView
+            android:id="@+id/tvNameRecipe"
+            android:layout_width="200dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="4dp"
+            android:inputType="textMultiLine"
+            android:text="Recipe Name"
+            android:textColor="@color/black"
+            style="@style/recipeName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

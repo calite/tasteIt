@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -17,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tasteit_java.ApiService.ApiClient;
@@ -57,7 +56,8 @@ public class ActivityMain extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         pgMain = findViewById(R.id.pbMain);
-        gvRecipes = findViewById(R.id.gvRecipes);
+        rvRecipes = findViewById(R.id.rvRecipes);
+        //gvRecipes = findViewById(R.id.gvRecipes);
         bCreate = findViewById(R.id.bCreate);
 
         bringRecipes();
@@ -76,6 +76,9 @@ public class ActivityMain extends AppCompatActivity {
         //recoger token usuario firebase
         token = Utils.getUserToken();
 
+
+
+        /*
         //grid view
         gvRecipes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -123,17 +126,7 @@ public class ActivityMain extends AppCompatActivity {
                 currentTotalItemCount = totalItemCount;
             }
         });
-
-        //ya funciona, pero hace cosas raras en el scroll
-        //TEMPORAL - recycler view
-        /*
-        rvRecipes = findViewById(R.id.rvRecipes);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        rvRecipes.setLayoutManager(layoutManager);
-        adapterRecyclerView = new AdapterRecyclerMain(listRecipes);
-        rvRecipes.setAdapter(adapterRecyclerView);
         */
-
     }
 
     //MENU superior
@@ -241,12 +234,33 @@ public class ActivityMain extends AppCompatActivity {
         pgMain.setVisibility(View.GONE);
 
         listRecipes = (ArrayList<Recipe>) recipes;
-
+        /*
         adapter = new AdapterGridViewMain(getApplicationContext(), listRecipes);
 
         gvRecipes.setAdapter(adapter);
 
         adapter.notifyDataSetChanged();
+        */
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        rvRecipes.setLayoutManager(linearLayoutManager);
+        adapterRecyclerView = new AdapterRecyclerMain(listRecipes);
+        rvRecipes.setAdapter(adapterRecyclerView);
+        /*
+        rvRecipes.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                // Verificar si el usuario se desplaza hacia arriba y está cerca del principio de la lista
+                if (dy < 0 && linearLayoutManager.findFirstVisibleItemPosition() < 10) {
+                    // Recargar el RecyclerView
+                    Toast.makeText(ActivityMain.this, "Refreshing...", Toast.LENGTH_SHORT).show();
+                    adapterRecyclerView.notifyDataSetChanged();
+                }
+            }
+        });
+        */
 
     }
 

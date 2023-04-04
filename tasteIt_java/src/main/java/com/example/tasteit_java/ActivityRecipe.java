@@ -176,7 +176,6 @@ public class ActivityRecipe extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
     class TaskLoadUser extends AsyncTask<Void, Void,String> {
 
         @Override
@@ -205,7 +204,6 @@ public class ActivityRecipe extends AppCompatActivity {
             startActivity(i);
         }
     }
-
 
     private class RecipeLoader {
 
