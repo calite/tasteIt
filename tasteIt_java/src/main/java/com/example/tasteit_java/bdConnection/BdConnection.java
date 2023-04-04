@@ -19,6 +19,7 @@ import org.neo4j.driver.exceptions.Neo4jException;
 import org.neo4j.driver.exceptions.NoSuchRecordException;
 import org.neo4j.driver.types.Node;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -775,7 +776,38 @@ public class BdConnection implements AutoCloseable {
             LOGGER.log(Level.SEVERE, " raised an exception", ex);
             throw ex;
         }
+    }
 
+    public ArrayList<User> retrieveFollowersByUid(String uid) {
+        ArrayList<User> users = new ArrayList<>();
+
+        try {
+            Session session = openSession();
+            //Creamos la sentencia que se ejecutara y guardamos el resultado
+            Query query = new Query("MATCH (n1:User)<-[:Following]-(n2:User) WHERE n1.token = '" + uid + "' RETURN n2");
+            Result result = session.run(query);
+            while (result.hasNext()) //Mientras haya registros..
+            {
+                Record record = result.next();
+                Node node = record.get(0).asNode();
+
+                String name = node.get("username").asString();
+                String biography = node.get("biography").asString();
+                String imgProfile = node.get("imgProfile").asString();
+                String token = node.get("token").asString();
+                users.add(new User(name, biography, imgProfile, token));
+            }
+
+            closeSession(session); //Cerramos la sesión
+            return users; //Retornamos el valor
+            // You should capture any errors along with the query and data for traceability
+        } catch (Neo4jException ex) {
+            LOGGER.log(Level.SEVERE, " raised an exception", ex);
+            throw ex;
+        } catch (NoSuchRecordException ex) {
+            LOGGER.log(Level.SEVERE, "No record found raised an exception", ex);
+            throw ex;
+        }
     }
 
     /*

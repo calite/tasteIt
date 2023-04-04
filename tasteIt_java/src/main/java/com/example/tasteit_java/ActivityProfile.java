@@ -45,7 +45,7 @@ public class ActivityProfile extends AppCompatActivity {
     private TextView tvUserName, tvReciperCounter, tvFollowersCounter, tvFollowingCounter, tvLikesCounter;
     private ImageView ivUserPicture;
     private Button btnFollow;
-    private ConstraintLayout tagRecipe;
+    private ConstraintLayout tagRecipe, tagFollowers;
     private BdConnection connection;
     private String uid;
     private Boolean myProfile;
@@ -77,7 +77,6 @@ public class ActivityProfile extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 vpPaginator.setCurrentItem(tab.getPosition());
-                //Toast.makeText(ActivityProfile.this, "se ejecuta 2!", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -126,6 +125,16 @@ public class ActivityProfile extends AppCompatActivity {
             public void onClick(View view) {
                 Intent i = new Intent(getApplicationContext(), ActivityProfileData.class);
                 i.putExtra("uid", uid);
+                i.putExtra("dataType", 1);
+                startActivity(i);
+            }
+        });
+        tagFollowers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getApplicationContext(), ActivityProfileData.class);
+                i.putExtra("uid", uid);
+                i.putExtra("dataType", 2);
                 startActivity(i);
             }
         });
@@ -152,11 +161,11 @@ public class ActivityProfile extends AppCompatActivity {
             btnFollow.setVisibility(View.VISIBLE);
             btnFollow.setEnabled(true);
         }
-
         vpPaginator = findViewById(R.id.vpPaginator);
         tlUser = findViewById(R.id.tlUser);
 
         tagRecipe = findViewById(R.id.tagRecipe);
+        tagFollowers = findViewById(R.id.tagFollowers);
     }
 
     //Metodo para traer los datos del perfil
@@ -166,9 +175,6 @@ public class ActivityProfile extends AppCompatActivity {
 
         Bitmap bitmap = Utils.decodeBase64(userProfile.getImgProfile());
         ivUserPicture.setImageBitmap(bitmap);
-
-        //user.setUserRecipes(connection.retrieveAllRecipesbyUid(uid));
-        //user.setUserComments(connection.retrieveCommentsbyUid(uid));
 
         Session session = connection.openSession();
 
@@ -217,6 +223,7 @@ public class ActivityProfile extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
+                Toast.makeText(this, "Aqui finalizamos", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.iEditProfile:
                 startActivity(new Intent(getApplicationContext(), ActivityEditProfile.class));
@@ -266,14 +273,8 @@ public class ActivityProfile extends AppCompatActivity {
             //super.onPostExecute(recipes);
             userProfile = user;
             retrieveData(uid);
-            if(myProfile) {
-                adapter = new AdapterFragmentProfile(getSupportFragmentManager(),getLifecycle(), uid, myProfile);
-            } else {
-                adapter = new AdapterFragmentProfile(getSupportFragmentManager(),getLifecycle(), uid, myProfile);
-            }
-
+            adapter = new AdapterFragmentProfile(getSupportFragmentManager(),getLifecycle(), uid, myProfile);
             vpPaginator.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
         }
     }
 
