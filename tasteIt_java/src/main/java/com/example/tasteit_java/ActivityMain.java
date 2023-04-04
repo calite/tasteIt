@@ -209,7 +209,8 @@ public class ActivityMain extends AppCompatActivity {
                                     recipeApi.getRecipeDetails().getCountry(),
                                     (ArrayList<String>) recipeApi.getRecipeDetails().getTags(),
                                     (ArrayList<String>) recipeApi.getRecipeDetails().getIngredients(),
-                                    recipeApi.getRecipeId()
+                                    recipeApi.getRecipeId(),
+                                    recipeApi.getUser().getToken()
                             );
                             recipes.add(recipe);
                         }

@@ -23,8 +23,6 @@ public class FragmentInfoRecipe extends Fragment {
         // Required empty public constructor
     }
 
-
-
     public static FragmentInfoRecipe newInstance(Recipe recipe) {
         FragmentInfoRecipe fragment = new FragmentInfoRecipe();
         Bundle args = new Bundle();

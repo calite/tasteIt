@@ -34,6 +34,7 @@ public class AdapterRecyclerMain extends RecyclerView.Adapter<AdapterRecyclerMai
         private final TextView tvDescriptionRecipe;
 
         private int recipeId;
+        private String creatorToken;
 
         public ViewHolder(View view) {
             super(view);
@@ -44,10 +45,13 @@ public class AdapterRecyclerMain extends RecyclerView.Adapter<AdapterRecyclerMai
             tvNameCreator = view.findViewById(R.id.tvNameCreator);
             tvDescriptionRecipe = view.findViewById(R.id.tvDescriptionRecipe);
 
+            //Toast.makeText(view.getContext(), creatorToken, Toast.LENGTH_SHORT).show();
+
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent i = new Intent(view.getContext(), ActivityRecipe.class);
+                    i.putExtra("creatorToken", creatorToken);
                     i.putExtra("recipeId", recipeId);
                     view.getContext().startActivity(i);
                 }
@@ -97,6 +101,7 @@ public class AdapterRecyclerMain extends RecyclerView.Adapter<AdapterRecyclerMai
         Bitmap bitmap = Utils.decodeBase64(listRecipes.get(position).getImage());
         viewHolder.ivPhotoRecipe.setImageBitmap(bitmap);
         viewHolder.recipeId = listRecipes.get(position).getId();
+        viewHolder.creatorToken = listRecipes.get(position).getCreatorToken();
     }
 
     // Return the size of your dataset (invoked by the layout manager)

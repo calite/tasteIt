@@ -60,8 +60,6 @@ public class ActivityRecipe extends AppCompatActivity {
     private ArrayList<Recipe> listRecipes;
     private BdConnection connection;
 
-    private MenuItem editItem;
-
     String creatorToken = "";
 
     boolean seeEdit = false;
@@ -85,11 +83,18 @@ public class ActivityRecipe extends AppCompatActivity {
         if(getIntent().getExtras() != null) {
             Bundle params = getIntent().getExtras();
             recipeId = params.getInt("recipeId");
+            creatorToken = params.getString("creatorToken");
+        }
+
+        token = Utils.getUserToken();
+
+        if(creatorToken.equals(token)) {
+            seeEdit = true;
+        }else{
+            seeEdit = false;
         }
 
         bringRecipe();
-
-        token = Utils.getUserToken();
 
         connection = new BdConnection();
 
@@ -125,7 +130,7 @@ public class ActivityRecipe extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.recipe_menu, menu);
-        if(seeEdit){
+        if(creatorToken.equals(token)){
             menu.findItem(R.id.iEditRecipe).setVisible(true);
         } else{
             menu.findItem(R.id.iEditRecipe).setVisible(false);
@@ -241,7 +246,6 @@ public class ActivityRecipe extends AppCompatActivity {
                     if (response.isSuccessful()) {
                         List<RecipeId_Recipe_User> recipeApis = response.body();
                         List<Recipe> recipes = new ArrayList<>();
-
                         //tratamos los datos
                         for (RecipeId_Recipe_User recipeApi : recipeApis) {
                             Recipe recipe = new Recipe(
@@ -255,7 +259,8 @@ public class ActivityRecipe extends AppCompatActivity {
                                     recipeApi.getRecipeDetails().getCountry(),
                                     (ArrayList<String>) recipeApi.getRecipeDetails().getTags(),
                                     (ArrayList<String>) recipeApi.getRecipeDetails().getIngredients(),
-                                    recipeApi.getRecipeId()
+                                    recipeApi.getRecipeId(),
+                                    recipeApi.getUser().getToken()
                             );
                             recipes.add(recipe);
                             creatorToken = recipeApi.getUser().getToken();
@@ -283,16 +288,7 @@ public class ActivityRecipe extends AppCompatActivity {
         listRecipes = (ArrayList<Recipe>) recipes;
 
         recipe = listRecipes.get(0);
-        RecipeLoader recipesLoader = new RecipeLoader(ApiClient.getInstance().getService());
 
-        recipesLoader.getRecipe().observe(this, this::onRecipeLoaded);
-
-        recipesLoader.loadRecipe();
-        if(creatorToken.equals(token)) {
-            seeEdit = true;
-        }else{
-            seeEdit = false;
-        }
         //UNA VEZ SE HACE LA CARGA DE LA RECETA SE RELLENA LA INFORMACION Y SE HA MOVIDO EL CODIGO QUE DEPENDIESE DE LA MISMA(PAGINATOR Y EL BOTON DE LIKE)
 
         Bitmap bitmap = Utils.decodeBase64(recipe.getImage());
