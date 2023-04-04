@@ -18,6 +18,7 @@ public class Recipe implements Parcelable {
     private ArrayList<String> tags;
     private ArrayList<String> ingredients;
     private int id;
+    private String creatorToken;
     //temp
     private int img;
 
@@ -63,7 +64,7 @@ public class Recipe implements Parcelable {
     }
 
     //constructor de new recipe para neo
-    public Recipe(String name, String description, ArrayList<String> steps, String dateCreated, int difficulty, String creator, String image, String country, ArrayList<String> tags, ArrayList<String> ingredients, int id) {
+    public Recipe(String name, String description, ArrayList<String> steps, String dateCreated, int difficulty, String creator, String image, String country, ArrayList<String> tags, ArrayList<String> ingredients, int id, String creatorToken) {
         this.name = name;
         this.description = description;
         this.steps = steps;
@@ -75,6 +76,7 @@ public class Recipe implements Parcelable {
         this.tags = tags;
         this.ingredients = ingredients;
         this.id = id;
+        this.creatorToken = creatorToken;
     }
 
     public Recipe(String name, String description, ArrayList<String> steps, String dateCreated, int difficulty, String creator, String image, String country, ArrayList<String> tags, ArrayList<String> ingredients) {
@@ -175,6 +177,14 @@ public class Recipe implements Parcelable {
     public int getId() { return id; }
 
     public void setId(int id) { this.id = id; }
+
+    public String getCreatorToken() {
+        return creatorToken;
+    }
+
+    public void setCreatorToken(String creatorToken) {
+        this.creatorToken = creatorToken;
+    }
 
     @Override
     public int describeContents() {

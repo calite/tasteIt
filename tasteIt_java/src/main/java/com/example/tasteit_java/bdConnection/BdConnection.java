@@ -211,7 +211,7 @@ public class BdConnection implements AutoCloseable {
                 }
                 int idRecipe = record.get(10).asInt();
                 //creamos una receta nueva
-                Recipe recipe = new Recipe(name, description, arrayListSteps, dateCreated, difficulty, creator, image, country, arrayListTags, arrayListIngredients, idRecipe);
+                Recipe recipe = new Recipe(name, description, arrayListSteps, dateCreated, difficulty, creator, image, country, arrayListTags, arrayListIngredients, idRecipe, "");
                 listRecipes.add(recipe);
             }
             closeSession(session); //Cerramos la sesión
@@ -268,7 +268,7 @@ public class BdConnection implements AutoCloseable {
                 }
                 int idRecipe = record.get(2).asInt();
                 //creamos una receta nueva
-                Recipe recipe = new Recipe(name, description, arrayListSteps, dateCreated, difficulty, creator, image, country, arrayListTags, arrayListIngredients,idRecipe); //Lo mostramos segun su tipo
+                Recipe recipe = new Recipe(name, description, arrayListSteps, dateCreated, difficulty, creator, image, country, arrayListTags, arrayListIngredients,idRecipe,""); //Lo mostramos segun su tipo
                 listRecipes.add(recipe);
             }
             closeSession(session); //Cerramos la sesión

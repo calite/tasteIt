@@ -123,7 +123,8 @@ public class FragmentFollowedRecipes extends Fragment {
                                     recipeApi.getRecipeDetails().getCountry(),
                                     (ArrayList<String>) recipeApi.getRecipeDetails().getTags(),
                                     (ArrayList<String>) recipeApi.getRecipeDetails().getIngredients(),
-                                    recipeApi.getRecipeId()
+                                    recipeApi.getRecipeId(),
+                                    recipeApi.getUser().getUsername()
                             );
                             recipes.add(recipe);
                         }

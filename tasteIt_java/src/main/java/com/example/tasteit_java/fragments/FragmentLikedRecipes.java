@@ -20,7 +20,6 @@ import com.example.tasteit_java.ApiService.ApiRequests;
 import com.example.tasteit_java.ApiService.RecipeId_Recipe;
 import com.example.tasteit_java.R;
 import com.example.tasteit_java.adapters.AdapterGridViewMain;
-import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.Recipe;
 
 import java.util.ArrayList;
@@ -37,8 +36,6 @@ public class FragmentLikedRecipes extends Fragment {
     private GridView gvRecipes;
     private AdapterGridViewMain adapter;
     public static ArrayList<Recipe> listRecipes = new ArrayList<>();
-
-    private BdConnection app;
 
     public FragmentLikedRecipes() {
         // Required empty public constructor
@@ -123,7 +120,8 @@ public class FragmentLikedRecipes extends Fragment {
                                     recipeApi.getRecipeDetails().getCountry(),
                                     (ArrayList<String>) recipeApi.getRecipeDetails().getTags(),
                                     (ArrayList<String>) recipeApi.getRecipeDetails().getIngredients(),
-                                    recipeApi.getRecipeId()
+                                    recipeApi.getRecipeId(),
+                                    "kek"
                             );
                             recipes.add(recipe);
                         }
