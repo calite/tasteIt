@@ -60,6 +60,12 @@ public class ActivityRecipe extends AppCompatActivity {
     private ArrayList<Recipe> listRecipes;
     private BdConnection connection;
 
+    private MenuItem editItem;
+
+    String creatorToken = "";
+
+    boolean seeEdit = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,13 +119,18 @@ public class ActivityRecipe extends AppCompatActivity {
                 new TaskLoadUser().execute();
             }
         });
-
     }
 
     //MENU superior
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.recipe_menu, menu);
+        if(seeEdit){
+            menu.findItem(R.id.iEditRecipe).setVisible(true);
+        } else{
+            menu.findItem(R.id.iEditRecipe).setVisible(false);
+        }
+
         return true;
     }
 
@@ -171,6 +182,9 @@ public class ActivityRecipe extends AppCompatActivity {
                 });
                 builderReport.setNegativeButton("Cancel",null);
                 builderReport.create().show();
+                return true;
+            case R.id.iEditRecipe:
+
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -244,6 +258,7 @@ public class ActivityRecipe extends AppCompatActivity {
                                     recipeApi.getRecipeId()
                             );
                             recipes.add(recipe);
+                            creatorToken = recipeApi.getUser().getToken();
                         }
                         recipeLiveData.postValue(recipes);
                     } else {
@@ -268,7 +283,16 @@ public class ActivityRecipe extends AppCompatActivity {
         listRecipes = (ArrayList<Recipe>) recipes;
 
         recipe = listRecipes.get(0);
+        RecipeLoader recipesLoader = new RecipeLoader(ApiClient.getInstance().getService());
 
+        recipesLoader.getRecipe().observe(this, this::onRecipeLoaded);
+
+        recipesLoader.loadRecipe();
+        if(creatorToken.equals(token)) {
+            seeEdit = true;
+        }else{
+            seeEdit = false;
+        }
         //UNA VEZ SE HACE LA CARGA DE LA RECETA SE RELLENA LA INFORMACION Y SE HA MOVIDO EL CODIGO QUE DEPENDIESE DE LA MISMA(PAGINATOR Y EL BOTON DE LIKE)
 
         Bitmap bitmap = Utils.decodeBase64(recipe.getImage());
