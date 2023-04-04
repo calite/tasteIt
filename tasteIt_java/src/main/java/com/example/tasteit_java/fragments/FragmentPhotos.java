@@ -122,6 +122,7 @@ public class FragmentPhotos extends Fragment {
 
                         Intent intent = new Intent(getContext(), ActivityRecipe.class);
                         intent.putExtra("recipeId", recipeIds.get(position));
+                        intent.putExtra("creatorToken", uidParam);
                         startActivity(intent);
 
                         return true;

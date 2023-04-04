@@ -92,8 +92,6 @@ public class Recipe implements Parcelable {
         this.ingredients = ingredients;
     }
 
-
-
     public String getName() {
         return name;
     }
