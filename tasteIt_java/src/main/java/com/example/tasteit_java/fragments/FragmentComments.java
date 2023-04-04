@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -132,6 +133,8 @@ public class FragmentComments extends Fragment {
         rvLvComments.setAdapter(adapter);
 
         rvLvComments.setLayoutManager(new LinearLayoutManager(getContext()));
+        DividerItemDecoration divider = new DividerItemDecoration(rvLvComments.getContext(), DividerItemDecoration.VERTICAL);
+        rvLvComments.addItemDecoration(divider);
 
         final GestureDetector mGestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override public boolean onSingleTapUp(MotionEvent e) {

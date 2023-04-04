@@ -11,12 +11,20 @@ public class User implements Serializable  {
     private String imgProfile;
     private ArrayList<Recipe> userRecipes;
     private HashMap<String, String> userComments;
+    private String uid;
 
 
     public User(String username, String biography, String imgProfile) {
         this.username = username;
         this.biography = biography;
         this.imgProfile = imgProfile;
+    }
+
+    public User(String username, String biography, String imgProfile, String uid) {
+        this.username = username;
+        this.biography = biography;
+        this.imgProfile = imgProfile;
+        this.uid = uid;
     }
 
     public User(String username, String biography, String imgProfile, ArrayList<Recipe> userRecipes, HashMap<String, String> userComments) {
@@ -65,5 +73,13 @@ public class User implements Serializable  {
 
     public void setUserComments(HashMap<String, String> userComments) {
         this.userComments = userComments;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 }

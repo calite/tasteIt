@@ -35,6 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Profile Name"
+            android:textSize="16sp"
             android:textColor="@color/black"
             app:layout_constraintBottom_toTopOf="@+id/vSeparator"
             app:layout_constraintEnd_toEndOf="parent"
