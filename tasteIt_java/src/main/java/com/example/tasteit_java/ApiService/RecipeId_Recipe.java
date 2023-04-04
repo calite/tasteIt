@@ -4,15 +4,12 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class RecipeApi {
+public class RecipeId_Recipe {
     @SerializedName("recipeId")
     private int recipeId;
 
     @SerializedName("recipe")
     private RecipeDetails recipeDetails;
-
-    @SerializedName("user")
-    private User user;
 
     public int getRecipeId() {
         return recipeId;
@@ -28,14 +25,6 @@ public class RecipeApi {
 
     public void setRecipeDetails(RecipeDetails recipeDetails) {
         this.recipeDetails = recipeDetails;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public class RecipeDetails {
@@ -136,52 +125,6 @@ public class RecipeApi {
 
         public void setSteps(List<String> steps) {
             this.steps = steps;
-        }
-    }
-
-    public class User {
-        @SerializedName("token")
-        private String token;
-
-        @SerializedName("username")
-        private String username;
-
-        @SerializedName("imgProfile")
-        private String imgProfile;
-
-        @SerializedName("biography")
-        private String biography;
-
-        public String getToken() {
-            return token;
-        }
-
-        public void setToken(String token) {
-            this.token = token;
-        }
-
-        public String getUsername() {
-            return username;
-        }
-
-        public void setUsername(String username) {
-            this.username = username;
-        }
-
-        public String getImgProfile() {
-            return imgProfile;
-        }
-
-        public void setImgProfile(String imgProfile) {
-            this.imgProfile = imgProfile;
-        }
-
-        public String getBiography() {
-            return biography;
-        }
-
-        public void setBiography(String biography) {
-            this.biography = biography;
         }
     }
 }

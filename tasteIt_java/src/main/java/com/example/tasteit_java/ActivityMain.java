@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tasteit_java.ApiService.ApiClient;
 import com.example.tasteit_java.ApiService.ApiRequests;
-import com.example.tasteit_java.ApiService.RecipeApi;
+import com.example.tasteit_java.ApiService.RecipeId_Recipe_User;
 import com.example.tasteit_java.adapters.AdapterGridViewMain;
 import com.example.tasteit_java.adapters.AdapterRecyclerMain;
 import com.example.tasteit_java.clases.Recipe;
@@ -189,15 +189,15 @@ public class ActivityMain extends AppCompatActivity {
 
         public void loadRecipes() {
 
-            apiRequests.getAllRecipes().enqueue(new Callback<List<RecipeApi>>() {
+            apiRequests.getAllRecipes().enqueue(new Callback<List<RecipeId_Recipe_User>>() {
                 @Override
-                public void onResponse(Call<List<RecipeApi>> call, Response<List<RecipeApi>> response) {
+                public void onResponse(Call<List<RecipeId_Recipe_User>> call, Response<List<RecipeId_Recipe_User>> response) {
                     if (response.isSuccessful()) {
-                        List<RecipeApi> recipeApis = response.body();
+                        List<RecipeId_Recipe_User> recipeApis = response.body();
                         List<Recipe> recipes = new ArrayList<>();
 
                         //tratamos los datos
-                        for (RecipeApi recipeApi : recipeApis) {
+                        for (RecipeId_Recipe_User recipeApi : recipeApis) {
                             Recipe recipe = new Recipe(
                                     recipeApi.getRecipeDetails().getName(),
                                     recipeApi.getRecipeDetails().getDescription(),
@@ -220,7 +220,7 @@ public class ActivityMain extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Call<List<RecipeApi>> call, Throwable t) {
+                public void onFailure(Call<List<RecipeId_Recipe_User>> call, Throwable t) {
                     // Hubo un error en la solicitud
                     Toast.makeText(ActivityMain.this, "Failed to load data", Toast.LENGTH_SHORT).show();
                 }

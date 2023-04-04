@@ -29,8 +29,6 @@ import com.example.tasteit_java.fragments.FragmentInfoNewRecipe;
 import com.example.tasteit_java.fragments.FragmentIngredientsNewRecipe;
 import com.example.tasteit_java.fragments.FragmentStepsNewRecipe;
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -45,7 +43,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
     private ViewPager2 vpPaginator;
     private Uri filePath;
     private BdConnection app;
-    private String uid;
+    private String token;
 
     private EditText etRecipeName;
 
@@ -57,9 +55,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
 
          app = new BdConnection();  //Instanciamos la conexion
 
-        //firebase User
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        uid = firebaseUser.getUid();
+        token = Utils.getUserToken();
 
         //menu superior
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -136,7 +132,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
 
     }
 
-    private void saveRecipe(String uid, BdConnection app){
+    private void saveRecipe(String token, BdConnection app){
         //fecha
         Calendar c = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -156,7 +152,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
         //recogemos datos del fragment ingredientes
         ArrayList<String> listIngredients = FragmentIngredientsNewRecipe.getIngredients();
         //recogemos el userName
-        String userName = app.retrieveNameCurrentUser(uid);
+        String userName = app.retrieveNameCurrentUser(token);
 
         //generacion automatica de tags
         ArrayList<String> listTags = new ArrayList<>();
@@ -180,7 +176,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
         if(checkFields()){
             Recipe r = new Recipe(name, description, listSteps, dateCreated, difficulty, userName, imgBase64, country, listTags, listIngredients);
             //insercion en neo
-            app.createRecipe(r, uid);
+            app.createRecipe(r, token);
             //redireccionamos al main
             startActivity(new Intent(ActivityNewRecipe.this, ActivityMain.class));
         } else{
@@ -243,7 +239,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
                 onBackPressed();
                 return true;
             case R.id.iSaveRecipe:
-                saveRecipe(uid,app);
+                saveRecipe(token,app);
                 return true;
         }
         return super.onOptionsItemSelected(item);

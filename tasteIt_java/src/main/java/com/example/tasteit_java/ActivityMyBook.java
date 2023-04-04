@@ -11,18 +11,17 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.tasteit_java.adapters.AdapterFragmentMyBook;
-import com.example.tasteit_java.bdConnection.BdConnection;
-import com.example.tasteit_java.clases.User;
+import com.example.tasteit_java.clases.Utils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 public class ActivityMyBook extends AppCompatActivity {
 
     private FloatingActionButton bCreate;
     private TabLayout tlRecipes;
     private ViewPager2 vpPaginator;
+    private String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,8 +29,7 @@ public class ActivityMyBook extends AppCompatActivity {
         setContentView(R.layout.activity_my_book);
 
         //recoger token usuario firebase
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        String token = firebaseUser.getUid();
+        token = Utils.getUserToken();
 
         //menu superior
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -66,8 +64,6 @@ public class ActivityMyBook extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(ActivityMyBook.this, ActivityNewRecipe.class);
-                User user = new BdConnection().retrieveUserbyUid(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                i.putExtra("user",user);
                 startActivity(i);
             }
         });
