@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -15,12 +17,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tasteit_java.ApiService.ApiClient;
 import com.example.tasteit_java.ApiService.ApiRequests;
-import com.example.tasteit_java.ApiService.RecipeId_Recipe_User;
+import com.example.tasteit_java.ApiService.RecipeApi;
 import com.example.tasteit_java.adapters.AdapterGridViewMain;
 import com.example.tasteit_java.adapters.AdapterRecyclerMain;
 import com.example.tasteit_java.clases.Recipe;
@@ -56,8 +57,7 @@ public class ActivityMain extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         pgMain = findViewById(R.id.pbMain);
-        rvRecipes = findViewById(R.id.rvRecipes);
-        //gvRecipes = findViewById(R.id.gvRecipes);
+        gvRecipes = findViewById(R.id.gvRecipes);
         bCreate = findViewById(R.id.bCreate);
 
         bringRecipes();
@@ -76,9 +76,6 @@ public class ActivityMain extends AppCompatActivity {
         //recoger token usuario firebase
         token = Utils.getUserToken();
 
-
-
-        /*
         //grid view
         gvRecipes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -126,7 +123,17 @@ public class ActivityMain extends AppCompatActivity {
                 currentTotalItemCount = totalItemCount;
             }
         });
+
+        //ya funciona, pero hace cosas raras en el scroll
+        //TEMPORAL - recycler view
+        /*
+        rvRecipes = findViewById(R.id.rvRecipes);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        rvRecipes.setLayoutManager(layoutManager);
+        adapterRecyclerView = new AdapterRecyclerMain(listRecipes);
+        rvRecipes.setAdapter(adapterRecyclerView);
         */
+
     }
 
     //MENU superior
@@ -188,16 +195,15 @@ public class ActivityMain extends AppCompatActivity {
         }
 
         public void loadRecipes() {
-
-            apiRequests.getAllRecipes().enqueue(new Callback<List<RecipeId_Recipe_User>>() {
+            apiRequests.getAllRecipes().enqueue(new Callback<List<RecipeApi>>() {
                 @Override
-                public void onResponse(Call<List<RecipeId_Recipe_User>> call, Response<List<RecipeId_Recipe_User>> response) {
+                public void onResponse(Call<List<RecipeApi>> call, Response<List<RecipeApi>> response) {
                     if (response.isSuccessful()) {
-                        List<RecipeId_Recipe_User> recipeApis = response.body();
+                        List<RecipeApi> recipeApis = response.body();
                         List<Recipe> recipes = new ArrayList<>();
 
                         //tratamos los datos
-                        for (RecipeId_Recipe_User recipeApi : recipeApis) {
+                        for (RecipeApi recipeApi : recipeApis) {
                             Recipe recipe = new Recipe(
                                     recipeApi.getRecipeDetails().getName(),
                                     recipeApi.getRecipeDetails().getDescription(),
@@ -220,7 +226,7 @@ public class ActivityMain extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Call<List<RecipeId_Recipe_User>> call, Throwable t) {
+                public void onFailure(Call<List<RecipeApi>> call, Throwable t) {
                     // Hubo un error en la solicitud
                     Toast.makeText(ActivityMain.this, "Failed to load data", Toast.LENGTH_SHORT).show();
                 }
@@ -234,34 +240,12 @@ public class ActivityMain extends AppCompatActivity {
         pgMain.setVisibility(View.GONE);
 
         listRecipes = (ArrayList<Recipe>) recipes;
-        /*
+
         adapter = new AdapterGridViewMain(getApplicationContext(), listRecipes);
 
         gvRecipes.setAdapter(adapter);
 
         adapter.notifyDataSetChanged();
-        */
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        rvRecipes.setLayoutManager(linearLayoutManager);
-        adapterRecyclerView = new AdapterRecyclerMain(listRecipes);
-        rvRecipes.setAdapter(adapterRecyclerView);
-        /*
-        rvRecipes.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-
-                // Verificar si el usuario se desplaza hacia arriba y está cerca del principio de la lista
-                if (dy < 0 && linearLayoutManager.findFirstVisibleItemPosition() < 10) {
-                    // Recargar el RecyclerView
-                    Toast.makeText(ActivityMain.this, "Refreshing...", Toast.LENGTH_SHORT).show();
-                    adapterRecyclerView.notifyDataSetChanged();
-                }
-            }
-        });
-        */
-
     }
 
     private void bringRecipes() {
