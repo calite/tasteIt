@@ -150,8 +150,6 @@ public class FragmentLikedRecipes extends Fragment {
         adapter = new AdapterGridViewMain(getContext(), listRecipes);
         gvRecipes.setAdapter(adapter);
         adapter.notifyDataSetChanged();
-
-
     }
 
     private void bringRecipes() {

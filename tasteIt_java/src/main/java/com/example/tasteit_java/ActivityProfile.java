@@ -45,7 +45,7 @@ public class ActivityProfile extends AppCompatActivity {
     private TextView tvUserName, tvReciperCounter, tvFollowersCounter, tvFollowingCounter, tvLikesCounter;
     private ImageView ivUserPicture;
     private Button btnFollow;
-    private ConstraintLayout tagRecipe, tagFollowers;
+    private ConstraintLayout tagRecipe, tagFollowers, tagFollowing, tagLikes;
     private BdConnection connection;
     private String uid;
     private Boolean myProfile;
@@ -138,6 +138,24 @@ public class ActivityProfile extends AppCompatActivity {
                 startActivity(i);
             }
         });
+        tagFollowing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getApplicationContext(), ActivityProfileData.class);
+                i.putExtra("uid", uid);
+                i.putExtra("dataType", 3);
+                startActivity(i);
+            }
+        });
+        tagLikes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getApplicationContext(), ActivityProfileData.class);
+                i.putExtra("uid", uid);
+                i.putExtra("dataType", 4);
+                startActivity(i);
+            }
+        });
     }
 
     //Metodo para instanciar los elementos de la UI
@@ -166,6 +184,8 @@ public class ActivityProfile extends AppCompatActivity {
 
         tagRecipe = findViewById(R.id.tagRecipe);
         tagFollowers = findViewById(R.id.tagFollowers);
+        tagFollowing = findViewById(R.id.tagFollowing);
+        tagLikes = findViewById(R.id.tagLikes);
     }
 
     //Metodo para traer los datos del perfil
@@ -223,7 +243,7 @@ public class ActivityProfile extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
-                Toast.makeText(this, "Aqui finalizamos", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Aqui finalizamos", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.iEditProfile:
                 startActivity(new Intent(getApplicationContext(), ActivityEditProfile.class));

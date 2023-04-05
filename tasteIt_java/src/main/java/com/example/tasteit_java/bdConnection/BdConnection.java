@@ -544,7 +544,7 @@ public class BdConnection implements AutoCloseable {
 
     public ArrayList<Recipe> recipesLiked(String uid) {
 
-        //MATCH (u:User)-[c:Liked]->(r:Recipe) WHERE  u.token = "xmg10sMQgMS4392zORWGW7TQ1Qg2" Return r
+        //MATCH (u:User)-[:Liked]->(r:Recipe)-[:Created]-(u1:User) WHERE u.token = '' Return u1.username, r, ID(r)
 
         ArrayList<Recipe> listRecipes = new ArrayList<>();
 
@@ -552,7 +552,7 @@ public class BdConnection implements AutoCloseable {
             //Iniciamos una sesion con la bd (el driver se configura en el constructor)
             Session session = openSession();
             //Creamos la sentencia que se ejecutara y guardamos el resultado
-            Query query = new Query("MATCH (u:User)-[c:Liked]->(r:Recipe) WHERE u.token = '"+uid+"' Return u.username,r");
+            Query query = new Query("MATCH (u:User)-[:Liked]->(r:Recipe)-[:Created]-(u1:User) WHERE u.token = '" + uid + "' RETURN u1.username, r, ID(r)");
             Result result = session.run(query);
 
             while (result.hasNext()) //Mientras haya registros..
@@ -584,8 +584,9 @@ public class BdConnection implements AutoCloseable {
                 for (Object obj : listIngredients) {
                     arrayListIngredients.add(obj.toString());
                 }
+                int idRecipe = record.get(2).asInt();
                 //creamos una receta nueva
-                Recipe recipe = new Recipe(name, description, arrayListSteps, dateCreated, difficulty, creator, image, country, arrayListTags, arrayListIngredients); //Lo mostramos segun su tipo
+                Recipe recipe = new Recipe(name, description, arrayListSteps, dateCreated, difficulty, creator, image, country, arrayListTags, arrayListIngredients,idRecipe,""); //Lo mostramos segun su tipo
                 listRecipes.add(recipe);
             }
             closeSession(session); //Cerramos la sesión
@@ -785,6 +786,38 @@ public class BdConnection implements AutoCloseable {
             Session session = openSession();
             //Creamos la sentencia que se ejecutara y guardamos el resultado
             Query query = new Query("MATCH (n1:User)<-[:Following]-(n2:User) WHERE n1.token = '" + uid + "' RETURN n2");
+            Result result = session.run(query);
+            while (result.hasNext()) //Mientras haya registros..
+            {
+                Record record = result.next();
+                Node node = record.get(0).asNode();
+
+                String name = node.get("username").asString();
+                String biography = node.get("biography").asString();
+                String imgProfile = node.get("imgProfile").asString();
+                String token = node.get("token").asString();
+                users.add(new User(name, biography, imgProfile, token));
+            }
+
+            closeSession(session); //Cerramos la sesión
+            return users; //Retornamos el valor
+            // You should capture any errors along with the query and data for traceability
+        } catch (Neo4jException ex) {
+            LOGGER.log(Level.SEVERE, " raised an exception", ex);
+            throw ex;
+        } catch (NoSuchRecordException ex) {
+            LOGGER.log(Level.SEVERE, "No record found raised an exception", ex);
+            throw ex;
+        }
+    }
+
+    public ArrayList<User> retrieveFollowingByUid(String uid) {
+        ArrayList<User> users = new ArrayList<>();
+
+        try {
+            Session session = openSession();
+            //Creamos la sentencia que se ejecutara y guardamos el resultado
+            Query query = new Query("MATCH (n1:User)-[:Following]->(n2:User) WHERE n1.token = '" + uid + "' RETURN n2");
             Result result = session.run(query);
             while (result.hasNext()) //Mientras haya registros..
             {

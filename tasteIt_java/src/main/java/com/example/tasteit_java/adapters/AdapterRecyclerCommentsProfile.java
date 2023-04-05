@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tasteit_java.R;
@@ -19,6 +20,7 @@ import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
+import com.example.tasteit_java.fragments.FragmentComments;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -70,13 +72,13 @@ public class AdapterRecyclerCommentsProfile extends RecyclerView.Adapter<Adapter
         User user = new BdConnection().retrieveUserbyUid(uidsComments.get(position));
 
         if(uidsComments.get(position).equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-            /*llComment.setOnLongClickListener(new View.OnLongClickListener() {
+            holder.llComment.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
                     Toast.makeText(context, "Este comentario es tuyo y pronto lo podras editar!", Toast.LENGTH_SHORT).show();
-                    return false;
+                    return true;
                 }
-            });*/
+            });
         }
 
         holder.tvAuthor.setText(user.getUsername());

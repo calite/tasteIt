@@ -8,7 +8,8 @@
         android:id="@+id/iProfile"
         android:title="Profile"
         android:icon="@drawable/ic_default_profile"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
+
     <item
         android:id="@+id/iCloseSesion"
         android:title="Close Session"/>

@@ -136,7 +136,7 @@ public class FragmentComments extends Fragment {
         DividerItemDecoration divider = new DividerItemDecoration(rvLvComments.getContext(), DividerItemDecoration.VERTICAL);
         rvLvComments.addItemDecoration(divider);
 
-        final GestureDetector mGestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
+        final GestureDetector singleGestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override public boolean onSingleTapUp(MotionEvent e) {
                 return true;
             }
@@ -147,8 +147,7 @@ public class FragmentComments extends Fragment {
             public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
                 try {
                     View child = rv.findChildViewUnder(e.getX(), e.getY());
-                    if (child != null && mGestureDetector.onTouchEvent(e)) {
-
+                    if (child != null && singleGestureDetector.onTouchEvent(e)) {
                         int position = rv.getChildAdapterPosition(child);
 
                         Intent intent = new Intent(getActivity().getApplicationContext(), ActivityProfile.class);
@@ -174,15 +173,6 @@ public class FragmentComments extends Fragment {
 
             }
         });
-
-        /*lvComments.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(getActivity().getApplicationContext(), ActivityProfile.class);
-                intent.putExtra("uid", uidsComments.get(i));
-                startActivity(intent);
-            }
-        });*/
 
         if(!myProfile) {
             ivMyPhoto = view.findViewById(R.id.ivMyPhoto);

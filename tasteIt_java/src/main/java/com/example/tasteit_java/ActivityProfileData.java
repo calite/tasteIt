@@ -1,5 +1,6 @@
 package com.example.tasteit_java;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -8,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -42,15 +45,25 @@ public class ActivityProfileData extends AppCompatActivity {
                 getSupportActionBar().setTitle("My Recipes");
                 break;
             }
-            case 2: { //Recipes
+            case 2: { //Followers
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 getSupportActionBar().setTitle("My Followers");
+                break;
+            }
+            case 3: { //Following
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setTitle("Following");
+                break;
+            }
+            case 4: { //Following
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setTitle("Recipes liked");
                 break;
             }
         }
 
         rvListData = findViewById(R.id.rvListData);
-        adapter = new AdapterRecyclerProfileData(this, uidProfile, dataType);
+        adapter = new AdapterRecyclerProfileData(this, uidProfile, dataType, this);
         rvListData.setAdapter(adapter);
 
         rvListData.setLayoutManager(new LinearLayoutManager(this));

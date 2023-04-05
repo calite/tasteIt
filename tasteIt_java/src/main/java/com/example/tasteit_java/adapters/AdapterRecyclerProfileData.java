@@ -1,6 +1,7 @@
 package com.example.tasteit_java.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -11,11 +12,20 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.tasteit_java.ActivityProfile;
+import com.example.tasteit_java.ActivityRecipe;
+import com.example.tasteit_java.ApiService.ApiClient;
+import com.example.tasteit_java.ApiService.ApiRequests;
+import com.example.tasteit_java.ApiService.RecipeId_Recipe_User;
 import com.example.tasteit_java.R;
 import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.Recipe;
@@ -26,6 +36,11 @@ import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AdapterRecyclerProfileData extends RecyclerView.Adapter<AdapterRecyclerProfileData.ViewHolder> {
 
@@ -33,22 +48,25 @@ public class AdapterRecyclerProfileData extends RecyclerView.Adapter<AdapterRecy
     private String uidProfile;
     private int dataType;
     private ArrayList<Object> data;
+    private LifecycleOwner lifecycleOwner;
 
-    public AdapterRecyclerProfileData(Context context, String uid, int dataType) {
+    public AdapterRecyclerProfileData(Context context, String uid, int dataType, LifecycleOwner lifecycleOwner) {
         this.context = context;
         this.uidProfile = uid;
         this.dataType = dataType;
         data = new ArrayList<>();
+
+        this.lifecycleOwner = lifecycleOwner;
 
         new TaskLoadUser().execute();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView ivAuthor;
-        TextView tvAuthor, tvComment, tvDateCreated, symbol;
+        TextView tvAuthor, tvComment, tvDateCreated;
         Button btnFollow;
         ChipGroup cgTags;
-        LinearLayout llComment;
+        ConstraintLayout llComment;
 
         public ViewHolder(@NonNull View itemView, int dataType) {
             super(itemView);
@@ -59,7 +77,7 @@ public class AdapterRecyclerProfileData extends RecyclerView.Adapter<AdapterRecy
 
             switch (dataType) {
                 case 1:
-                case 4: { //Recipes & Likes
+                case 4: { //Recipes & Liked
                     tvDateCreated = itemView.findViewById(R.id.tvDateCreated);
                     tvDateCreated.setEnabled(true);
                     tvDateCreated.setVisibility(View.VISIBLE);
@@ -70,14 +88,10 @@ public class AdapterRecyclerProfileData extends RecyclerView.Adapter<AdapterRecy
                     break;
                 }
                 case 2:
-                case 3: { //Followers & FollowingsL
+                case 3: { //Followers & Followings
                     btnFollow = itemView.findViewById(R.id.btnFollow);
                     btnFollow.setEnabled(true);
                     btnFollow.setVisibility(View.VISIBLE);
-
-                    symbol = itemView.findViewById(R.id.symbol);
-                    symbol.setEnabled(true);
-                    symbol.setVisibility(View.VISIBLE);
 
                     break;
                 }
@@ -95,9 +109,10 @@ public class AdapterRecyclerProfileData extends RecyclerView.Adapter<AdapterRecy
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        int pos = position;
         switch (dataType) {
             case 1:
-            case 4: { //Recipes & Likes
+            case 4: { //Recipes & Liked
                 Recipe temp = ((Recipe) data.get(position));
 
                 holder.tvAuthor.setText(temp.getName());
@@ -114,6 +129,17 @@ public class AdapterRecyclerProfileData extends RecyclerView.Adapter<AdapterRecy
                     holder.cgTags.addView(chip);
                 }
                 holder.ivAuthor.setImageBitmap(Utils.decodeBase64(temp.getImage()));
+
+                holder.llComment.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(context, ActivityRecipe.class);
+                        intent.putExtra("recipeId", ((Recipe) data.get(pos)).getId());
+                        intent.putExtra("creatorToken", uidProfile);
+                        context.startActivity(intent);
+                    }
+                });
+
                 break;
             }
             case 2:
@@ -140,6 +166,16 @@ public class AdapterRecyclerProfileData extends RecyclerView.Adapter<AdapterRecy
                         }
                     }
                 });
+
+                holder.llComment.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(context, ActivityProfile.class);
+                        intent.putExtra("uid", ((User) data.get(position)).getUid());
+                        context.startActivity(intent);
+                    }
+                });
+
                 break;
             }
         }
@@ -174,7 +210,11 @@ public class AdapterRecyclerProfileData extends RecyclerView.Adapter<AdapterRecy
                     break;
                 }
                 case 3: { //Followings
-
+                    supp.addAll(new BdConnection().retrieveFollowingByUid(uidProfile));
+                    break;
+                }
+                case 4: { //Recipes Liked
+                    supp.addAll(new BdConnection().recipesLiked(uidProfile));
                     break;
                 }
             }
@@ -188,4 +228,5 @@ public class AdapterRecyclerProfileData extends RecyclerView.Adapter<AdapterRecy
             notifyDataSetChanged();
         }
     }
+
 }
