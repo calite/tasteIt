@@ -25,13 +25,13 @@
                 android:id="@+id/ivProfilePhoto"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
-                app:shapeAppearanceOverlay="@style/roundedImageView"
-                app:strokeColor="@color/black"
-                app:strokeWidth="2dp"
                 android:padding="2dp"
                 android:src="@drawable/ic_default_profile"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:shapeAppearanceOverlay="@style/roundedImageView"
+                app:strokeColor="@color/black"
+                app:strokeWidth="2dp" />
 
 
             <TextView
@@ -43,12 +43,13 @@
                 android:fontFamily="@font/comfortaa_bold"
                 android:text="USERNAME"
                 android:textColor="@color/white"
+                android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.811"
                 app:layout_constraintStart_toEndOf="@+id/ivProfilePhoto"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.496" />
+                app:layout_constraintVertical_bias="0.25" />
 
             <ImageButton
                 android:id="@+id/ibPickPhoto"
@@ -85,10 +86,10 @@
             android:hint="Username"
             android:inputType="text"
             android:minHeight="48dp"
+            android:singleLine="true"
             android:textAlignment="center"
             app:layout_constraintTop_toBottomOf="@+id/textView3"
-            tools:layout_editor_absoluteX="0dp"
-            android:singleLine="true"/>
+            tools:layout_editor_absoluteX="0dp" />
 
         <TextView
             android:id="@+id/textView6"
@@ -109,15 +110,15 @@
             android:ems="10"
             android:fontFamily="@font/comfortaa_light"
             android:hint="Biography"
-            android:textAlignment="center"
-            android:minHeight="48dp"
-            app:layout_constraintTop_toBottomOf="@+id/textView6"
-            tools:layout_editor_absoluteX="0dp"
-
             android:inputType="textMultiLine"
             android:lines="3"
+            android:maxLength="140"
+            android:minHeight="48dp"
+
             android:scrollbars="vertical"
-            android:maxLength="140"/>
+            android:textAlignment="center"
+            app:layout_constraintTop_toBottomOf="@+id/textView6"
+            tools:layout_editor_absoluteX="0dp" />
 
         <TextView
             android:id="@+id/textView4"
@@ -147,74 +148,112 @@
             app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/optChangePass"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:paddingLeft="20dp"
-            android:text="Password"
+            android:layout_marginHorizontal="50dp"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/comfortaa_bold"
+            android:paddingEnd="10dp"
+            android:text="Change password? "
+            android:textAlignment="textEnd"
+            android:textColor="@color/maroon"
+            android:textStyle="italic"
             app:layout_constraintTop_toBottomOf="@+id/etEmail" />
 
-
-        <EditText
-            android:id="@+id/etPassword"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:ems="10"
-            android:fontFamily="@font/comfortaa_light"
-            android:hint="@string/password"
-            android:inputType="textPassword"
-            android:minHeight="48dp"
-            android:textAlignment="center"
-            app:layout_constraintTop_toBottomOf="@+id/textView5"
-            android:singleLine="true"/>
-
-        <TextView
-            android:id="@+id/tvConfirmPassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/optChangePass"
             android:layout_marginTop="10dp"
-            android:paddingLeft="20dp"
-            android:text="Confirm Password"
-            android:visibility="invisible"
-            app:layout_constraintTop_toBottomOf="@+id/etPassword" />
+            android:visibility="invisible">
+
+            <TextView
+                android:id="@+id/tvOldPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:paddingLeft="20dp"
+                android:text="Old Password"
+                app:layout_constraintTop_toTopOf="parent" />
 
 
-        <EditText
-            android:id="@+id/etConfirmPassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:ems="10"
-            android:fontFamily="@font/comfortaa_light"
-            android:hint="@string/Confirm_password"
-            android:inputType="textPassword"
-            android:minHeight="48dp"
-            android:textAlignment="center"
-            android:visibility="invisible"
-            app:layout_constraintTop_toBottomOf="@+id/tvConfirmPassword"
-            android:singleLine="true"/>
+            <EditText
+                android:id="@+id/etOldPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:ems="10"
+                android:fontFamily="@font/comfortaa_light"
+                android:hint="Old Password"
+                android:inputType="textPassword"
+                android:minHeight="48dp"
+                android:singleLine="true"
+                android:textAlignment="center"
+                app:layout_constraintTop_toBottomOf="@+id/tvOldPassword" />
+
+            <TextView
+                android:id="@+id/tvNewPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:paddingLeft="20dp"
+                android:text="New Password"
+                app:layout_constraintTop_toBottomOf="@+id/etOldPassword" />
+
+
+            <EditText
+                android:id="@+id/etNewPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:ems="10"
+                android:fontFamily="@font/comfortaa_light"
+                android:hint="@string/password"
+                android:inputType="textPassword"
+                android:minHeight="48dp"
+                android:singleLine="true"
+                android:textAlignment="center"
+                app:layout_constraintTop_toBottomOf="@+id/tvNewPassword" />
+
+            <TextView
+                android:id="@+id/tvConfirmPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:paddingLeft="20dp"
+                android:text="Confirm Password"
+                app:layout_constraintTop_toBottomOf="@+id/etNewPassword" />
+
+
+            <EditText
+                android:id="@+id/etConfirmPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:ems="10"
+                android:fontFamily="@font/comfortaa_light"
+                android:hint="@string/Confirm_password"
+                android:inputType="textPassword"
+                android:minHeight="48dp"
+                android:singleLine="true"
+                android:textAlignment="center"
+                app:layout_constraintTop_toBottomOf="@+id/tvConfirmPassword" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <Button
             android:id="@+id/btnSave"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginHorizontal="30dp"
             android:fontFamily="@font/comfortaa_bold"
             android:text="save changes"
-            app:layout_constraintTop_toBottomOf="@+id/etPassword"
+            app:layout_constraintTop_toBottomOf="@id/optChangePass"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="0.5"
             tools:layout_editor_absoluteX="0dp" />
-
-        <!--<Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="callSignOut"
-            android:text="logout"
-            app:layout_constraintTop_toBottomOf="@+id/btnSave"
-            android:fontFamily="@font/comfortaa_bold"
-            android:layout_marginHorizontal="20dp"/>-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

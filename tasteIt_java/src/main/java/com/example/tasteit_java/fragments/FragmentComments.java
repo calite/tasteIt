@@ -33,6 +33,7 @@ import com.example.tasteit_java.adapters.AdapterFragmentComments;
 import com.example.tasteit_java.adapters.AdapterRecyclerCommentsProfile;
 import com.example.tasteit_java.adapters.AdapterRecyclerPhotosProfile;
 import com.example.tasteit_java.bdConnection.BdConnection;
+import com.example.tasteit_java.clases.Comment;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
@@ -66,19 +67,18 @@ public class FragmentComments extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private ArrayList<String> uidsComments;
+    private ArrayList<Comment> uidsComments;
     private String uidProfile;
     private Boolean myProfile;
-    //private AdapterFragmentComments adapter;
-    //private ListView lvComments;
+    private static int editCommentId;
 
     private RecyclerView rvLvComments;
     private AdapterRecyclerCommentsProfile adapter;
 
     private ConstraintLayout clComment;
     private ShapeableImageView ivMyPhoto;
-    private EditText etComment;
-    private Button btnAddComment;
+    private static EditText etComment;
+    private static Button btnAddComment, btnEditComment;
 
     public FragmentComments() {
         // Required empty public constructor
@@ -128,7 +128,7 @@ public class FragmentComments extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_comments, container, false);
 
-        adapter = new AdapterRecyclerCommentsProfile(getContext(), uidProfile);
+        adapter = new AdapterRecyclerCommentsProfile(getContext(), uidProfile, myProfile);
         rvLvComments = view.findViewById(R.id.rvLvComments);
         rvLvComments.setAdapter(adapter);
 
@@ -136,53 +136,27 @@ public class FragmentComments extends Fragment {
         DividerItemDecoration divider = new DividerItemDecoration(rvLvComments.getContext(), DividerItemDecoration.VERTICAL);
         rvLvComments.addItemDecoration(divider);
 
-        final GestureDetector singleGestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
-            @Override public boolean onSingleTapUp(MotionEvent e) {
-                return true;
-            }
-        });
-
-        rvLvComments.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
-            @Override
-            public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
-                try {
-                    View child = rv.findChildViewUnder(e.getX(), e.getY());
-                    if (child != null && singleGestureDetector.onTouchEvent(e)) {
-                        int position = rv.getChildAdapterPosition(child);
-
-                        Intent intent = new Intent(getActivity().getApplicationContext(), ActivityProfile.class);
-                        intent.putExtra("uid", uidsComments.get(position));
-                        startActivity(intent);
-
-                        return true;
-                    }
-                }catch (Exception ex){
-                    ex.printStackTrace();
-                }
-
-                return false;
-            }
-
-            @Override
-            public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
-
-            }
-
-            @Override
-            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-
-            }
-        });
-
         if(!myProfile) {
             ivMyPhoto = view.findViewById(R.id.ivMyPhoto);
             etComment = view.findViewById(R.id.etComment);
             btnAddComment = view.findViewById(R.id.btnAddComment);
+            btnEditComment = view.findViewById(R.id.btnEditComment);
         }
         clComment = view.findViewById(R.id.clComment);
         hideAddComment(myProfile);
 
         return view;
+    }
+
+    public static void editComment(int id, String comment) {
+        btnAddComment.setVisibility(View.INVISIBLE);
+        btnAddComment.setEnabled(false);
+
+        btnEditComment.setVisibility(View.VISIBLE);
+        btnEditComment.setEnabled(true);
+
+        etComment.setText(comment);
+        editCommentId = id;
     }
 
     public void hideAddComment(Boolean visibility) {
@@ -198,32 +172,45 @@ public class FragmentComments extends Fragment {
                 @Override
                 public void onClick(View view) {
                     new BdConnection().commentUser(FirebaseAuth.getInstance().getCurrentUser().getUid(), uidProfile, etComment.getText().toString());
-                    uidsComments.add(FirebaseAuth.getInstance().getCurrentUser().getUid());
                     adapter.updateComments();
                     etComment.setText("");
                 }
             });
+
+            btnEditComment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    new BdConnection().editComment(editCommentId, etComment.getText().toString());
+                    adapter.updateComments();
+                    etComment.setText("");
+
+                    btnEditComment.setVisibility(View.INVISIBLE);
+                    btnEditComment.setEnabled(false);
+
+                    btnAddComment.setVisibility(View.VISIBLE);
+                    btnAddComment.setEnabled(true);
+                }
+            });
+
         } else {
             clComment.setVisibility(View.INVISIBLE);
             clComment.setClickable(false);
         }
     }
 
-    class TaskLoadUserComments extends AsyncTask<HashMap<String, String>, Void,HashMap<String, String>> {
+    class TaskLoadUserComments extends AsyncTask<ArrayList<Comment>, Void,ArrayList<Comment>> {
         @Override
         protected void onPreExecute() {
 
         }
         @Override
-        protected HashMap<String, String> doInBackground(HashMap<String, String>... hashMaps) {
+        protected ArrayList<Comment> doInBackground(ArrayList<Comment>... hashMaps) {
             return new BdConnection().retrieveCommentsbyUid(uidProfile);
         }
         @Override
-        protected void onPostExecute(HashMap<String, String> userComments) {
+        protected void onPostExecute(ArrayList<Comment> userComments) {
             //super.onPostExecute(recipes);
-            Set<String> keySet = userComments.keySet();
-            uidsComments = new ArrayList<>(keySet);
-
+            uidsComments = new ArrayList<>(userComments);
             adapter.notifyDataSetChanged();
         }
     }

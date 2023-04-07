@@ -24,7 +24,13 @@ import android.widget.Toast;
 import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class ActivityEditProfile extends AppCompatActivity {
 
@@ -32,9 +38,9 @@ public class ActivityEditProfile extends AppCompatActivity {
 
     private ImageView ivProfilePhoto;
 
-    private TextView tvUsername, tvConfirmPassword;
+    private TextView tvUsername, tvConfirmPassword, optChangePass;
 
-    private EditText etUsername, etEmail, etPassword, etConfirmPassword, etBiography;
+    private EditText etUsername, etEmail, etNewPassword, etConfirmPassword, etBiography, etOldPassword;
 
     private Button btnSave;
 
@@ -46,7 +52,7 @@ public class ActivityEditProfile extends AppCompatActivity {
 
     private Uri filePath;
 
-    private ConstraintLayout constraintLayout;
+    private ConstraintLayout constraintLayout, clPassword;
 
     private ConstraintSet constraintSet;
 
@@ -101,45 +107,6 @@ public class ActivityEditProfile extends AppCompatActivity {
                 }
             }
         });
-
-        //Agregamos un listener a la password
-        etPassword.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(charSequence.length() > 0) {
-                    tvConfirmPassword.setVisibility(View.VISIBLE);
-                    etConfirmPassword.setVisibility(View.VISIBLE);
-
-                    constraintLayout = findViewById(R.id.mainLayout);
-                    constraintSet = new ConstraintSet();
-                    constraintSet.clone(constraintLayout);
-
-                    constraintSet.connect(btnSave.getId(), ConstraintSet.TOP, etConfirmPassword.getId(), ConstraintSet.BOTTOM, 30);
-                    constraintSet.applyTo(constraintLayout);
-                } else {
-                    tvConfirmPassword.setVisibility(View.INVISIBLE);
-                    etConfirmPassword.setVisibility(View.INVISIBLE);
-
-                    constraintLayout = findViewById(R.id.mainLayout);
-                    constraintSet = new ConstraintSet();
-                    constraintSet.clone(constraintLayout);
-
-                    constraintSet.connect(btnSave.getId(), ConstraintSet.TOP, etPassword.getId(), ConstraintSet.BOTTOM, 30);
-                    constraintSet.applyTo(constraintLayout);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-
     }
 
     //Metodo para instanciar los elementos de la UI
@@ -150,11 +117,39 @@ public class ActivityEditProfile extends AppCompatActivity {
         tvUsername = findViewById(R.id.tvUsername);
         etUsername = findViewById(R.id.etUsername);
         etEmail = findViewById(R.id.etEmail);
-        etPassword = findViewById(R.id.etPassword);
+        etNewPassword = findViewById(R.id.etNewPassword);
+        etOldPassword = findViewById(R.id.etOldPassword);
         etBiography = findViewById(R.id.etBiography);
         tvConfirmPassword = findViewById(R.id.tvConfirmPassword);
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
         btnSave = findViewById(R.id.btnSave);
+        optChangePass = findViewById(R.id.optChangePass);
+        clPassword = findViewById(R.id.clPassword);
+
+        optChangePass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(clPassword.getVisibility() != View.VISIBLE) {
+                    clPassword.setVisibility(View.VISIBLE);
+
+                    constraintLayout = findViewById(R.id.mainLayout);
+                    constraintSet = new ConstraintSet();
+                    constraintSet.clone(constraintLayout);
+
+                    constraintSet.connect(btnSave.getId(), ConstraintSet.TOP, clPassword.getId(), ConstraintSet.BOTTOM, 30);
+                    constraintSet.applyTo(constraintLayout);
+                } else {
+                    clPassword.setVisibility(View.INVISIBLE);
+
+                    constraintLayout = findViewById(R.id.mainLayout);
+                    constraintSet = new ConstraintSet();
+                    constraintSet.clone(constraintLayout);
+
+                    constraintSet.connect(btnSave.getId(), ConstraintSet.TOP, optChangePass.getId(), ConstraintSet.BOTTOM, 30);
+                    constraintSet.applyTo(constraintLayout);
+                }
+            }
+        });
     }
 
     //Metodo para traer los datos del perfil
@@ -183,16 +178,36 @@ public class ActivityEditProfile extends AppCompatActivity {
         String imagenB64 = Utils.encodeTobase64(newProfileImage);
         String username = etUsername.getText().toString();
         String bio = etBiography.getText().toString();
-        String password = etPassword.getText().toString();
+        String oldPassword = etOldPassword.getText().toString();
+        String newPassword = etNewPassword.getText().toString();
         String ConfPass = etConfirmPassword.getText().toString();
 
-        if(password.length() >= 6 && password.equals(ConfPass)) {
-            //FirebaseAuth.getInstance().getCurrentUser().reauthenticate();
-            FirebaseAuth.getInstance().getCurrentUser().updatePassword(password);
-            connection.changeDataUser(FirebaseAuth.getInstance().getCurrentUser().getUid(), username, imagenB64, bio);
-            Toast.makeText(this, "Data and password saved successfully", Toast.LENGTH_SHORT).show();
+        if(newPassword.length() >= 6 && newPassword.equals(ConfPass) && oldPassword.length() > 0) {
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            final String email = user.getEmail();
+            AuthCredential credential = EmailAuthProvider.getCredential(email,oldPassword);
+            user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(Task<Void> task) {
+                    if(task.isSuccessful()){
+                        user.updatePassword(newPassword).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(Task<Void> task) {
+                                if(!task.isSuccessful()){
+                                    Toast.makeText(ActivityEditProfile.this, "Something went wrong. Please try again later", Toast.LENGTH_SHORT).show();
+                                }else {
+                                    connection.changeDataUser(FirebaseAuth.getInstance().getCurrentUser().getUid(), username, imagenB64, bio);
+                                    Toast.makeText(ActivityEditProfile.this, "Data and password successfully modified", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }else {
+                        Toast.makeText(ActivityEditProfile.this, "Authentication Failed", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
             return true;
-        } else if(password.length() == 0 && ConfPass.length() == 0) {
+        } else if(clPassword.getVisibility() == View.INVISIBLE && oldPassword.length() == 0) {
             connection.changeDataUser(FirebaseAuth.getInstance().getCurrentUser().getUid(), username, imagenB64, bio);
             Toast.makeText(this, "Data saved successfully", Toast.LENGTH_SHORT).show();
             return true;
@@ -202,44 +217,6 @@ public class ActivityEditProfile extends AppCompatActivity {
         }
     }
     //END GUARDADO DE DATOS
-
-    //PHOTO PICKER
-    /*private void selectImage() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_PICK);
-        startActivityForResult(Intent.createChooser(intent,"Select a Picture"), SELECT_PICTURE);
-    }
-
-    private void uploadImage() {
-        if (filePath != null) {
-            //mostrara un dialog con el progreso
-            ProgressDialog progressDialog = new ProgressDialog(this);
-            progressDialog.setTitle("Uploading...");
-            progressDialog.show();
-            //alojamiento en el servidor
-            StorageReference ref = storageReference.child("images/" + UUID.randomUUID().toString());
-            //listeners para el resultado de la subida
-            ref.putFile(filePath)
-                    .addOnSuccessListener( new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onSuccess(
-                                        UploadTask.TaskSnapshot taskSnapshot) {
-                                    //correcto
-                                    progressDialog.dismiss();
-                                    Toast.makeText(ActivityEditProfile.this,"Image Uploaded!!", Toast.LENGTH_SHORT).show();
-                                }
-                            })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            //fail
-                            progressDialog.dismiss();
-                            Toast.makeText(ActivityEditProfile.this,"Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-        }
-    }*/
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

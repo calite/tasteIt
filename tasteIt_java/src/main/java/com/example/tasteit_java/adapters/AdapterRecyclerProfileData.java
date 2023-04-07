@@ -3,6 +3,7 @@ package com.example.tasteit_java.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
@@ -63,13 +64,17 @@ public class AdapterRecyclerProfileData extends RecyclerView.Adapter<AdapterRecy
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView ivAuthor;
-        TextView tvAuthor, tvComment, tvDateCreated;
+        TextView tvAuthor, tvComment, tvDateCreated, tvCreator;
         Button btnFollow;
         ChipGroup cgTags;
         ConstraintLayout llComment;
+        int dataType;
+        Context context;
 
-        public ViewHolder(@NonNull View itemView, int dataType) {
+        public ViewHolder(@NonNull View itemView, int dataType, Context context) {
             super(itemView);
+            this.dataType = dataType;
+            this.context = context;
             ivAuthor = itemView.findViewById(R.id.ivAuthor);
             tvAuthor = itemView.findViewById(R.id.tvAuthor);
             tvComment = itemView.findViewById(R.id.tvComment);
@@ -85,6 +90,10 @@ public class AdapterRecyclerProfileData extends RecyclerView.Adapter<AdapterRecy
                     cgTags = itemView.findViewById(R.id.cgTags);
                     cgTags.setEnabled(true);
                     cgTags.setVisibility(View.VISIBLE);
+
+                    tvCreator = itemView.findViewById(R.id.tvCreator);
+                    tvCreator.setEnabled(true);
+                    tvCreator.setVisibility(View.VISIBLE);
                     break;
                 }
                 case 2:
@@ -98,87 +107,96 @@ public class AdapterRecyclerProfileData extends RecyclerView.Adapter<AdapterRecy
             }
 
         }
+
+        void bindRow(@NonNull Object data) {
+            switch (dataType) {
+                case 1:
+                case 4: { //Recipes & Liked
+                    Recipe temp = ((Recipe) data);
+
+                    tvAuthor.setText(temp.getName());
+                    tvComment.setText(temp.getDescription());
+                    tvDateCreated.setText(temp.getDateCreated());
+                    tvCreator.setText(temp.getCreator());
+
+                    cgTags.setChipSpacingHorizontal(8);
+
+                    for (String s : temp.getTags()) {
+                        Chip chip = new Chip(context);
+                        chip.setText(s);
+                        chip.setChipBackgroundColor(ColorStateList.valueOf(context.getResources().getColor(R.color.maroon)));
+                        chip.setTextColor(Color.WHITE);
+                        cgTags.addView(chip);
+                    }
+
+                    llComment.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(context, ActivityRecipe.class);
+                            intent.putExtra("recipeId", ((Recipe) data).getId());
+                            intent.putExtra("creatorToken", ((Recipe) data).getCreatorToken());
+                            context.startActivity(intent);
+                        }
+                    });
+
+                    ivAuthor.setImageBitmap(Utils.decodeBase64(temp.getImage()));
+                    break;
+                }
+                case 2:
+                case 3: { //Followers & Followings
+                    User temp = ((User) data);
+
+                    String token = Utils.getUserToken();
+
+                    tvAuthor.setText(temp.getUsername());
+                    tvComment.setText(temp.getBiography());
+                    ivAuthor.setImageBitmap(Utils.decodeBase64(temp.getImgProfile()));
+
+                    if (new BdConnection().isFollowing(token, temp.getUid())) {
+                        btnFollow.setText("UNFOLLOW");
+                    } else if (token.equals(temp.getUid())) {
+                        btnFollow.setVisibility(View.INVISIBLE);
+                        btnFollow.setEnabled(false);
+                    }
+
+                    btnFollow.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (new BdConnection().isFollowing(token, temp.getUid())) {
+                                new BdConnection().unFollowUser(token, temp.getUid());
+                                btnFollow.setText("FOLLOW");
+                            } else {
+                                new BdConnection().followUser(token, temp.getUid());
+                                btnFollow.setText("UNFOLLOW");
+                            }
+                        }
+                    });
+
+                    llComment.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(context, ActivityProfile.class);
+                            intent.putExtra("uid", temp.getUid());
+                            context.startActivity(intent);
+                        }
+                    });
+                    break;
+                }
+            }
+        }
     }
 
     @NonNull
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_profile_data, null, false);
-        return new ViewHolder(view, dataType);
+        return new ViewHolder(view, dataType, context);
         //return null;
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        int pos = position;
-        switch (dataType) {
-            case 1:
-            case 4: { //Recipes & Liked
-                Recipe temp = ((Recipe) data.get(position));
-
-                holder.tvAuthor.setText(temp.getName());
-                holder.tvComment.setText(temp.getDescription());
-                holder.tvDateCreated.setText(temp.getDateCreated());
-
-                holder.cgTags.setChipSpacingHorizontal(8);
-
-                for (String s : temp.getTags()) {
-                    Chip chip = new Chip(context);
-                    chip.setText(s);
-                    chip.setChipBackgroundColor(ColorStateList.valueOf(context.getResources().getColor(R.color.maroon)));
-                    chip.setTextColor(Color.WHITE);
-                    holder.cgTags.addView(chip);
-                }
-                holder.ivAuthor.setImageBitmap(Utils.decodeBase64(temp.getImage()));
-
-                holder.llComment.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(context, ActivityRecipe.class);
-                        intent.putExtra("recipeId", ((Recipe) data.get(pos)).getId());
-                        intent.putExtra("creatorToken", uidProfile);
-                        context.startActivity(intent);
-                    }
-                });
-
-                break;
-            }
-            case 2:
-            case 3: { //Followers & Followings
-                User temp = ((User) data.get(position));
-
-                holder.tvAuthor.setText(temp.getUsername());
-                holder.tvComment.setText(temp.getBiography());
-                holder.ivAuthor.setImageBitmap(Utils.decodeBase64(temp.getImgProfile()));
-
-                if (new BdConnection().isFollowing(FirebaseAuth.getInstance().getCurrentUser().getUid(), temp.getUid())) {
-                    holder.btnFollow.setText("UNFOLLOW");
-                }
-
-                holder.btnFollow.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (new BdConnection().isFollowing(FirebaseAuth.getInstance().getCurrentUser().getUid(), temp.getUid())) {
-                            new BdConnection().unFollowUser(FirebaseAuth.getInstance().getCurrentUser().getUid(), temp.getUid());
-                            holder.btnFollow.setText("FOLLOW");
-                        } else {
-                            new BdConnection().followUser(FirebaseAuth.getInstance().getCurrentUser().getUid(), temp.getUid());
-                            holder.btnFollow.setText("UNFOLLOW");
-                        }
-                    }
-                });
-
-                holder.llComment.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(context, ActivityProfile.class);
-                        intent.putExtra("uid", ((User) data.get(position)).getUid());
-                        context.startActivity(intent);
-                    }
-                });
-
-                break;
-            }
-        }
+        Object temp = data.get(position);
+        holder.bindRow(temp);
     }
 
     @Override

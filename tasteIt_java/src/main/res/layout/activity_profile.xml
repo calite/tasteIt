@@ -35,14 +35,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Profile Name"
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:textColor="@color/black"
             app:layout_constraintBottom_toTopOf="@+id/vSeparator"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.421"
             app:layout_constraintStart_toEndOf="@+id/ivUserPicture"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.3" />
+            app:layout_constraintVertical_bias="0.25" />
 
         <Button
             android:id="@+id/btnFollow"

@@ -46,7 +46,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1"
         app:layout_constraintHorizontal_bias="0"
-        android:background="#EB000000"
+        android:background="#F2000000"
         android:padding="3dp">
 
         <com.google.android.material.imageview.ShapeableImageView
@@ -98,6 +98,25 @@
             android:enabled="true"
             android:textSize="9dp"
             android:text="Add"
+            android:background="@drawable/btn_follow"
+            android:includeFontPadding="false"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/etComment"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5"
+            app:layout_constraintHorizontal_bias="0"/>
+
+        <Button
+            android:id="@+id/btnEditComment"
+            android:layout_width="0dp"
+            app:layout_constraintHorizontal_weight="0.4"
+            android:layout_height="35dp"
+            android:visibility="invisible"
+            android:enabled="false"
+            android:textSize="9dp"
+            android:text="Edit"
             android:background="@drawable/btn_follow"
             android:includeFontPadding="false"
 

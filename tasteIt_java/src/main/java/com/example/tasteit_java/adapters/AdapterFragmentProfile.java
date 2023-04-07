@@ -21,10 +21,7 @@ import java.util.HashMap;
 
 public class AdapterFragmentProfile extends FragmentStateAdapter {
 
-    private String biography;
     private Boolean myProfile;
-    private ArrayList<Recipe> recipes;
-    private HashMap<String, String> comments;
     private String uidProfile;
     private FragmentBio fragmentBio;
     private FragmentComments fragmentComments;
@@ -32,7 +29,6 @@ public class AdapterFragmentProfile extends FragmentStateAdapter {
     public AdapterFragmentProfile(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, String uid, Boolean myProfile) {
         super(fragmentManager, lifecycle);
         this.uidProfile = uid;
-        new TaskLoadUser().execute();
         this.myProfile = myProfile;
     }
 
@@ -41,43 +37,20 @@ public class AdapterFragmentProfile extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch(position) {
             case 0:
-                fragmentBio = new FragmentBio();
-                return fragmentBio;
+                return FragmentBio.newInstance(uidProfile);
             case 1:
                 return FragmentPhotos.newInstance(uidProfile);
             case 2:
                 fragmentComments = FragmentComments.newInstance(uidProfile, myProfile);
                 return fragmentComments;
             default:
-                return new FragmentBio();
+                return null;
         }
-
     }
 
     @Override
     public int getItemCount() {
         return 3;
-    }
-
-    public void updateFragments(String biography) {
-        fragmentBio.updateBio(biography);
-        this.notifyDataSetChanged();
-    }
-
-    class TaskLoadUser extends AsyncTask<User, Void, User> {
-        @Override
-        protected void onPreExecute() {
-
-        }
-        @Override
-        protected User doInBackground(User... hashMaps) {
-            return new BdConnection().retrieveAllUserbyUid(uidProfile);
-        }
-        @Override
-        protected void onPostExecute(User user) {
-            //super.onPostExecute(recipes);
-            fragmentBio.updateBio(user.getBiography());
-        }
     }
 
 }

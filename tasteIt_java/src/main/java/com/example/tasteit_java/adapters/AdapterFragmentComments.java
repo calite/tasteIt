@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.tasteit_java.R;
 import com.example.tasteit_java.bdConnection.BdConnection;
+import com.example.tasteit_java.clases.Comment;
 import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,14 +29,12 @@ public class AdapterFragmentComments extends BaseAdapter {
 
     private Context context;
     private String uidProfile;
-    private ArrayList<String> uidsComments;
-    private ArrayList<String> comments;
+    private ArrayList<Comment> comments;
 
     public AdapterFragmentComments(Context context, String uid) {
         this.context = context;
         this.uidProfile = uid;
 
-        uidsComments = new ArrayList<>();
         comments = new ArrayList<>();
 
         new TaskLoadUserComments().execute();
@@ -66,9 +65,9 @@ public class AdapterFragmentComments extends BaseAdapter {
         TextView tvComment = view.findViewById(R.id.tvComment);
         LinearLayout llComment = view.findViewById(R.id.llComment);
 
-        User user = new BdConnection().retrieveUserbyUid(uidsComments.get(i));
+        User user = new BdConnection().retrieveUserbyUid(comments.get(i).getTokenUser());
 
-        if(uidsComments.get(i).equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+        if(comments.get(i).getTokenUser().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
             llComment.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
@@ -79,7 +78,7 @@ public class AdapterFragmentComments extends BaseAdapter {
         }
 
         tvAuthor.setText(user.getUsername());
-        tvComment.setText(comments.get(i));
+        tvComment.setText(comments.get(i).getComment());
 
         Bitmap bitmap = Utils.decodeBase64(user.getImgProfile());
         ivAuthor.setImageBitmap(bitmap);
@@ -92,23 +91,19 @@ public class AdapterFragmentComments extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    class TaskLoadUserComments extends AsyncTask<HashMap<String, String>, Void,HashMap<String, String>> {
+    class TaskLoadUserComments extends AsyncTask<ArrayList<Comment>, Void,ArrayList<Comment>> {
         @Override
         protected void onPreExecute() {
 
         }
         @Override
-        protected HashMap<String, String> doInBackground(HashMap<String, String>... hashMaps) {
+        protected ArrayList<Comment> doInBackground(ArrayList<Comment>... hashMaps) {
             return new BdConnection().retrieveCommentsbyUid(uidProfile);
         }
         @Override
-        protected void onPostExecute(HashMap<String, String> userComments) {
+        protected void onPostExecute(ArrayList<Comment> userComments) {
             //super.onPostExecute(recipes);
-            Set<String> keySet = userComments.keySet();
-            uidsComments.addAll(keySet);
-
-            Collection<String> values = userComments.values();
-            comments.addAll(values);
+            comments.addAll(userComments);
             notifyDataSetChanged();
         }
     }

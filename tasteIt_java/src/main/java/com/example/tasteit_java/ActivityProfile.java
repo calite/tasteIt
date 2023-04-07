@@ -274,8 +274,8 @@ public class ActivityProfile extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        retrieveData(uid);
-        adapter.updateFragments(userProfile.getBiography());
+        new TaskLoadUser().execute();
+        //adapter.updateFragments(userProfile.getBiography());
     }
 
     //Tareas asincronas para la carga de los datos del usuario (peticiones a la bbdd)

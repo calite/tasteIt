@@ -45,6 +45,7 @@ public class FragmentCommentsRecipe extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             recipe = (Recipe) getArguments().getParcelable("recipe");
+            getArguments().clear();
         }
     }
 
@@ -61,14 +62,14 @@ public class FragmentCommentsRecipe extends Fragment {
         adapter = new AdapterListViewComments(getContext(), listComments);
         lvComments = view.findViewById(R.id.lvComments);
         lvComments.setAdapter(adapter);
-        lvComments.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        /*lvComments.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(getActivity().getApplicationContext(), ActivityProfile.class);
                 intent.putExtra("uid", listComments.get(i).getTokenUser());
                 startActivity(intent);
             }
-        });
+        });*/
         return view;
     }
 

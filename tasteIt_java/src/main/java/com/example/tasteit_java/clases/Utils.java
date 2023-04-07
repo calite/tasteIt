@@ -6,6 +6,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Base64;
@@ -104,6 +109,46 @@ public class Utils {
     public static String getUserToken() {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         return firebaseUser.getUid();
+    }
+
+    //Metodo para pasarle un bitmap y que lo devuelva redondeado
+    public static Bitmap getRoundBitmapWithImage(Bitmap originalBitmap) {
+        //Cambiamos el tamaño a la imagen original para que siempre sea igual
+        int desiredWidth = 1000;
+        int desiredHeight = 1000;
+        float scaleWidth = ((float) desiredWidth) / originalBitmap.getWidth();
+        float scaleHeight = ((float) desiredHeight) / originalBitmap.getHeight();
+        float scaleFactor = Math.min(scaleWidth, scaleHeight);
+        Matrix matrix = new Matrix();
+        matrix.postScale(scaleFactor, scaleFactor);
+
+        Bitmap bitmap = Bitmap.createBitmap(originalBitmap, 0,0, originalBitmap.getWidth(), originalBitmap.getHeight(), matrix, true);
+
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+
+        // Crea un Bitmap vacío del tamaño especificado
+        Bitmap output = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+
+        // Crea un Canvas para el Bitmap vacío
+        Canvas canvas = new Canvas(output);
+
+        // Crea un Paint para el fondo redondo
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setStyle(Paint.Style.FILL);
+
+        // Dibuja un círculo en el Canvas
+        canvas.drawCircle(width / 2f, height / 2f, Math.min(width, height) / 2f, paint);
+
+        // Establece el modo de fusión en SRC_IN
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+
+        // Dibuja la imagen encima del fondo redondo
+        canvas.drawBitmap(bitmap, 0, 0, paint);
+
+        // Devuelve el Bitmap resultante
+        return output;
     }
 
 }

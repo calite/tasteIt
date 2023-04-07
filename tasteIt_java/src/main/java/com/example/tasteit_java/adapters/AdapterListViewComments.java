@@ -1,8 +1,10 @@
 package com.example.tasteit_java.adapters;
 
+import com.example.tasteit_java.ActivityProfile;
 import com.example.tasteit_java.bdConnection.BdConnection;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,6 +69,14 @@ public class AdapterListViewComments extends BaseAdapter {
         Bitmap bitmap = Utils.decodeBase64(user.getImgProfile());
         ivUserPicture.setImageBitmap(bitmap);
 
+        ivUserPicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context.getApplicationContext(), ActivityProfile.class);
+                intent.putExtra("uid", arrayListComments.get(i).getTokenUser());
+                context.startActivity(intent);
+            }
+        });
         return view;
     }
 

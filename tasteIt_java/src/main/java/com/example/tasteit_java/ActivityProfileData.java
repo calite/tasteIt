@@ -2,6 +2,7 @@ package com.example.tasteit_java;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,6 +11,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.GestureDetector;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -35,29 +37,27 @@ public class ActivityProfileData extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_data);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         Bundle params = getIntent().getExtras();
         uidProfile = params.getString("uid");
         int dataType = params.getInt("dataType");
 
         switch (dataType) {
             case 1: { //Recipes
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 getSupportActionBar().setTitle("My Recipes");
                 break;
             }
             case 2: { //Followers
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 getSupportActionBar().setTitle("My Followers");
                 break;
             }
             case 3: { //Following
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 getSupportActionBar().setTitle("Following");
                 break;
             }
             case 4: { //Following
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                getSupportActionBar().setTitle("Recipes liked");
+                getSupportActionBar().setTitle("Recipes Liked");
                 break;
             }
         }
@@ -71,14 +71,18 @@ public class ActivityProfileData extends AppCompatActivity {
         rvListData.addItemDecoration(divider);
 
         adapter.notifyDataSetChanged();
+    }
 
-        /*gvData.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int posicion, long l) {
-                Intent i = new Intent(getApplicationContext(), ActivityRecipe.class);
-                i.putExtra("recipe", listRecipes.get(posicion));
-                startActivity(i);
-            }
-        });*/
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                //Toast.makeText(this, "Aqui finalizamos", Toast.LENGTH_SHORT).show();
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

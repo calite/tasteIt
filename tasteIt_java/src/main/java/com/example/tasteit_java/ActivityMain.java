@@ -2,24 +2,12 @@ package com.example.tasteit_java;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapShader;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.RectF;
-import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -27,7 +15,6 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -47,7 +34,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.ArrayList;
 import java.util.List;
 
-import okhttp3.internal.Util;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -147,41 +133,9 @@ public class ActivityMain extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_menu, menu);
 
-        //Intento de sacar la img de perfil redonda
         Bitmap originalBitmap = Utils.decodeBase64(new BdConnection().retrieveUserbyUid(token).getImgProfile());
 
-        int desiredWidth = 400;
-        int desiredHeight = 400;
-        float scaleWidth = ((float) desiredWidth) / originalBitmap.getWidth();
-        float scaleHeight = ((float) desiredHeight) / originalBitmap.getHeight();
-        float scaleFactor = Math.min(scaleWidth, scaleHeight);
-        Matrix matrix = new Matrix();
-        matrix.postScale(scaleFactor, scaleFactor);
-
-        Bitmap bitmap = Bitmap.createBitmap(originalBitmap, 0, 0, originalBitmap.getWidth(), originalBitmap.getHeight(), matrix, true);
-
-        Bitmap roundedBitmap = Bitmap.createBitmap(bitmap.getWidth()+100, bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(roundedBitmap);
-
-        Paint paint = new Paint();
-        paint.setStyle(Paint.Style.FILL_AND_STROKE);
-        paint.setAntiAlias(true);
-        paint.setShader(new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));
-
-        Paint borderPaint = new Paint();
-        borderPaint.setAntiAlias(true);
-        borderPaint.setStyle(Paint.Style.STROKE);
-        borderPaint.setStrokeWidth(15f); // ajusta este valor para cambiar el ancho del borde
-        borderPaint.setColor(Color.BLACK);
-
-        float centerX = bitmap.getWidth() / 1.75f;
-        float centerY = bitmap.getHeight() / 2f;
-        float radiusX = bitmap.getWidth() / 1.5f;
-        float radiusY = bitmap.getHeight() / 2f;
-        canvas.drawOval(centerX - radiusX, centerY - radiusY, centerX + radiusX, centerY + radiusY, borderPaint);
-        canvas.drawOval(centerX - radiusX, centerY - radiusY, centerX + radiusX, centerY + radiusY, paint);
-
-        BitmapDrawable roundedBitmapDrawable = new BitmapDrawable(getResources(), roundedBitmap);
+        BitmapDrawable roundedBitmapDrawable = new BitmapDrawable(getResources(), Utils.getRoundBitmapWithImage(originalBitmap));
         menu.getItem(0).setIcon(roundedBitmapDrawable);
         return true;
     }
@@ -294,6 +248,7 @@ public class ActivityMain extends AppCompatActivity {
         rvRecipes.setLayoutManager(linearLayoutManager);
         adapterRecyclerView = new AdapterRecyclerMain(listRecipes);
         rvRecipes.setAdapter(adapterRecyclerView);
+
         /*
         rvRecipes.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

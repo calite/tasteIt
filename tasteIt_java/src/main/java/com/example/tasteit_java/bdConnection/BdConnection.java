@@ -282,22 +282,24 @@ public class BdConnection implements AutoCloseable {
         }
     }
 
-    public HashMap<String, String> retrieveCommentsbyUid(String uid) {
+    public ArrayList<Comment> retrieveCommentsbyUid(String uid) {
 
-        HashMap<String, String> comments = new HashMap<>();
+        ArrayList<Comment> comments = new ArrayList<>();
 
         try {
             //Iniciamos una sesion con la bd (el driver se configura en el constructor)
             Session session = openSession();
             //Creamos la sentencia que se ejecutara y guardamos el resultado
-            Query query = new Query("MATCH (n:User)-[n1:Commented]->(n2:User) WHERE n2.token = '" + uid + "' RETURN n.token, n1.comment;");
+            Query query = new Query("MATCH (n:User)-[n1:Commented]->(n2:User) WHERE n2.token = '" + uid + "' RETURN n.token, n1.comment, n1.dateCreated, ID(n1);");
             Result result = session.run(query);
             while (result.hasNext()) //Mientras haya registros..
             {
                 Record record = result.next(); //Guardamos el registro
-                String id = record.get(0).asString();
+                String token = record.get(0).asString();
                 String comment = record.get(1).asString();
-                comments.put(id, comment);
+                String date = record.get(2).asString();
+                int id = record.get(3).asInt();
+                comments.add(new Comment(comment, date, token, id));
             }
             closeSession(session); //Cerramos la sesión
             return comments; //Retornamos el valor
@@ -839,6 +841,47 @@ public class BdConnection implements AutoCloseable {
             throw ex;
         } catch (NoSuchRecordException ex) {
             LOGGER.log(Level.SEVERE, "No record found raised an exception", ex);
+            throw ex;
+        }
+    }
+
+
+    public void editComment(int idComment, String comment) {
+        //MATCH (:User)-[c:Commented]->(:User) WHERE ID(c) = 24 SET c.comment = "maquina!2";
+        try {
+            //Iniciamos una sesion con la bd
+            Session session = openSession();
+
+            session.writeTransaction(tx -> {
+                Query query = new Query("MATCH (:User)-[c:Commented]->(:User) WHERE ID(c) = " + idComment + " SET c.comment = '" + comment + "';");
+                tx.run(query);
+                return null;
+            });
+
+            closeSession(session); //Cerramos la sesión
+            // You should capture any errors along with the query and data for traceability
+        } catch (Neo4jException ex) {
+            LOGGER.log(Level.SEVERE, " raised an exception", ex);
+            throw ex;
+        }
+    }
+
+    public void removeComment(int idComment) {
+        //MATCH (:User)-[c:Commented]->(:User) WHERE ID(c) = " + idComment + " DELETE c;
+        try {
+            //Iniciamos una sesion con la bd
+            Session session = openSession();
+
+            session.writeTransaction(tx -> {
+                Query query = new Query("MATCH (:User)-[c:Commented]->(:User) WHERE ID(c) = " + idComment + " DELETE c;");
+                tx.run(query);
+                return null;
+            });
+
+            closeSession(session); //Cerramos la sesión
+            // You should capture any errors along with the query and data for traceability
+        } catch (Neo4jException ex) {
+            LOGGER.log(Level.SEVERE, " raised an exception", ex);
             throw ex;
         }
     }

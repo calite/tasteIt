@@ -1,5 +1,6 @@
 package com.example.tasteit_java.fragments;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -11,6 +12,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.tasteit_java.R;
+import com.example.tasteit_java.bdConnection.BdConnection;
+import com.example.tasteit_java.clases.Comment;
+import com.example.tasteit_java.clases.User;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,6 +34,8 @@ public class FragmentBio extends Fragment {
 
     // TODO: Rename and change types of parameters
     private String biography;
+
+    private String uidProfile;
     private String mParam2;
 
     public FragmentBio() {
@@ -52,10 +60,10 @@ public class FragmentBio extends Fragment {
         return fragment;
     }
 
-    public static FragmentBio newInstance(String bio) {
+    public static FragmentBio newInstance(String uid) {
         FragmentBio fragment = new FragmentBio();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, bio);
+        args.putString(ARG_PARAM1, uid);
         fragment.setArguments(args);
         return fragment;
     }
@@ -64,7 +72,8 @@ public class FragmentBio extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            biography = getArguments().getString(ARG_PARAM1);
+            uidProfile = getArguments().getString(ARG_PARAM1);
+            new TaskLoadUserBio().execute();
             //mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
@@ -82,8 +91,24 @@ public class FragmentBio extends Fragment {
     public void updateBio(String biography) {
         this.biography = "";
         if(!this.biography.equals(biography)) {
-            this.biography = biography;
-            tvBiography.setText(biography);
+                this.biography = biography;
+                tvBiography.setText(biography);
+        }
+    }
+
+    class TaskLoadUserBio extends AsyncTask<User, Void,User> {
+        @Override
+        protected void onPreExecute() {
+
+        }
+        @Override
+        protected User doInBackground(User... hashMaps) {
+            return new BdConnection().retrieveUserbyUid(uidProfile);
+        }
+        @Override
+        protected void onPostExecute(User userBio) {
+            //super.onPostExecute(recipes);
+            updateBio(userBio.getBiography());
         }
     }
 }

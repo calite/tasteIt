@@ -10,7 +10,7 @@ public class User implements Serializable  {
     private String biography;
     private String imgProfile;
     private ArrayList<Recipe> userRecipes;
-    private HashMap<String, String> userComments;
+    private ArrayList<Comment> userComments;
     private String uid;
 
 
@@ -27,7 +27,7 @@ public class User implements Serializable  {
         this.uid = uid;
     }
 
-    public User(String username, String biography, String imgProfile, ArrayList<Recipe> userRecipes, HashMap<String, String> userComments) {
+    public User(String username, String biography, String imgProfile, ArrayList<Recipe> userRecipes, ArrayList<Comment> userComments) {
         this.username = username;
         this.biography = biography;
         this.imgProfile = imgProfile;
@@ -67,19 +67,19 @@ public class User implements Serializable  {
         this.userRecipes = userRecipes;
     }
 
-    public HashMap<String, String> getUserComments() {
-        return userComments;
-    }
-
-    public void setUserComments(HashMap<String, String> userComments) {
-        this.userComments = userComments;
-    }
-
     public String getUid() {
         return uid;
     }
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public ArrayList<Comment> getUserComments() {
+        return userComments;
+    }
+
+    public void setUserComments(ArrayList<Comment> userComments) {
+        this.userComments = userComments;
     }
 }
