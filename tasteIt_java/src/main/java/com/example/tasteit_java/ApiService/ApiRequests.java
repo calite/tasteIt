@@ -1,9 +1,17 @@
 package com.example.tasteit_java.ApiService;
 
+import com.example.tasteit_java.request.EditRecipeRequest;
+import com.example.tasteit_java.request.RecipeRequest;
+
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 public interface ApiRequests {
@@ -22,4 +30,12 @@ public interface ApiRequests {
 
     @GET("user/followers_recipes/{token}")
     Call<List<RecipeId_Recipe_User>> getRecipesFollowed(@Path("token") String token); //devuelve recetas de tus seguidores
+
+    @Headers("Content-Type: application/json")
+    @POST("/recipe/create")
+    Call<Void> createRecipe(@Body RecipeRequest recipeRequest);
+
+    @Headers("Content-Type: application/json")
+    @POST("/recipe/edit")
+    Call<Void> editRecipe(@Body EditRecipeRequest editRecipeRequest);
 }

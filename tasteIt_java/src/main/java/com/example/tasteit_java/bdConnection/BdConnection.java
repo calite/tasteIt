@@ -171,6 +171,7 @@ public class BdConnection implements AutoCloseable {
         }
 
     }
+
     //temporal para el main
     public ArrayList<Recipe> retrieveAllRecipes() {
 

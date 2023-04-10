@@ -96,19 +96,40 @@ public class FragmentInfoNewRecipe extends Fragment {
         return etRecipeName;
     }
 
+    public static void setRecipeName(String name) {etRecipeName.setText(name);}
+
     public static EditText getDescriptionRecipe() { return etDescriptionRecipe; }
+
+    public static void setDescriptionRecipe(String desc) {etDescriptionRecipe.setText(desc);}
 
     public static EditText getEtTagName() { return etTagName; }
 
+    public static void setEtTagName(String tag) {etTagName.setText(tag);}
+
     public static String getCountry() {
         return spCountries.getSelectedItem().toString();
+    }
+
+
+    public static void setCountry(String countryName) {
+        ArrayList<String> countryList = new ArrayList<>();
+        countryList.add("Spain"); countryList.add("France"); countryList.add("Italy"); countryList.add("Portugal"); countryList.add("Greece"); countryList.add("Germany"); countryList.add("Turkey"); countryList.add("England");
+        spCountries.setSelection(countryList.indexOf(countryName));
     }
 
     public static int getDificulty() {
       return skDificulty.getProgress();
     }
 
+    public static void setDificulty(int dificulty){
+        skDificulty.setProgress(dificulty);
+    }
+
     public static ArrayList getTags() {
         return tags;
+    }
+
+    public static void setTags(ArrayList tagsReceta) {
+        tags = tagsReceta;
     }
 }

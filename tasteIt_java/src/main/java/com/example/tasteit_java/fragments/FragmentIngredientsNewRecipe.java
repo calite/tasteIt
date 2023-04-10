@@ -1,5 +1,6 @@
 package com.example.tasteit_java.fragments;
 
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -20,9 +21,11 @@ import java.util.ArrayList;
 public class FragmentIngredientsNewRecipe extends Fragment {
 
     private static EditText etIngredientName;
-    private ChipGroup cgIngredients;
+    private static ChipGroup cgIngredients;
     private static ArrayList<String> ingredients = new ArrayList<>();
     private Button bAddIngredient;
+
+    private static boolean loadRecipe = false;
 
     public FragmentIngredientsNewRecipe() {
         // Required empty public constructor
@@ -70,11 +73,19 @@ public class FragmentIngredientsNewRecipe extends Fragment {
             }
         });
 
+
         return view;
     }
+
 
     public static ArrayList<String> getIngredients() {
         return ingredients;
     }
     public static EditText getEtIngredientName() { return etIngredientName; }
+
+    //TODO
+    public static void setIngredients(ArrayList<String> ingridientsList){
+        loadRecipe = true;
+        ingredients = ingridientsList;
+    }
 }
