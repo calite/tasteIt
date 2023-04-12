@@ -1,6 +1,8 @@
 package com.example.tasteit_java;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,6 +13,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.tasteit_java.adapters.AdapterFragmentMyBook;
+import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.Utils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
@@ -32,7 +35,7 @@ public class ActivityMyBook extends AppCompatActivity {
         token = Utils.getUserToken();
 
         //menu superior
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("My Book");
 
         //my recipes, liked recipes and followed recipes Fragments
@@ -74,6 +77,14 @@ public class ActivityMyBook extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_menu, menu);
+
+        menu.getItem(1).setVisible(false);
+        menu.getItem(2).setVisible(false);
+
+        Bitmap originalBitmap = Utils.decodeBase64(new BdConnection().retrieveUserbyUid(Utils.getUserToken()).getImgProfile());
+        BitmapDrawable roundedBitmapDrawable = new BitmapDrawable(getResources(), Utils.getRoundBitmapWithImage(originalBitmap));
+        menu.getItem(0).setIcon(roundedBitmapDrawable);
+
         return true;
     }
 

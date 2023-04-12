@@ -22,9 +22,6 @@ public class AdapterRecyclerMain extends RecyclerView.Adapter<AdapterRecyclerMai
 
     private ArrayList<Recipe> listRecipes;
 
-    private static final int TYPE_RECIPE = 0;
-    private static final int TYPE_FOOTER = 1;
-
     public AdapterRecyclerMain(ArrayList<Recipe> listRecipes) {
         this.listRecipes = listRecipes;
     }
@@ -62,7 +59,7 @@ public class AdapterRecyclerMain extends RecyclerView.Adapter<AdapterRecyclerMai
             });
         }
 
-        void bindRow(@NonNull Recipe recipe) {
+        /*void bindRow(@NonNull Recipe recipe) {
             tvNameRecipe.setText(recipe.getName());
             tvNameCreator.setText(recipe.getCreator());
             tvDescriptionRecipe.setText(recipe.getDescription());
@@ -71,7 +68,7 @@ public class AdapterRecyclerMain extends RecyclerView.Adapter<AdapterRecyclerMai
             ivPhotoRecipe.setImageBitmap(bitmap);
             recipeId = recipe.getId();
             creatorToken = recipe.getCreatorToken();
-        }
+        }*/
 
         public TextView getTvNameRecipe() {
             return tvNameRecipe;
@@ -97,38 +94,23 @@ public class AdapterRecyclerMain extends RecyclerView.Adapter<AdapterRecyclerMai
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-
-        if (viewType == TYPE_RECIPE) {
-            View row = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_main_recycler, viewGroup, false);
-            return new ViewHolder(row);
-        } else {
-            View row = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.loading_footer,
-                    viewGroup, false);
-            return new ViewHolder(row);
-        }
-
-        /*LayoutInflater layoutInflater = LayoutInflater.from(viewGroup.getContext());
+        LayoutInflater layoutInflater = LayoutInflater.from(viewGroup.getContext());
         View view = layoutInflater.inflate(R.layout.item_main_recycler, viewGroup, false);
         ViewHolder viewHolder = new ViewHolder(view);
-        return viewHolder;*/
+        return viewHolder;
     }
 
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        /*viewHolder.tvNameRecipe.setText(listRecipes.get(position).getName());
+        viewHolder.tvNameRecipe.setText(listRecipes.get(position).getName());
         viewHolder.tvNameCreator.setText(listRecipes.get(position).getCreator());
         viewHolder.tvDescriptionRecipe.setText(listRecipes.get(position).getDescription());
         viewHolder.tvRating.setText(listRecipes.get(position).getRating());
         Bitmap bitmap = Utils.decodeBase64(listRecipes.get(position).getImage());
         viewHolder.ivPhotoRecipe.setImageBitmap(bitmap);
         viewHolder.recipeId = listRecipes.get(position).getId();
-        viewHolder.creatorToken = listRecipes.get(position).getCreatorToken();*/
-
-        if (viewHolder instanceof AdapterRecyclerMain.ViewHolder) {
-            viewHolder.bindRow(listRecipes.get(position));
-        }
-
+        viewHolder.creatorToken = listRecipes.get(position).getCreatorToken();
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -136,6 +118,4 @@ public class AdapterRecyclerMain extends RecyclerView.Adapter<AdapterRecyclerMai
     public int getItemCount() {
         return listRecipes.size();
     }
-
-
 }

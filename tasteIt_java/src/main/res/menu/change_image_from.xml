@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/iCamera"
+        android:title="From Camera"/>
+    <item
+        android:id="@+id/iGallery"
+        android:title="From Gallery"/>
+
+</menu>

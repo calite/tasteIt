@@ -1,6 +1,8 @@
 package com.example.tasteit_java;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,6 +22,7 @@ import com.example.tasteit_java.adapters.AdapterGridViewMain;
 import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.User;
+import com.example.tasteit_java.clases.Utils;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -123,7 +126,7 @@ public class ActivitySearch extends AppCompatActivity {
         });
 
         //menu superior
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Search");
         //fragment menu inferior
         /*
@@ -157,6 +160,13 @@ public class ActivitySearch extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_menu, menu);
+        menu.getItem(1).setVisible(false);
+        menu.getItem(2).setVisible(false);
+
+        Bitmap originalBitmap = Utils.decodeBase64(new BdConnection().retrieveUserbyUid(Utils.getUserToken()).getImgProfile());
+        BitmapDrawable roundedBitmapDrawable = new BitmapDrawable(getResources(), Utils.getRoundBitmapWithImage(originalBitmap));
+        menu.getItem(0).setIcon(roundedBitmapDrawable);
+
         return true;
     }
 

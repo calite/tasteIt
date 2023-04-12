@@ -30,6 +30,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:shapeAppearanceOverlay="@style/roundedImageView"
+                android:background="@color/white"
                 app:strokeColor="@color/black"
                 app:strokeWidth="2dp" />
 

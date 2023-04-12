@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,33 +13,31 @@ import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.tasteit_java.ApiService.ApiClient;
-import com.example.tasteit_java.ApiService.ApiRequests;
-import com.example.tasteit_java.ApiService.RecipeId_Recipe_User;
+import com.example.tasteit_java.adapters.AdapterEndlessRecyclerMain;
 import com.example.tasteit_java.adapters.AdapterGridViewMain;
 import com.example.tasteit_java.adapters.AdapterRecyclerMain;
 import com.example.tasteit_java.bdConnection.BdConnection;
-import com.example.tasteit_java.clases.Recipe;
+import com.example.tasteit_java.clases.OnLoadMoreListener;
 import com.example.tasteit_java.clases.Utils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class ActivityMain extends AppCompatActivity {
+
+    //PRUEBAS
+    private AdapterEndlessRecyclerMain adapterEndlessRecyclerMain;
+    private int skipper;
+    protected Handler handler;
 
     private FloatingActionButton bCreate;
     //TEMPORAL GALERIA
@@ -46,7 +45,7 @@ public class ActivityMain extends AppCompatActivity {
     private AdapterGridViewMain adapter;
     private RecyclerView rvRecipes;
     private AdapterRecyclerMain adapterRecyclerView;
-    public static ArrayList<Recipe> listRecipes = new ArrayList<>();
+    public static ArrayList<Object> listRecipes;
     private ProgressBar pgMain;
 
     private String token;
@@ -60,10 +59,57 @@ public class ActivityMain extends AppCompatActivity {
 
         pgMain = findViewById(R.id.pbMain);
         rvRecipes = findViewById(R.id.rvRecipes);
-        //gvRecipes = findViewById(R.id.gvRecipes);
         bCreate = findViewById(R.id.bCreate);
 
-        bringRecipes();
+        //PRUEBAS
+        skipper = 0;
+        handler = new Handler();
+        initializeRetrieveData();
+
+        rvRecipes.setHasFixedSize(true);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        rvRecipes.setLayoutManager(linearLayoutManager);
+
+        adapterEndlessRecyclerMain = new AdapterEndlessRecyclerMain(listRecipes, rvRecipes);
+        rvRecipes.setAdapter(adapterEndlessRecyclerMain);
+
+        if (listRecipes.isEmpty()) {
+            rvRecipes.setVisibility(View.GONE);
+            pgMain.setVisibility(View.VISIBLE);
+
+        } else {
+            rvRecipes.setVisibility(View.VISIBLE);
+            pgMain.setVisibility(View.GONE);
+        }
+
+        adapterEndlessRecyclerMain.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                if(adapterEndlessRecyclerMain.dataList.size() > 28) { //habra que ponerle un limite (que en principio puede ser el total de recipes en la bbdd o algo fijo para no sobrecargar el terminal)
+                    Toast.makeText(ActivityMain.this, "Finiquitao", Toast.LENGTH_SHORT).show();
+                } else {
+                    adapterEndlessRecyclerMain.dataList.add(null);
+                    adapterEndlessRecyclerMain.notifyItemInserted(adapterEndlessRecyclerMain.dataList.size() - 1);
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            //remove progress item
+                            adapterEndlessRecyclerMain.dataList.remove(adapterEndlessRecyclerMain.dataList.size() - 1);
+                            //adapterEndlessRecyclerMain.notifyItemRemoved(adapterEndlessRecyclerMain.dataList.size());
+                            skipper += 10;
+                            adapterEndlessRecyclerMain.dataList.addAll(new BdConnection().retrieveAllRecipes10by10(skipper));
+                            adapterEndlessRecyclerMain.setLoaded();
+                            adapterEndlessRecyclerMain.notifyDataSetChanged();
+                        }
+                    }, 5000);
+                }
+            }
+        });
+
+        //FIN PRUEBAS
+
+        //bringRecipes();
 
         //menu superior
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
@@ -134,9 +180,9 @@ public class ActivityMain extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.main_menu, menu);
 
         Bitmap originalBitmap = Utils.decodeBase64(new BdConnection().retrieveUserbyUid(token).getImgProfile());
-
         BitmapDrawable roundedBitmapDrawable = new BitmapDrawable(getResources(), Utils.getRoundBitmapWithImage(originalBitmap));
         menu.getItem(0).setIcon(roundedBitmapDrawable);
+
         return true;
     }
     @Override
@@ -175,8 +221,14 @@ public class ActivityMain extends AppCompatActivity {
         startActivity (new Intent(this, ActivityLogin.class));
     }
 
+                //PRUEBAS!!!!!!!!!!!!
+
+    private void initializeRetrieveData() {
+        listRecipes = new ArrayList<>(new BdConnection().retrieveAllRecipes10by10(skipper));
+    }
+
     //carga de recetas asyncrona
-    private class RecipesLoader {
+    /*private class RecipesLoader {
 
         private final ApiRequests apiRequests;
         private final MutableLiveData<List<Recipe>> recipeLiveData;
@@ -235,19 +287,35 @@ public class ActivityMain extends AppCompatActivity {
 
     private void onRecipesLoaded(List<Recipe> recipes) {
         // Actualizar la UI con la lista de recetas
-        pgMain.setVisibility(View.GONE);
+        //pgMain.setVisibility(View.GONE);
+        displayLoadingIndicator();
 
-        listRecipes = (ArrayList<Recipe>) recipes;
+        //listRecipes.addAll(recipes);
+        displayData(Collections.singletonList(recipes));
         /*
         adapter = new AdapterGridViewMain(getApplicationContext(), listRecipes);
         gvRecipes.setAdapter(adapter);
         adapter.notifyDataSetChanged();
         */
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        /*LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rvRecipes.setLayoutManager(linearLayoutManager);
-        adapterRecyclerView = new AdapterRecyclerMain(listRecipes);
-        rvRecipes.setAdapter(adapterRecyclerView);
+
+
+        //PRUEBAS
+        adapterEndlessRecyclerMain = new AdapterEndlessRecyclerMain(listRecipes);
+        rvRecipes.setAdapter(adapterEndlessRecyclerMain);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(rvRecipes.getContext(),
+                ((LinearLayoutManager) rvRecipes.getLayoutManager()).getOrientation());
+        rvRecipes.addItemDecoration(dividerItemDecoration);
+
+        endlessScrollListener = new EndlessScrollListener((EndlessScrollListener.ScrollerClient) ActivityMain.this);
+        rvRecipes.addOnScrollListener(endlessScrollListener);
+
+
+        //adapterRecyclerView = new AdapterRecyclerMain(listRecipes);
+        //rvRecipes.setAdapter(adapterRecyclerView);
 
         /*
         rvRecipes.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -264,7 +332,7 @@ public class ActivityMain extends AppCompatActivity {
         });
         */
 
-    }
+    /*}
 
     private void bringRecipes() {
         //olvidamos asynctask y metemos lifecycle, que es mas actual y esta mejor optimizado
@@ -273,6 +341,6 @@ public class ActivityMain extends AppCompatActivity {
         recipesLoader.getRecipes().observe(this, this::onRecipesLoaded);
 
         recipesLoader.loadRecipes();
-    }
+    }*/
 
 }

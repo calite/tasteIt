@@ -4,19 +4,19 @@
 
     <group>
 
-    <item
-        android:id="@+id/iProfile"
-        android:title="Profile"
-        android:icon="@drawable/ic_default_profile"
-        app:showAsAction="always" />
-
-    <item
-        android:id="@+id/iCloseSesion"
-        android:title="Close Session"/>
-
+        <item
+            android:id="@+id/iProfile"
+            android:icon="@drawable/ic_default_profile"
+            android:title="Profile"
+            app:showAsAction="always" />
         <item
             android:id="@+id/iDarkMode"
-            android:title="Dark/Light Mode"/>
+            android:title="Dark/Light Mode" />
+        <item
+            android:id="@+id/iCloseSesion"
+            android:title="Close Session" />
+
+
     </group>
 
 

@@ -886,6 +886,61 @@ public class BdConnection implements AutoCloseable {
         }
     }
 
+    //PRUEBASSSSSS
+    public ArrayList<Recipe> retrieveAllRecipes10by10(int skipear) {
+        //MATCH (n1:User)-[:Created]-(n2:Recipe) RETURN n2.name, n2.description, n2.steps, n2.image, n2.dateCreated, n2.country, n1.username, n2.difficulty, n2.tags, n2.ingredients, ID(n2) SKIP 0 LIMIT 5;
+        ArrayList<Recipe> listRecipes = new ArrayList<>();
+
+        try {
+            //Iniciamos una sesion con la bd (el driver se configura en el constructor)
+            Session session = openSession();
+            //Creamos la sentencia que se ejecutara y guardamos el resultado
+            Query query = new Query("MATCH (n1:User)-[:Created]-(n2:Recipe) RETURN n2.name, n2.description, n2.steps, n2.image, n2.dateCreated, n2.country, n1.username, n2.difficulty, n2.tags, n2.ingredients, ID(n2) SKIP " + skipear + " LIMIT 10;");
+            Result result = session.run(query);
+            while (result.hasNext()) //Mientras haya registros..
+            {
+                Record record = result.next(); //Guardamos el registro
+                //recogemos los valores
+                String name = record.get(0).asString();
+                String description = record.get(1).asString();
+                List<Object> listSteps = record.get(2).asList();
+                //convertimos la lista de objetos a array list de strings
+                ArrayList<String> arrayListSteps = new ArrayList<>();
+                for (Object obj : listSteps) {
+                    arrayListSteps.add(obj.toString());
+                }
+                String image = record.get(3).asString();
+                String dateCreated = record.get(4).toString();
+                String country = record.get(5).asString();
+                String creator = record.get(6).asString();
+                int difficulty = record.get(7).asInt();
+                List<Object> listTags = record.get(8).asList();
+                ArrayList<String> arrayListTags = new ArrayList<>();
+                for (Object obj : listTags) {
+                    arrayListTags.add(obj.toString());
+                }
+                List<Object> listIngredients = record.get(9).asList();
+                ArrayList<String> arrayListIngredients = new ArrayList<>();
+                for (Object obj : listIngredients) {
+                    arrayListIngredients.add(obj.toString());
+                }
+                int idRecipe = record.get(10).asInt();
+                //creamos una receta nueva
+                Recipe recipe = new Recipe(name, description, arrayListSteps, dateCreated, difficulty, creator, image, country, arrayListTags, arrayListIngredients, idRecipe, "");
+                listRecipes.add(recipe);
+            }
+            closeSession(session); //Cerramos la sesión
+            return listRecipes; //Retornamos el valor
+            // You should capture any errors along with the query and data for traceability
+        } catch (Neo4jException ex) {
+            LOGGER.log(Level.SEVERE, " raised an exception", ex);
+            throw ex;
+        } catch (NoSuchRecordException ex) {
+            LOGGER.log(Level.SEVERE, "No record found raised an exception", ex);
+            throw ex;
+        }
+    }
+
     /*
     MATCH (n:Users) WHERE n.username = '" + username + "' AND n.password = '" + password + "' RETURN CASE WHEN n IS NOT NULL THEN true ELSE false END AS n;
     MATCH (n:Users) WHERE n.username = $username AND n.password = $password RETURN CASE WHEN n IS NOT NULL THEN true ELSE false END AS n; //Devolver BOOLEAN si se encuentra o no

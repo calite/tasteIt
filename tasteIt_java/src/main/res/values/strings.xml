@@ -19,6 +19,9 @@
     <string name="show">show</string>
     <string name="hide">hide</string>
 
+    <string name="Camera">From Camera</string>
+    <string name="Gallery">From Gallery</string>
+
     <string name="facebook_app_id">383004270667195</string>
     <string name="fb_login_protocol_scheme">fb383004270667195</string>
     <string name="facebook_client_token">94d8b746dd4fbb2e3df24d6cdb6ff559</string>

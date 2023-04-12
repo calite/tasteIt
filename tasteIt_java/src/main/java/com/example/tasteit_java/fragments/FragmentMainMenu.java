@@ -57,7 +57,12 @@ public class FragmentMainMenu extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getActivity().getApplicationContext(), ActivitySearch.class);
-                startActivity(i);
+                if(!getActivity().getLocalClassName().equals("ActivityMain")) {
+                    getActivity().finish();
+                    startActivity(i);
+                } else {
+                    startActivity(i);
+                }
             }
         });
         //Random button
@@ -66,7 +71,12 @@ public class FragmentMainMenu extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getActivity().getApplicationContext(), ActivityRandom.class);
-                startActivity(i);
+                if(!getActivity().getLocalClassName().equals("ActivityMain")) {
+                    getActivity().finish();
+                    startActivity(i);
+                } else {
+                    startActivity(i);
+                }
             }
         });
         //my book button
@@ -75,7 +85,12 @@ public class FragmentMainMenu extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getActivity().getApplicationContext(), ActivityMyBook.class);
-                startActivity(i);
+                if(!getActivity().getLocalClassName().equals("ActivityMain")) {
+                    getActivity().finish();
+                    startActivity(i);
+                } else {
+                    startActivity(i);
+                }
             }
         });
 

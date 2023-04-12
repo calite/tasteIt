@@ -12,18 +12,21 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
+import com.example.tasteit_java.fragments.FragmentComments;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
@@ -70,10 +73,34 @@ public class ActivityEditProfile extends AppCompatActivity {
         getSupportActionBar().setTitle("Edit Profile");
 
         //Cambiar foto de perfil
+        PopupMenu.OnMenuItemClickListener popupListener = new PopupMenu.OnMenuItemClickListener() {
+
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.iCamera: {
+                        Utils.takePicture(ActivityEditProfile.this);
+                        break;
+                    }
+                    case R.id.iGallery: {
+                        Utils.selectImageFromMedia(ActivityEditProfile.this);
+                        break;
+                    }
+                }
+                return false;
+            }
+        };
+
         ibPickPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                View v = View.inflate(ActivityEditProfile.this, R.layout.item_photo_picker, null);
+                PopupMenu popupMenu = new PopupMenu(ActivityEditProfile.this, view);
+                MenuInflater menuInflater = popupMenu.getMenuInflater();
+                menuInflater.inflate(R.menu.change_image_from, popupMenu.getMenu());
+                popupMenu.setOnMenuItemClickListener(popupListener);
+                popupMenu.show();
+
+                /*View v = View.inflate(ActivityEditProfile.this, R.layout.item_photo_picker, null);
                 Dialog dialog = new Dialog(ActivityEditProfile.this);
 
                 Button bFromGallery = v.findViewById(R.id.bFromGallery);
@@ -95,7 +122,7 @@ public class ActivityEditProfile extends AppCompatActivity {
                 dialog.setContentView(v);
                 dialog.setTitle("Select an option: ");
                 dialog.create();
-                dialog.show();
+                dialog.show();*/
             }
         });
 
@@ -225,19 +252,13 @@ public class ActivityEditProfile extends AppCompatActivity {
             Utils.onActivityResult(this, requestCode, resultCode, data, filePath, ivProfilePhoto);
         }
         if(requestCode == 202) {
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
-            ivProfilePhoto.setImageBitmap(photo);
+            if(data.getExtras() != null) {
+                Bitmap photo = (Bitmap) data.getExtras().get("data");
+                ivProfilePhoto.setImageBitmap(photo);
+            }
         }
     }
     //END PHOTO PICKER
-
-    //MENU superior
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.edit_profile_menu, menu);
-        return true;
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

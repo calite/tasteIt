@@ -24,8 +24,10 @@
     <Button
         android:id="@+id/btnShuffle"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginTop="24dp"
+        android:background="@drawable/btn_follow"
+        android:paddingHorizontal="30dp"
         android:text="Taste!"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"

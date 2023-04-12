@@ -1,6 +1,8 @@
 package com.example.tasteit_java;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.Menu;
@@ -19,6 +21,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.tasteit_java.adapters.AdapterGridViewMain;
 import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.Recipe;
+import com.example.tasteit_java.clases.Utils;
 import com.example.tasteit_java.fragments.FragmentRandom;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -48,7 +51,7 @@ public class ActivityRandom extends AppCompatActivity implements GestureDetector
         gestureDetector = new GestureDetector(this);
 
         //menu superior
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Random");
         //fragment menu inferior
         /*
@@ -101,6 +104,14 @@ public class ActivityRandom extends AppCompatActivity implements GestureDetector
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_menu, menu);
+
+        menu.getItem(1).setVisible(false);
+        menu.getItem(2).setVisible(false);
+
+        Bitmap originalBitmap = Utils.decodeBase64(new BdConnection().retrieveUserbyUid(Utils.getUserToken()).getImgProfile());
+        BitmapDrawable roundedBitmapDrawable = new BitmapDrawable(getResources(), Utils.getRoundBitmapWithImage(originalBitmap));
+        menu.getItem(0).setIcon(roundedBitmapDrawable);
+
         return true;
     }
 
