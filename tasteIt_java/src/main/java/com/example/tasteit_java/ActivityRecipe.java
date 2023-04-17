@@ -189,7 +189,10 @@ public class ActivityRecipe extends AppCompatActivity {
                 builderReport.create().show();
                 return true;
             case R.id.iEditRecipe:
-
+                    Intent i = new Intent(getApplicationContext(), ActivityNewRecipe.class);
+                    i.putExtra("recipeId", recipeId);
+                    i.putExtra("creatorToken", creatorToken);
+                    startActivity(i);
                 return true;
         }
         return super.onOptionsItemSelected(item);

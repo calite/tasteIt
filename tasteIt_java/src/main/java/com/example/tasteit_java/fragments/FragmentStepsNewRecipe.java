@@ -68,7 +68,12 @@ public class FragmentStepsNewRecipe extends Fragment {
         return view;
     }
 
-
+    public static void setSteps(ArrayList<String> steps){
+        for(String step:steps){
+            listSteps.add(step);
+            adapter.notifyDataSetChanged();
+        }
+    }
     public static ArrayList<String> getSteps() {
         return listSteps;
     }
