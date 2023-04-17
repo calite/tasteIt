@@ -28,13 +28,13 @@ public class AdapterEndlessRecyclerMain extends RecyclerView.Adapter {
     public ArrayList<Object> dataList;
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_FOOTER = 1;
-    private int visibleThreshold = 10;
-    private int lastVisibleItem, totalItemCount;
+    private int visibleThreshold = 2;
+    private int lastVisibleItem, totalItemCount, firstVisibleItem;
     private boolean loading;
     private OnLoadMoreListener onLoadMoreListener;
 
-    public AdapterEndlessRecyclerMain(ArrayList<Object> listRecipes, RecyclerView recyclerView) {
-        this.dataList = new ArrayList<>(listRecipes);
+    public AdapterEndlessRecyclerMain(RecyclerView recyclerView) {
+        this.dataList = new ArrayList<>();
 
         if (recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
 
@@ -47,21 +47,31 @@ public class AdapterEndlessRecyclerMain extends RecyclerView.Adapter {
                                        int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
 
-                    totalItemCount = linearLayoutManager.getItemCount();
-                    lastVisibleItem = linearLayoutManager
-                            .findLastVisibleItemPosition();
-                    if (!loading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
-                        // End has been reached
-                        // Do something
-                        if (onLoadMoreListener != null) {
-                            onLoadMoreListener.onLoadMore();
+                    if(recyclerView.getScrollState() == RecyclerView.SCROLL_STATE_SETTLING) {
+                        if (linearLayoutManager.findFirstVisibleItemPosition() > 0 && dy > 0) {
+                            totalItemCount = linearLayoutManager.getItemCount();
+                            lastVisibleItem = linearLayoutManager.findLastCompletelyVisibleItemPosition();
+
+                            if (!loading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
+                                // End has been reached
+                                if (onLoadMoreListener != null) {
+                                    onLoadMoreListener.onLoadMore();
+                                }
+                                loading = true;
+                            }
+                        } else {
+                            /*if (!loading && !recyclerView.canScrollVertically(-1) && linearLayoutManager.findFirstVisibleItemPosition() == 1) {
+                                if (onLoadMoreListener != null) {
+                                    Toast.makeText(recyclerView.getContext(), "ACTUALIZAAAA", Toast.LENGTH_SHORT).show();
+                                    onLoadMoreListener.update();
+                                }
+                                loading = true;
+                            }*/
                         }
-                        loading = true;
                     }
                 }
             });
         }
-
     }
 
     @Override

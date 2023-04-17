@@ -44,15 +44,11 @@
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/vpPaginator"
         android:layout_width="match_parent"
-        android:layout_height="550dp"
+        android:layout_height="0dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/fcvMainMenu"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tlRecipes"
-        app:layout_constraintVertical_bias="0.0"
-        android:layout_weight="1"/>
+        app:layout_constraintVertical_bias="0"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/bCreate"

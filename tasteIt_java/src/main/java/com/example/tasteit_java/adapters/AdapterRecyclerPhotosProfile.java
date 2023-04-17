@@ -1,6 +1,7 @@
 package com.example.tasteit_java.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.tasteit_java.ActivityRecipe;
 import com.example.tasteit_java.R;
 import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.Recipe;
@@ -21,24 +23,11 @@ import java.util.ArrayList;
 public class AdapterRecyclerPhotosProfile extends RecyclerView.Adapter<AdapterRecyclerPhotosProfile.ViewHolder> {
 
     private Context context;
-    private String uid;
-    private ArrayList<Recipe> arrayListPhotos;
+    public ArrayList<Recipe> arrayListPhotos;
 
-    public AdapterRecyclerPhotosProfile(Context context, String uid) {
+    public AdapterRecyclerPhotosProfile(Context context) {
         this.context = context;
-        this.uid = uid;
-
         arrayListPhotos = new ArrayList<>();
-        new TaskLoadUserPhotos().execute();
-    }
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView ivPhoto;
-
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            ivPhoto = itemView.findViewById(R.id.ivPhoto);
-        }
     }
 
     @NonNull
@@ -51,8 +40,7 @@ public class AdapterRecyclerPhotosProfile extends RecyclerView.Adapter<AdapterRe
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Bitmap bitmap = Utils.decodeBase64(arrayListPhotos.get(position).getImage());
-        holder.ivPhoto.setImageBitmap(bitmap);
+        holder.bindRow(arrayListPhotos.get(position));
     }
 
     @Override
@@ -65,20 +53,32 @@ public class AdapterRecyclerPhotosProfile extends RecyclerView.Adapter<AdapterRe
         return arrayListPhotos.size();
     }
 
-    class TaskLoadUserPhotos extends AsyncTask<ArrayList<Recipe>, Void,ArrayList<Recipe>> {
-        @Override
-        protected void onPreExecute() {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        private final ImageView ivPhoto;
+        private int recipeId;
+        private String creatorToken;
 
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            ivPhoto = itemView.findViewById(R.id.ivPhoto);
+
+            ivPhoto.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent i = new Intent(view.getContext(), ActivityRecipe.class);
+                    i.putExtra("creatorToken", creatorToken);
+                    i.putExtra("recipeId", recipeId);
+                    view.getContext().startActivity(i);
+                }
+            });
         }
-        @Override
-        protected ArrayList<Recipe> doInBackground(ArrayList<Recipe>... hashMaps) {
-            return new BdConnection().retrieveAllRecipesbyUid(uid);
-        }
-        @Override
-        protected void onPostExecute(ArrayList<Recipe> recipes) {
-            //super.onPostExecute(recipes);
-            arrayListPhotos = recipes;
-            notifyDataSetChanged();
+
+        void bindRow(@NonNull Recipe recipe) {
+            Bitmap bitmap = Utils.decodeBase64(recipe.getImage());
+            ivPhoto.setImageBitmap(bitmap);
+            recipeId = recipe.getId();
+            creatorToken = recipe.getCreatorToken();
         }
     }
+
 }

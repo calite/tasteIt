@@ -263,6 +263,7 @@ public class ActivityLogin extends AppCompatActivity {
         //FIN NEO
 
         startActivity(i);
+        finish();
     }
 
     private void register() {

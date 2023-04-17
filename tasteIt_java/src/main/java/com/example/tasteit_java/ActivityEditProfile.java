@@ -99,30 +99,6 @@ public class ActivityEditProfile extends AppCompatActivity {
                 menuInflater.inflate(R.menu.change_image_from, popupMenu.getMenu());
                 popupMenu.setOnMenuItemClickListener(popupListener);
                 popupMenu.show();
-
-                /*View v = View.inflate(ActivityEditProfile.this, R.layout.item_photo_picker, null);
-                Dialog dialog = new Dialog(ActivityEditProfile.this);
-
-                Button bFromGallery = v.findViewById(R.id.bFromGallery);
-                Button bFromCamera = v.findViewById(R.id.bFromCamera);
-
-                bFromGallery.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Utils.selectImageFromMedia(ActivityEditProfile.this);
-                    }
-                });
-                bFromCamera.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Utils.takePicture(ActivityEditProfile.this);
-                    }
-                });
-
-                dialog.setContentView(v);
-                dialog.setTitle("Select an option: ");
-                dialog.create();
-                dialog.show();*/
             }
         });
 

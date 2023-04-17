@@ -98,16 +98,6 @@ public class ActivityProfile extends AppCompatActivity {
             }
         });
 
-        //fragment menu inferior
-        FragmentManager fm = this.getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        FragmentMainMenu mainMenuFragment = new FragmentMainMenu();
-        //comprobamos si existe
-        if(savedInstanceState == null) {
-            ft.add(R.id.fcMainMenu, mainMenuFragment,"main_menu");
-            ft.commit();
-        }
-
         btnFollow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

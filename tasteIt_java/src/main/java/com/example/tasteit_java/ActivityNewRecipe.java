@@ -12,12 +12,14 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -130,35 +132,33 @@ public class ActivityNewRecipe extends AppCompatActivity {
         //seleccionar foto
         ibPickPhoto = findViewById(R.id.ibPickPhoto);
         ivRecipePhoto = findViewById(R.id.ivRecipePhoto);
+
+        //Cambiar foto de perfil
+        PopupMenu.OnMenuItemClickListener popupListener = new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.iCamera: {
+                        Utils.takePicture(ActivityNewRecipe.this);
+                        break;
+                    }
+                    case R.id.iGallery: {
+                        Utils.selectImageFromMedia(ActivityNewRecipe.this);
+                        break;
+                    }
+                }
+                return false;
+            }
+        };
+
         ibPickPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                View v = View.inflate(ActivityNewRecipe.this, R.layout.item_photo_picker, null);
-                Dialog dialog = new Dialog(ActivityNewRecipe.this);
-
-                Button bFromGallery = v.findViewById(R.id.bFromGallery);
-                Button bFromCamera = v.findViewById(R.id.bFromCamera);
-
-                bFromGallery.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Utils.selectImageFromMedia(ActivityNewRecipe.this);
-                    }
-                });
-
-                bFromCamera.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Utils.takePicture(ActivityNewRecipe.this);
-                    }
-                });
-
-                dialog.setContentView(v);
-                dialog.setTitle("Select an option: ");
-                dialog.create();
-                dialog.show();
-
+                PopupMenu popupMenu = new PopupMenu(ActivityNewRecipe.this, view);
+                MenuInflater menuInflater = popupMenu.getMenuInflater();
+                menuInflater.inflate(R.menu.change_image_from, popupMenu.getMenu());
+                popupMenu.setOnMenuItemClickListener(popupListener);
+                popupMenu.show();
             }
         });
 
