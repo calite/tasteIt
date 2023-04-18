@@ -32,6 +32,7 @@
         android:layout_height="wrap_content"
         android:text="@string/terms1"
         android:textSize="12sp"
+        android:justificationMode="inter_word"
         android:layout_marginTop="20dp"
         android:layout_margin="8dp" />
 
@@ -41,6 +42,7 @@
         android:layout_height="wrap_content"
         android:text="@string/terms2"
         android:textSize="12sp"
+        android:justificationMode="inter_word"
         android:layout_marginTop="20dp"
         android:layout_margin="8dp" />
 
@@ -50,6 +52,7 @@
         android:layout_height="wrap_content"
         android:text="@string/terms3"
         android:textSize="12sp"
+        android:justificationMode="inter_word"
         android:layout_marginTop="20dp"
         android:layout_margin="8dp" />
 

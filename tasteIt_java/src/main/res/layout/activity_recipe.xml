@@ -22,24 +22,26 @@
             android:src="@drawable/placeholder"
             style="@style/recipeHeader"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="0.05"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tvRecipeName"
             android:layout_width="wrap_content"
+            android:maxWidth="210dp"
             android:layout_height="wrap_content"
+            android:maxHeight="75dp"
             android:fontFamily="@font/comfortaa_bold"
             android:text="Recipe Name"
-            android:textSize="25dp"
+            android:textSize="18sp"
             style="@style/recipeHeader"
             app:layout_constraintBottom_toTopOf="@+id/rbRating"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.494"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/ivRecipePhoto"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.714" />
+            app:layout_constraintVertical_bias="0.7" />
 
         <RatingBar
             android:id="@+id/rbRating"
@@ -60,18 +62,19 @@
         <TextView
             android:id="@+id/tvNameCreator"
             android:layout_width="wrap_content"
+            android:maxWidth="210dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="152dp"
-            android:layout_marginTop="20dp"
+            android:maxHeight="50dp"
             android:fontFamily="@font/comfortaa_bold"
             android:text="Name Creator"
             android:textStyle="italic"
-            android:textSize="15dp"
+            android:textSize="15sp"
             style="@style/recipeHeader"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.53"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/rbRating" />
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/ivRecipePhoto"
+            app:layout_constraintTop_toBottomOf="@+id/rbRating"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

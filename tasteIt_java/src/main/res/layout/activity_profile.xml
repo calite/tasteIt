@@ -33,13 +33,15 @@
         <TextView
             android:id="@+id/tvUserName"
             android:layout_width="wrap_content"
+            android:maxWidth="200dp"
             android:layout_height="wrap_content"
+            android:maxHeight="100dp"
             android:text="Profile Name"
             android:textSize="18sp"
             android:textColor="@color/black"
             app:layout_constraintBottom_toTopOf="@+id/vSeparator"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.421"
+            app:layout_constraintHorizontal_bias="0.420"
             app:layout_constraintStart_toEndOf="@+id/ivUserPicture"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.25" />
@@ -225,6 +227,7 @@
             android:id="@+id/tlUser"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:tabTextAppearance="@style/TabItem"
             app:layout_constraintTop_toBottomOf="@+id/vSeparator">
 
             <com.google.android.material.tabs.TabItem
@@ -235,7 +238,7 @@
             <com.google.android.material.tabs.TabItem
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Photos" />
+                android:text="Steps" />
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="match_parent"

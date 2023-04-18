@@ -50,6 +50,8 @@
             android:fontFamily="@font/comfortaa_light"
             android:hint="Recipe Description"
             android:inputType="textMultiLine"
+            android:scrollbars="vertical"
+            android:maxLength="200"
             app:backgroundTint="@color/maroon"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView8" />

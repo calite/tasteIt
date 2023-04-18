@@ -7,9 +7,6 @@
     tools:context=".ActivityRandom"
     android:id="@+id/cl">
 
-
-    <!--si no ves nada comenta este fragment container -->
-
     <TextView
         android:id="@+id/textView11"
         android:layout_width="match_parent"

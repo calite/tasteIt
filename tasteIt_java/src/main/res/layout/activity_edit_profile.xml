@@ -25,12 +25,12 @@
                 android:id="@+id/ivProfilePhoto"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
+                android:background="@color/white"
                 android:padding="2dp"
                 android:src="@drawable/ic_default_profile"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:shapeAppearanceOverlay="@style/roundedImageView"
-                android:background="@color/white"
                 app:strokeColor="@color/black"
                 app:strokeWidth="2dp" />
 
@@ -40,15 +40,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginEnd="70dp"
                 android:fontFamily="@font/comfortaa_bold"
+                android:maxWidth="200dp"
+                android:maxHeight="100dp"
                 android:text="USERNAME"
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.811"
-                app:layout_constraintStart_toEndOf="@+id/ivProfilePhoto"
+                app:layout_constraintHorizontal_bias="0.1"
+                app:layout_constraintStart_toEndOf="@+id/ibPickPhoto"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.25" />
 
@@ -70,7 +71,7 @@
             android:id="@+id/textView3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="15dp"
             android:fontFamily="@font/comfortaa_bold"
             android:paddingLeft="20dp"
             android:text="Username"
@@ -86,6 +87,7 @@
             android:fontFamily="@font/comfortaa_light"
             android:hint="Username"
             android:inputType="text"
+            android:maxHeight="50dp"
             android:minHeight="48dp"
             android:singleLine="true"
             android:textAlignment="center"
@@ -112,10 +114,10 @@
             android:fontFamily="@font/comfortaa_light"
             android:hint="Biography"
             android:inputType="textMultiLine"
+            android:justificationMode="inter_word"
             android:lines="3"
             android:maxLength="140"
             android:minHeight="48dp"
-
             android:scrollbars="vertical"
             android:textAlignment="center"
             app:layout_constraintTop_toBottomOf="@+id/textView6"
@@ -166,9 +168,9 @@
             android:id="@+id/clPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/optChangePass"
             android:layout_marginTop="10dp"
-            android:visibility="invisible">
+            android:visibility="invisible"
+            app:layout_constraintTop_toBottomOf="@+id/optChangePass">
 
             <TextView
                 android:id="@+id/tvOldPassword"
@@ -251,8 +253,8 @@
             android:layout_marginHorizontal="30dp"
             android:fontFamily="@font/comfortaa_bold"
             android:text="save changes"
-            app:layout_constraintTop_toBottomOf="@id/optChangePass"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/optChangePass"
             app:layout_constraintVertical_bias="0.5"
             tools:layout_editor_absoluteX="0dp" />
 

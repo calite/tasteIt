@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:fillViewport="true"
     tools:context=".ActivityNewRecipe">
 
 
@@ -15,7 +16,7 @@
         android:layout_marginTop="8dp"
         android:src="@drawable/placeholder"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -48,12 +49,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="1dp"
+        app:tabTextAppearance="@style/TabItem"
         app:layout_constraintTop_toBottomOf="@id/vSeparator">
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Info"/>
+            android:text="Info" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="match_parent"
@@ -76,7 +78,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tlRecipe"
         app:layout_constraintVertical_bias="0"/>
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

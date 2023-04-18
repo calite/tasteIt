@@ -50,21 +50,9 @@ public class ActivityRandom extends AppCompatActivity implements GestureDetector
         recipes = app.retrieveAllRecipes();
         gestureDetector = new GestureDetector(this);
 
-        //menu superior
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Random");
-        //fragment menu inferior
-        /*
-        FragmentManager fm = this.getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        FragmentMainMenu mainMenuFargment = new FragmentMainMenu();
-        //comprobamos si existe
-        if(savedInstanceState == null) {
-            ft.add(R.id.fcMainMenu, mainMenuFargment);
-            ft.commit();
-        }
-        */
         btnShuffle = findViewById(R.id.btnShuffle);
+
 
         fcRandom = findViewById(R.id.fcRandom);
         fcRandom.setVisibility(View.INVISIBLE);
