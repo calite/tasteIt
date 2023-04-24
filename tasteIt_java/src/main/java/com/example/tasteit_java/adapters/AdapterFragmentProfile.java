@@ -23,7 +23,6 @@ public class AdapterFragmentProfile extends FragmentStateAdapter {
 
     private Boolean myProfile;
     private String uidProfile;
-    private FragmentBio fragmentBio;
     private FragmentComments fragmentComments;
 
     public AdapterFragmentProfile(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, String uid, Boolean myProfile) {

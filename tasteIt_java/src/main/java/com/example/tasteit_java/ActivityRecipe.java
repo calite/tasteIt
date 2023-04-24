@@ -26,8 +26,10 @@ import com.example.tasteit_java.ApiService.ApiRequests;
 import com.example.tasteit_java.ApiService.RecipeId_Recipe_User;
 import com.example.tasteit_java.adapters.AdapterFragmentRecipe;
 import com.example.tasteit_java.bdConnection.BdConnection;
+import com.example.tasteit_java.clases.OnItemNavSelectedListener;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.Utils;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
@@ -69,6 +71,10 @@ public class ActivityRecipe extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe);
 
+        BottomNavigationView fcMainMenu = findViewById(R.id.fcMainMenu);
+        fcMainMenu.setSelectedItemId(R.id.bHome);
+        fcMainMenu.setOnItemSelectedListener(new OnItemNavSelectedListener(this));
+
         listRecipes = new ArrayList<>();
 
         ivRecipePhoto = findViewById(R.id.ivRecipePhoto);
@@ -82,8 +88,12 @@ public class ActivityRecipe extends AppCompatActivity {
         //recogemos la receta pasada como parametro y el uid
         if(getIntent().getExtras() != null) {
             Bundle params = getIntent().getExtras();
-            recipeId = params.getInt("recipeId");
-            creatorToken = params.getString("creatorToken");
+            if(params.size() == 2) {
+                recipeId = params.getInt("recipeId");
+                creatorToken = params.getString("creatorToken");
+            } else {
+                recipeId = params.getInt("recipeId");
+            }
         }
 
         token = Utils.getUserToken();

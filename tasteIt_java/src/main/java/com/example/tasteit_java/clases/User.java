@@ -27,12 +27,13 @@ public class User implements Serializable  {
         this.uid = uid;
     }
 
-    public User(String username, String biography, String imgProfile, ArrayList<Recipe> userRecipes, ArrayList<Comment> userComments) {
+    public User(String username, String uid, String biography, String imgProfile, ArrayList<Recipe> userRecipes, ArrayList<Comment> userComments) {
         this.username = username;
         this.biography = biography;
         this.imgProfile = imgProfile;
         this.userRecipes = userRecipes;
         this.userComments = userComments;
+        this.uid = uid;
     }
 
     public String getUsername() {

@@ -32,16 +32,15 @@
 
         <TextView
             android:id="@+id/tvUserName"
-            android:layout_width="wrap_content"
-            android:maxWidth="200dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:maxHeight="100dp"
+            android:singleLine="true"
             android:text="Profile Name"
             android:textSize="18sp"
             android:textColor="@color/black"
+            android:textAlignment="center"
             app:layout_constraintBottom_toTopOf="@+id/vSeparator"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.420"
             app:layout_constraintStart_toEndOf="@+id/ivUserPicture"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.25" />
@@ -238,7 +237,7 @@
             <com.google.android.material.tabs.TabItem
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Steps" />
+                android:text="Photos" />
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="match_parent"
@@ -258,7 +257,18 @@
             app:layout_constraintTop_toBottomOf="@+id/tlUser"
             app:layout_constraintVertical_bias="0" />
 
-        <androidx.fragment.app.FragmentContainerView
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/fcMainMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:itemTextColor="@color/white"
+            android:background="@color/maroon"
+            app:itemIconTint="@color/white"
+            android:layout_alignParentBottom="true"
+            app:menu="@menu/nav_main_menu"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <!--<androidx.fragment.app.FragmentContainerView
             android:id="@+id/fcMainMenu"
             android:name="com.example.tasteit_java.fragments.FragmentMainMenu"
             android:layout_width="match_parent"
@@ -267,7 +277,7 @@
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintVertical_bias="0"
-            tools:layout="@layout/fragment_main_menu" />
+            tools:layout="@layout/fragment_main_menu" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

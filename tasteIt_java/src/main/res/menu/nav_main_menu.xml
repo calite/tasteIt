@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/bHome"
+        android:title="Home"
+        android:icon="@drawable/ic_home"
+        android:iconTint="@color/white"/>
+    <item
+        android:id="@+id/bSearch"
+        android:title="Search"
+        android:icon="@drawable/ic_search"
+        android:iconTint="@color/white"/>
+
+    <item
+        android:id="@+id/bRandom"
+        android:title="Random"
+        android:icon="@drawable/ic_random"
+        android:iconTint="@color/white"/>
+
+    <item
+        android:id="@+id/bMyBook"
+        android:title="My Book"
+        android:icon="@drawable/ic_books"
+        android:iconTint="@color/white"/>
+
+</menu>

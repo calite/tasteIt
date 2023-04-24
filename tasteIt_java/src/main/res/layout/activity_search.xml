@@ -16,89 +16,105 @@
 
         <EditText
             android:id="@+id/tvSearch"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
             android:backgroundTint="@color/white"
             android:hint="Type something..."
             android:textColor="@color/white"
             android:textColorHint="@color/white"
-            android:textSize="20dp"
+            android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ivsearch"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+        <ImageButton
+            android:id="@+id/ivsearch"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:background="@drawable/ic_search"
-            app:layout_constraintEnd_toEndOf="@+id/tvSearch"
-            app:layout_constraintTop_toTopOf="@+id/tvSearch" />
+            android:layout_marginEnd="10dp"
+            app:layout_constraintStart_toEndOf="@+id/tvSearch"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/tvSearch"
+            app:layout_constraintTop_toTopOf="@+id/tvSearch"
+            app:layout_constraintVertical_bias="0.5"/>
 
-        <RadioGroup
-            android:id="@+id/rg"
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tlSearch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvSearch">
+            app:tabTextAppearance="@style/TabItem"
+            app:tabIconTint="@color/white"
+            app:tabIndicatorColor="@color/white"
+            app:layout_constraintTop_toBottomOf="@+id/tvSearch"
+            android:background="@color/maroon">
 
-            <RadioButton
-                android:id="@+id/rbName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="80dp"
-                android:text="Name"
-                android:textColor="@color/white"
-                android:textSize="15dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:icon="@drawable/selectall"/>
 
-            <RadioButton
-                android:id="@+id/rbTags"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:icon="@drawable/ic_profile" />
 
-                android:text="Tags"
-                android:textColor="@color/white"
-                android:textSize="15dp"
-                app:layout_constraintStart_toEndOf="@+id/rbName"
-                app:layout_constraintTop_toTopOf="parent" />
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:icon="@drawable/libroderecetas" />
 
-            <RadioButton
-                android:id="@+id/rbCountry"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Country"
-                android:textColor="@color/white" />
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:icon="@drawable/ingredientes" />
 
-        </RadioGroup>
+        </com.google.android.material.tabs.TabLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/vpPaginator"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/fcMainMenu"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
+        android:orientation="horizontal"
 
-        <GridView
-            android:id="@+id/gvRecipes"
+        app:layout_constraintBottom_toTopOf="@+id/fcMainMenu"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
+        app:layout_constraintVertical_bias="0" />
+
+    <LinearLayout
+        android:id="@+id/pbSearch"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/fcMainMenu"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
+        app:layout_constraintVertical_bias="0.5"
+        android:visibility="invisible">
+
+        <ProgressBar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:horizontalSpacing="10dp"
-            android:numColumns="1"
-            android:padding="10dp"
-            android:verticalSpacing="10dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_gravity="center"/>
 
-    <androidx.fragment.app.FragmentContainerView
+    </LinearLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/fcMainMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:itemTextColor="@color/white"
+        android:background="@color/maroon"
+        app:itemIconTint="@color/white"
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/nav_main_menu"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <!--<androidx.fragment.app.FragmentContainerView
         android:id="@+id/fcMainMenu"
         android:name="com.example.tasteit_java.fragments.FragmentMainMenu"
         android:layout_width="match_parent"
@@ -106,9 +122,6 @@
         android:layout_alignParentBottom="true"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout="@layout/fragment_main_menu" />
-
-    <!--si no ves nada comenta este fragment container -->
-
+        tools:layout="@layout/fragment_main_menu" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

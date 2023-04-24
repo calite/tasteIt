@@ -56,12 +56,14 @@ public class FragmentMainMenu extends Fragment {
         bSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getActivity().getApplicationContext(), ActivitySearch.class);
-                if(!getActivity().getLocalClassName().equals("ActivityMain")) {
-                    getActivity().finish();
-                    startActivity(i);
-                } else {
-                    startActivity(i);
+                if(!getActivity().getLocalClassName().equals("ActivitySearch")) {
+                    Intent i = new Intent(getActivity().getApplicationContext(), ActivitySearch.class);
+                    if(!getActivity().getLocalClassName().equals("ActivityMain")) {
+                        getActivity().finish();
+                        startActivity(i);
+                    } else {
+                        startActivity(i);
+                    }
                 }
             }
         });
@@ -84,12 +86,14 @@ public class FragmentMainMenu extends Fragment {
         bMyBook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getActivity().getApplicationContext(), ActivityMyBook.class);
-                if(!getActivity().getLocalClassName().equals("ActivityMain")) {
-                    getActivity().finish();
-                    startActivity(i);
-                } else {
-                    startActivity(i);
+                if(!getActivity().getLocalClassName().equals("ActivityMyBook")) {
+                    Intent i = new Intent(getActivity().getApplicationContext(), ActivityMyBook.class);
+                    if (!getActivity().getLocalClassName().equals("ActivityMain")) {
+                        getActivity().finish();
+                        startActivity(i);
+                    } else {
+                        startActivity(i);
+                    }
                 }
             }
         });

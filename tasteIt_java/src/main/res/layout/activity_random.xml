@@ -42,7 +42,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:layout="@layout/fragment_random" />
 
-    <androidx.fragment.app.FragmentContainerView
+    <!--<androidx.fragment.app.FragmentContainerView
         android:id="@+id/fcMainMenu"
         android:name="com.example.tasteit_java.fragments.FragmentMainMenu"
         android:layout_width="match_parent"
@@ -50,6 +50,17 @@
         android:layout_alignParentBottom="true"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout="@layout/fragment_main_menu" />
+        tools:layout="@layout/fragment_main_menu" />-->
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/fcMainMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:itemTextColor="@color/white"
+        android:background="@color/maroon"
+        app:itemIconTint="@color/white"
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/nav_main_menu"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

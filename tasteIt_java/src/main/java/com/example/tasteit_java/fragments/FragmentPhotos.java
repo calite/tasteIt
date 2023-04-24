@@ -59,7 +59,6 @@ public class FragmentPhotos extends Fragment {
     private RecyclerView rvGridPhotos;
     private AdapterRecyclerPhotosProfile adapter;
 
-
     // TODO: Rename and change types of parameters
     //private ArrayList<Recipe> recipes;
     private String uidParam;
@@ -121,10 +120,8 @@ public class FragmentPhotos extends Fragment {
     }
 
     private class RecipesLoader {
-
         private final ApiRequests apiRequests;
         private final MutableLiveData<List<Recipe>> recipeLiveData;
-
         public RecipesLoader(ApiRequests apiRequests) {
             this.apiRequests = apiRequests;
             recipeLiveData = new MutableLiveData<>();

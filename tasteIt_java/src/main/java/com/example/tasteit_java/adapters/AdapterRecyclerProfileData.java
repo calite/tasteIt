@@ -113,6 +113,7 @@ public class AdapterRecyclerProfileData extends RecyclerView.Adapter<AdapterRecy
                 case 1:
                 case 4: { //Recipes & Liked
                     cgTags.removeAllViews();
+
                     Recipe temp = ((Recipe) data);
 
                     tvAuthor.setText(temp.getName());

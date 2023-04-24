@@ -92,6 +92,7 @@
         android:id="@+id/tlRecipe"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:tabTextAppearance="@style/TabItem"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
 
         <com.google.android.material.tabs.TabItem
@@ -111,13 +112,12 @@
 
     </com.google.android.material.tabs.TabLayout>
 
-
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/vpPaginator"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/fcvMainMenu"
+        app:layout_constraintBottom_toTopOf="@+id/fcMainMenu"
         app:layout_constraintTop_toBottomOf="@+id/tlRecipe"
         app:layout_constraintVertical_bias="0"/>
 
@@ -140,7 +140,7 @@
         app:tint="@color/white"
         />
 
-    <androidx.fragment.app.FragmentContainerView
+    <!--<androidx.fragment.app.FragmentContainerView
         android:id="@+id/fcvMainMenu"
         android:name="com.example.tasteit_java.fragments.FragmentMainMenu"
         android:layout_width="match_parent"
@@ -148,8 +148,18 @@
         android:layout_alignParentBottom="true"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout="@layout/fragment_main_menu" />
+        tools:layout="@layout/fragment_main_menu" />-->
 
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/fcMainMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:itemTextColor="@color/white"
+        android:background="@color/maroon"
+        app:itemIconTint="@color/white"
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/nav_main_menu"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -14,7 +14,9 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.tasteit_java.adapters.AdapterFragmentMyBook;
 import com.example.tasteit_java.bdConnection.BdConnection;
+import com.example.tasteit_java.clases.OnItemNavSelectedListener;
 import com.example.tasteit_java.clases.Utils;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,6 +32,10 @@ public class ActivityMyBook extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_book);
+
+        BottomNavigationView fcMainMenu = findViewById(R.id.fcMainMenu);
+        fcMainMenu.setSelectedItemId(R.id.bMyBook);
+        fcMainMenu.setOnItemSelectedListener(new OnItemNavSelectedListener(this));
 
         //recoger token usuario firebase
         token = Utils.getUserToken();

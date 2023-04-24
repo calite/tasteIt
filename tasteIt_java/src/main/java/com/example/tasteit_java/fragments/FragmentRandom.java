@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -77,6 +78,35 @@ public class FragmentRandom extends Fragment {
 
 
         }
+
+        view.setOnTouchListener(new View.OnTouchListener() {
+            private float lastX;
+            private boolean isScrolling;
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        // Record the initial X position of touch
+                        lastX = event.getX();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        // Calculate the horizontal distance moved
+                        float deltaX = event.getX() - lastX;
+
+                        // If the horizontal distance moved is greater than a threshold value,
+                        // consider it as a horizontal scroll
+                        if (Math.abs(deltaX) > 10) {
+                            isScrolling = true;
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        // Reset scrolling flag
+                        isScrolling = false;
+                        break;
+                }
+                return isScrolling;
+            }
+        });
         // Inflate the layout for this fragment
 
         return view;

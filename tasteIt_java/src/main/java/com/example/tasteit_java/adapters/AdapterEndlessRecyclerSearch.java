@@ -13,35 +13,42 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.RecyclerView.*;
+import androidx.recyclerview.widget.RecyclerView.Adapter;
+import androidx.recyclerview.widget.RecyclerView.OnScrollListener;
+import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
+import com.example.tasteit_java.ActivityProfile;
 import com.example.tasteit_java.ActivityRecipe;
 import com.example.tasteit_java.R;
 import com.example.tasteit_java.clases.OnLoadMoreListener;
 import com.example.tasteit_java.clases.Recipe;
+import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
 
 import java.util.ArrayList;
 
-public class AdapterEndlessRecyclerMain extends RecyclerView.Adapter {
+public class AdapterEndlessRecyclerSearch extends Adapter {
 
     public ArrayList<Object> dataList;
-    private static final int TYPE_ITEM = 0;
-    private static final int TYPE_FOOTER = 1;
+    private String search;
+    private static final int TYPE_ITEM_RECIPE = 0;
+    private static final int TYPE_ITEM_USER = 1;
+    private static final int TYPE_FOOTER = 2;
     private int visibleThreshold = 4;
     private int lastVisibleItem, totalItemCount, firstVisibleItem;
     private boolean loading;
     private OnLoadMoreListener onLoadMoreListener;
 
-    public AdapterEndlessRecyclerMain(RecyclerView recyclerView) {
-        this.dataList = new ArrayList<>();
+    public AdapterEndlessRecyclerSearch(RecyclerView recyclerView, ArrayList<Object> dataList, String search) {
+        this.search = search;
+        this.dataList = new ArrayList<>(dataList);
 
-        if (recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
+        /*if (recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
 
             final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView
                     .getLayoutManager();
 
-            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            recyclerView.addOnScrollListener(new OnScrollListener() {
                 @Override
                 public void onScrolled(RecyclerView recyclerView,
                                        int dx, int dy) {
@@ -55,7 +62,8 @@ public class AdapterEndlessRecyclerMain extends RecyclerView.Adapter {
                             if (!loading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
                                 // End has been reached
                                 if (onLoadMoreListener != null) {
-                                    onLoadMoreListener.onLoadMore();
+                                    Toast.makeText(recyclerView.getContext(), "Aqui recogeriamos mas datos dependiendo", Toast.LENGTH_SHORT).show();
+                                    //onLoadMoreListener.onLoadMore();
                                 }
                                 loading = true;
                             }
@@ -66,25 +74,35 @@ public class AdapterEndlessRecyclerMain extends RecyclerView.Adapter {
                                     onLoadMoreListener.update();
                                 }
                                 loading = true;
-                            }*/
+                            }
                         }
                     }
                 }
             });
-        }
+        }*/
     }
 
     @Override
     public int getItemViewType(int position) {
-        return dataList.get(position) instanceof Recipe ? TYPE_ITEM : TYPE_FOOTER;
+        if(dataList.get(position) instanceof Recipe) {
+            return TYPE_ITEM_RECIPE;
+        } else if (dataList.get(position) instanceof User) {
+            return TYPE_ITEM_USER;
+        } else {
+            return TYPE_FOOTER;
+        }
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        if (viewType == TYPE_ITEM) {
-            View row = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_card_recipes,
+    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        if (viewType == TYPE_ITEM_RECIPE) {
+            View row = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_card_search_recipe,
                     viewGroup, false);
             return new RecipeViewHolder(row);
+        } else if (viewType == TYPE_ITEM_USER) {
+            View row = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_card_search_user,
+                    viewGroup, false);
+            return new UserViewHolder(row);
         } else {
             View row = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.loading_footer,
                     viewGroup, false);
@@ -94,8 +112,10 @@ public class AdapterEndlessRecyclerMain extends RecyclerView.Adapter {
 
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
-        if (viewHolder instanceof RecipeViewHolder) {
+    public void onBindViewHolder(ViewHolder viewHolder, final int position) {
+        if (viewHolder instanceof UserViewHolder) {
+            ((UserViewHolder) viewHolder).bindRow((User) dataList.get(position));
+        } else if (viewHolder instanceof RecipeViewHolder) {
             ((RecipeViewHolder) viewHolder).bindRow((Recipe) dataList.get(position));
         } else if (viewHolder instanceof FooterViewHolder) {
             ((FooterViewHolder) viewHolder).progressBar.setIndeterminate(true);
@@ -116,15 +136,12 @@ public class AdapterEndlessRecyclerMain extends RecyclerView.Adapter {
         return dataList.size();
     }
 
-    class RecipeViewHolder extends RecyclerView.ViewHolder {
+    class RecipeViewHolder extends ViewHolder {
 
         private final ImageView ivPhotoRecipe;
         private final TextView tvRating;
         private final TextView tvNameRecipe;
-        private final TextView tvNameCreator;
-        private final TextView tvDescriptionRecipe;
         private int recipeId;
-        private String creatorToken;
 
         public RecipeViewHolder(View view) {
             super(view);
@@ -132,14 +149,11 @@ public class AdapterEndlessRecyclerMain extends RecyclerView.Adapter {
             ivPhotoRecipe = view.findViewById(R.id.ivPhotoRecipe);
             tvRating = view.findViewById(R.id.tvRating);
             tvNameRecipe = view.findViewById(R.id.tvNameRecipe);
-            tvNameCreator = view.findViewById(R.id.tvNameCreator);
-            tvDescriptionRecipe = view.findViewById(R.id.tvDescriptionRecipe);
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent i = new Intent(view.getContext(), ActivityRecipe.class);
-                    i.putExtra("creatorToken", creatorToken);
                     i.putExtra("recipeId", recipeId);
                     view.getContext().startActivity(i);
                 }
@@ -148,18 +162,43 @@ public class AdapterEndlessRecyclerMain extends RecyclerView.Adapter {
 
         void bindRow(@NonNull Recipe recipe) {
             tvNameRecipe.setText(recipe.getName());
-            tvNameCreator.setText(recipe.getCreator());
-            tvDescriptionRecipe.setText(recipe.getDescription());
             tvRating.setText(recipe.getRating());
             Bitmap bitmap = Utils.decodeBase64(recipe.getImage());
             ivPhotoRecipe.setImageBitmap(bitmap);
             recipeId = recipe.getId();
-            creatorToken = recipe.getCreatorToken();
         }
-
     }
 
-    class FooterViewHolder extends RecyclerView.ViewHolder {
+    class UserViewHolder extends ViewHolder {
+        private final ImageView ivPhotoUser;
+        private final TextView tvNameUser;
+        private String token;
+
+        public UserViewHolder(View view) {
+            super(view);
+            // Define click listener for the ViewHolder's View
+            ivPhotoUser = view.findViewById(R.id.ivPhotoUser);
+            tvNameUser = view.findViewById(R.id.tvNameUser);
+
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent i = new Intent(view.getContext(), ActivityProfile.class);
+                    i.putExtra("uid", token);
+                    view.getContext().startActivity(i);
+                }
+            });
+        }
+
+        void bindRow(@NonNull User user) {
+            tvNameUser.setText(user.getUsername());
+            Bitmap bitmap = Utils.decodeBase64(user.getImgProfile());
+            ivPhotoUser.setImageBitmap(bitmap);
+            token = user.getUid();
+        }
+    }
+
+    class FooterViewHolder extends ViewHolder {
 
         ProgressBar progressBar;
 

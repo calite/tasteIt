@@ -11,57 +11,56 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.tasteit_java.adapters.AdapterGridViewMain;
 import com.example.tasteit_java.bdConnection.BdConnection;
+import com.example.tasteit_java.clases.OnItemNavSelectedListener;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.Utils;
 import com.example.tasteit_java.fragments.FragmentRandom;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
-public class ActivityRandom extends AppCompatActivity implements GestureDetector.OnGestureListener{
-    private GridView gvRecipes;
-    private AdapterGridViewMain adapter;
+public class ActivityRandom extends AppCompatActivity implements View.OnTouchListener {
     private Button btnShuffle;
-
-    private ArrayList<Recipe> recipeList;
-
+    private float startX;
     private ArrayList<Recipe> recipes;
     private FragmentContainerView fcRandom;
-    private ArrayList<Recipe> listRecipes = new ArrayList<>();
-    private GestureDetector gestureDetector;
-    Logger log = Logger.getLogger(ActivityRandom.class.getName());
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_random);
 
+        BottomNavigationView fcMainMenu = findViewById(R.id.fcMainMenu);
+        fcMainMenu.setSelectedItemId(R.id.bRandom);
+        fcMainMenu.setOnItemSelectedListener(new OnItemNavSelectedListener(this));
         BdConnection app = new BdConnection();  //Instanciamos la conexion
 
         recipes = app.retrieveAllRecipes();
-        gestureDetector = new GestureDetector(this);
 
         getSupportActionBar().setTitle("Random");
         btnShuffle = findViewById(R.id.btnShuffle);
 
-
         fcRandom = findViewById(R.id.fcRandom);
         fcRandom.setVisibility(View.INVISIBLE);
+
+        fcRandom.setOnTouchListener(this);
 
         btnShuffle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                int recipeIndex = (int) (Math.random()*recipes.size());
+                int recipeIndex = (int) (Math.random() * recipes.size());
                 FragmentRandom fr = new FragmentRandom();
                 Bundle arguments = new Bundle();
                 arguments.putParcelable("recipe", recipes.get(recipeIndex));
@@ -85,7 +84,6 @@ public class ActivityRandom extends AppCompatActivity implements GestureDetector
         });
 
     }
-
 
     //MENU superior
     @Override
@@ -115,68 +113,62 @@ public class ActivityRandom extends AppCompatActivity implements GestureDetector
             case R.id.iCloseSesion:
                 signOut();
             case R.id.iDarkMode:
-                if(AppCompatDelegate.getDefaultNightMode() != AppCompatDelegate.MODE_NIGHT_YES){
+                if (AppCompatDelegate.getDefaultNightMode() != AppCompatDelegate.MODE_NIGHT_YES) {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                }else{AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);}
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                }
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
     //END MENU superior
     //LOGOUT
-    public void callSignOut(View view){
+    public void callSignOut(View view) {
         signOut();
     }
-    private void signOut(){
+
+    private void signOut() {
         FirebaseAuth.getInstance().signOut();
-        startActivity (new Intent(this, ActivityLogin.class));
+        startActivity(new Intent(this, ActivityLogin.class));
     }
 
     @Override
-    public boolean onDown(MotionEvent e) {
-        return false;
-    }
+    public boolean onTouch(View view, MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                // Se ha iniciado el toque, guarda la posición inicial
+                startX = event.getX();
+                break;
 
-    @Override
-    public void onShowPress(MotionEvent e) {
+            case MotionEvent.ACTION_UP:
+                // Se ha liberado el toque, compara la posición inicial con la posición final
+                float endX = event.getX();
+                float deltaX = endX - startX;
 
-    }
+                // Si el desplazamiento horizontal es mayor a cierto umbral, realiza la acción de scroll
+                if (Math.abs(deltaX) > 100) {
+                    if (deltaX > 0) {
+                        // Desplazamiento hacia la derecha, selecciona la pestaña anterior
 
-    @Override
-    public boolean onSingleTapUp(MotionEvent e) {
-        return false;
-    }
-
-    @Override
-    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        return false;
-    }
-
-    @Override
-    public void onLongPress(MotionEvent e) {
-
-    }
-
-    @Override
-    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        if(recipes.size() != 0) {
-            int recipeIndex = (int) (Math.random()*recipes.size());
-            FragmentRandom fr = new FragmentRandom();
-            Bundle arguments = new Bundle();
-            arguments.putParcelable("recipe", recipes.get(recipeIndex));
-            fr.setArguments(arguments);
-            FragmentManager fm = getSupportFragmentManager();
-            FragmentTransaction ft = fm.beginTransaction();
-            ft.replace(R.id.fcRandom, fr);
-            ft.commit();
-
+                    } else {
+                        // Desplazamiento hacia la izquierda, selecciona la pestaña siguiente
+                        if (recipes.size() != 0) {
+                            int recipeIndex = (int) (Math.random() * recipes.size());
+                            FragmentRandom fr = new FragmentRandom();
+                            Bundle arguments = new Bundle();
+                            arguments.putParcelable("recipe", recipes.get(recipeIndex));
+                            fr.setArguments(arguments);
+                            FragmentManager fm = getSupportFragmentManager();
+                            FragmentTransaction ft = fm.beginTransaction();
+                            ft.replace(R.id.fcRandom, fr);
+                            ft.commit();
+                        }
+                    }
+                }
+                break;
         }
         return true;
     }
-    @Override
-    public boolean onTouchEvent(MotionEvent event){
-        gestureDetector.onTouchEvent(event);
-        return super.onTouchEvent(event);
-    }
-
 }

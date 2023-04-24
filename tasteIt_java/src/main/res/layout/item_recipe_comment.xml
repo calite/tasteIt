@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <Space
         android:id="@+id/spaceHead"
@@ -35,6 +35,8 @@
     <TextView
         android:id="@+id/tvAuthor"
         android:layout_width="wrap_content"
+        android:maxWidth="150dp"
+        android:maxHeight="75dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="10dp"
         android:fontFamily="@font/comfortaa_bold"
@@ -44,10 +46,9 @@
         android:textSize="20dp"
 
         app:layout_constraintTop_toBottomOf="@+id/spaceHead"
-        app:layout_constraintBottom_toTopOf="@+id/tvComment"
         app:layout_constraintStart_toEndOf="@+id/ivUserPicture"
         app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintVertical_bias="0"/>
+        app:layout_constraintVertical_bias="1"/>
 
     <TextView
         android:id="@+id/tvComment"
@@ -59,11 +60,11 @@
         android:padding="5dp"
         android:justificationMode="inter_word"
 
-        app:layout_constraintTop_toBottomOf="@+id/ivUserPicture"
+        app:layout_constraintTop_toBottomOf="@+id/tvAuthor"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/clRate"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintVertical_bias="0"/>
+        app:layout_constraintVertical_bias="0.2"/>
 
     <TextView
         android:id="@+id/tvDateCreated"
@@ -72,12 +73,12 @@
         android:layout_marginTop="10dp"
         android:textSize="12dp"
         android:text="DATE CREATED"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/clRate"
         app:layout_constraintStart_toEndOf="@id/tvAuthor"
-        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintHorizontal_bias="0.3"
         app:layout_constraintTop_toBottomOf="@+id/spaceHead"
         app:layout_constraintBottom_toTopOf="@+id/tvComment"
-        app:layout_constraintVertical_bias="0.2"/>
+        app:layout_constraintVertical_bias="0.18"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clRate"
@@ -87,7 +88,7 @@
         android:background="@drawable/s_oval"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintHorizontal_bias="0.9"
+        app:layout_constraintHorizontal_bias="0.95"
         app:layout_constraintTop_toBottomOf="@+id/spaceHead" >
 
         <TextView

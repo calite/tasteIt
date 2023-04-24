@@ -20,12 +20,11 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvRecipes"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:scrollbars="vertical"
         app:layout_constraintBottom_toTopOf="@+id/fcMainMenu"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0"
-        android:layout_marginBottom="55dp"/>
+        app:layout_constraintVertical_bias="0"/>
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -46,8 +45,19 @@
         app:srcCompat="@drawable/ic_add"
         app:tint="@color/white" />
 
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/fcMainMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:itemTextColor="@color/white"
+        android:background="@color/maroon"
+        app:itemIconTint="@color/white"
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/nav_main_menu"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <!-- si no ves nada comenta este fragment container -->
+
+    <!-- si no ves nada comenta este fragment container
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fcMainMenu"
             android:name="com.example.tasteit_java.fragments.FragmentMainMenu"
@@ -55,7 +65,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:layout="@layout/fragment_main_menu"/>
+            tools:layout="@layout/fragment_main_menu"/>-->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

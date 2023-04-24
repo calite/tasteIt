@@ -96,10 +96,12 @@
             android:id="@+id/tvAuthor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:maxWidth="200dp"
+            android:maxHeight="55dp"
             android:layout_marginHorizontal="10dp"
             android:fontFamily="@font/comfortaa_bold"
             android:text="Author"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="8dp"
             android:textColor="@color/black"
             android:textSize="16dp"
 
@@ -111,6 +113,8 @@
         <TextView
             android:id="@+id/tvCreator"
             android:layout_width="wrap_content"
+            android:maxWidth="200dp"
+            android:maxHeight="55dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
             android:fontFamily="@font/comfortaa_medium"
@@ -122,6 +126,7 @@
 
             app:layout_constraintBottom_toTopOf="@+id/tvComment"
             app:layout_constraintStart_toEndOf="@+id/ivAuthor"
+            app:layout_constraintTop_toBottomOf="@+id/tvAuthor"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintVertical_bias="0"/>
 
@@ -136,10 +141,11 @@
             android:padding="5dp"
             android:justificationMode="inter_word"
 
-            app:layout_constraintTop_toBottomOf="@+id/ivAuthor"
+            app:layout_constraintTop_toBottomOf="@+id/tvCreator"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintVertical_bias="0"/>
+            app:layout_constraintVertical_bias="0.5"/>
 
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/cgTags"

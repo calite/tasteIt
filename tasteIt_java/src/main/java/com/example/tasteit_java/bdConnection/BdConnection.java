@@ -331,7 +331,7 @@ public class BdConnection implements AutoCloseable {
                 String name = record.get(0).asString();
                 String biography = record.get(1).asString();
                 String imgProfile = record.get(2).asString();
-                user = new User(name, biography, imgProfile, retrieveAllRecipesbyUid(uid), retrieveCommentsbyUid(uid));
+                user = new User(name, uid, biography, imgProfile, retrieveAllRecipesbyUid(uid), retrieveCommentsbyUid(uid));
             }
 
             closeSession(session); //Cerramos la sesión

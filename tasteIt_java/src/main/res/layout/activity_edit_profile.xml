@@ -37,19 +37,18 @@
 
             <TextView
                 android:id="@+id/tvUsername"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:singleLine="true"
+                android:layout_marginStart="10dp"
                 android:fontFamily="@font/comfortaa_bold"
-                android:maxWidth="200dp"
-                android:maxHeight="100dp"
                 android:text="USERNAME"
+                android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.1"
-                app:layout_constraintStart_toEndOf="@+id/ibPickPhoto"
+                app:layout_constraintStart_toEndOf="@+id/ivProfilePhoto"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.25" />
 
@@ -58,11 +57,11 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="4dp"
-                android:layout_marginTop="60dp"
+                android:layout_marginTop="15dp"
                 android:backgroundTint="@color/maroon"
                 android:src="@drawable/ic_change_photo"
                 app:layout_constraintStart_toEndOf="@+id/ivProfilePhoto"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvUsername"
                 app:tint="@color/white" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -80,10 +79,11 @@
 
         <EditText
             android:id="@+id/etUsername"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
             android:ems="10"
+            android:maxLength="30"
             android:fontFamily="@font/comfortaa_light"
             android:hint="Username"
             android:inputType="text"
@@ -92,7 +92,9 @@
             android:singleLine="true"
             android:textAlignment="center"
             app:layout_constraintTop_toBottomOf="@+id/textView3"
-            tools:layout_editor_absoluteX="0dp" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:layout_editor_absoluteX="0dp"/>
 
         <TextView
             android:id="@+id/textView6"
@@ -107,20 +109,21 @@
 
         <EditText
             android:id="@+id/etBiography"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
             android:ems="10"
             android:fontFamily="@font/comfortaa_light"
             android:hint="Biography"
             android:inputType="textMultiLine"
-            android:justificationMode="inter_word"
-            android:lines="3"
-            android:maxLength="140"
+            android:maxLines="3"
+            android:maxLength="180"
             android:minHeight="48dp"
             android:scrollbars="vertical"
             android:textAlignment="center"
             app:layout_constraintTop_toBottomOf="@+id/textView6"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             tools:layout_editor_absoluteX="0dp" />
 
         <TextView
@@ -135,10 +138,10 @@
 
         <EditText
             android:id="@+id/etEmail"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
-            android:layout_marginVertical="7dp"
+            android:layout_marginVertical="5dp"
             android:background="@color/gray"
             android:ems="10"
             android:focusable="false"
@@ -148,11 +151,13 @@
             android:inputType="textEmailAddress"
             android:minHeight="48dp"
             android:textAlignment="center"
-            app:layout_constraintTop_toBottomOf="@+id/textView4" />
+            app:layout_constraintTop_toBottomOf="@+id/textView4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
 
         <TextView
             android:id="@+id/optChangePass"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="50dp"
             android:layout_marginTop="20dp"
@@ -162,29 +167,35 @@
             android:textAlignment="textEnd"
             android:textColor="@color/maroon"
             android:textStyle="italic"
-            app:layout_constraintTop_toBottomOf="@+id/etEmail" />
+            app:layout_constraintTop_toBottomOf="@+id/etEmail"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/clPassword"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:visibility="invisible"
-            app:layout_constraintTop_toBottomOf="@+id/optChangePass">
+            app:layout_constraintTop_toBottomOf="@+id/optChangePass"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
             <TextView
                 android:id="@+id/tvOldPassword"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:paddingLeft="20dp"
                 android:text="Old Password"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
 
 
             <EditText
                 android:id="@+id/etOldPassword"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
                 android:ems="10"
@@ -192,9 +203,12 @@
                 android:hint="Old Password"
                 android:inputType="textPassword"
                 android:minHeight="48dp"
-                android:singleLine="true"
                 android:textAlignment="center"
-                app:layout_constraintTop_toBottomOf="@+id/tvOldPassword" />
+                app:layout_constraintTop_toBottomOf="@+id/tvOldPassword"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:singleLine="true"
+                android:maxLength="30"/>
 
             <TextView
                 android:id="@+id/tvNewPassword"
@@ -208,7 +222,7 @@
 
             <EditText
                 android:id="@+id/etNewPassword"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
                 android:ems="10"
@@ -216,9 +230,12 @@
                 android:hint="@string/password"
                 android:inputType="textPassword"
                 android:minHeight="48dp"
-                android:singleLine="true"
                 android:textAlignment="center"
-                app:layout_constraintTop_toBottomOf="@+id/tvNewPassword" />
+                app:layout_constraintTop_toBottomOf="@+id/tvNewPassword"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:singleLine="true"
+                android:maxLength="30"/>
 
             <TextView
                 android:id="@+id/tvConfirmPassword"
@@ -232,7 +249,7 @@
 
             <EditText
                 android:id="@+id/etConfirmPassword"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
                 android:ems="10"
@@ -240,9 +257,12 @@
                 android:hint="@string/Confirm_password"
                 android:inputType="textPassword"
                 android:minHeight="48dp"
-                android:singleLine="true"
                 android:textAlignment="center"
-                app:layout_constraintTop_toBottomOf="@+id/tvConfirmPassword" />
+                app:layout_constraintTop_toBottomOf="@+id/tvConfirmPassword"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:singleLine="true"
+                android:maxLength="30"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -255,7 +275,7 @@
             android:text="save changes"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/optChangePass"
-            app:layout_constraintVertical_bias="0.5"
+            app:layout_constraintVertical_bias="0.3"
             tools:layout_editor_absoluteX="0dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

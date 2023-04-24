@@ -333,7 +333,6 @@ public class ActivityLogin extends AppCompatActivity {
         dialog.show();
 
         return dialog;
-
     }
 
     //POR REPARAR

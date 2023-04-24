@@ -68,7 +68,18 @@
         app:srcCompat="@drawable/ic_add"
         app:tint="@color/white" />
 
-    <androidx.fragment.app.FragmentContainerView
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/fcMainMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:itemTextColor="@color/white"
+        android:background="@color/maroon"
+        app:itemIconTint="@color/white"
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/nav_main_menu"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <!--<androidx.fragment.app.FragmentContainerView
         android:id="@+id/fcvMainMenu"
         android:name="com.example.tasteit_java.fragments.FragmentMainMenu"
         android:layout_width="match_parent"
@@ -76,6 +87,6 @@
         android:layout_alignParentBottom="true"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout="@layout/fragment_main_menu" />
+        tools:layout="@layout/fragment_main_menu" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

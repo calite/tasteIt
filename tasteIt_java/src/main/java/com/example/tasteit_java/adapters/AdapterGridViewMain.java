@@ -44,7 +44,7 @@ public class AdapterGridViewMain extends BaseAdapter {
     public View getView(int i, View view, ViewGroup viewGroup) {
         LayoutInflater inflater = LayoutInflater.from(context);
 
-        view = inflater.inflate(R.layout.item_main_gridview, null);
+        view = inflater.inflate(R.layout.item_card_recipes, null);
 
         ImageView ivPhoto = view.findViewById(R.id.ivPhotoRecipe);
         TextView tvNameRecipe = view.findViewById(R.id.tvNameRecipe);
