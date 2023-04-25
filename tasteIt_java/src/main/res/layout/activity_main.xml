@@ -7,21 +7,34 @@
     android:orientation="vertical"
     tools:context=".ActivityMain">
 
-    <ProgressBar
-        android:id="@+id/pbMain"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:shimmer_auto_start="true"
         app:layout_constraintBottom_toTopOf="@+id/fcMainMenu"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <include layout="@layout/hint_item_card_recipes"/>
+            <include layout="@layout/hint_item_card_recipes"/>
+            <include layout="@layout/hint_item_card_recipes"/>
+            <include layout="@layout/hint_item_card_recipes"/>
+
+        </LinearLayout>
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvRecipes"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:scrollbars="vertical"
+        android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/fcMainMenu"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0"/>
@@ -55,17 +68,5 @@
         android:layout_alignParentBottom="true"
         app:menu="@menu/nav_main_menu"
         app:layout_constraintBottom_toBottomOf="parent"/>
-
-
-    <!-- si no ves nada comenta este fragment container
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/fcMainMenu"
-            android:name="com.example.tasteit_java.fragments.FragmentMainMenu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            tools:layout="@layout/fragment_main_menu"/>-->
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

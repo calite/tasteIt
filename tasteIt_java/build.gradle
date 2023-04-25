@@ -71,6 +71,8 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     //Cardview
     implementation 'com.google.android.material:material:1.2.1'
+    //Hint carga
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
 
     implementation group: 'org.neo4j.driver', name: 'neo4j-java-driver', version: '4.4.11'
     implementation group: 'org.reactivestreams', name: 'reactive-streams', version: '1.0.4'

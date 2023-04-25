@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,7 +20,16 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.tasteit_java.ApiService.ApiClient;
+import com.example.tasteit_java.ApiService.ApiRequests;
+import com.example.tasteit_java.ApiService.RecipeId_Recipe_User;
+import com.example.tasteit_java.adapters.AdapterFragmentRandom;
+import com.example.tasteit_java.adapters.AdapterFragmentRecipe;
+import com.example.tasteit_java.adapters.AdapterFragmentSearch;
 import com.example.tasteit_java.adapters.AdapterGridViewMain;
 import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.OnItemNavSelectedListener;
@@ -27,16 +37,25 @@ import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.Utils;
 import com.example.tasteit_java.fragments.FragmentRandom;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
-public class ActivityRandom extends AppCompatActivity implements View.OnTouchListener {
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class ActivityRandom extends AppCompatActivity {
     private Button btnShuffle;
-    private float startX;
-    private ArrayList<Recipe> recipes;
-    private FragmentContainerView fcRandom;
+    private ProgressBar pbRandom;
+    private int recipeId;
+    private ArrayList<Recipe> someRecipes;
+    private ArrayList<Integer> lastIdRecipes;
+    private AdapterFragmentRandom adapter;
+    private ViewPager2 vpRandom;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,41 +64,34 @@ public class ActivityRandom extends AppCompatActivity implements View.OnTouchLis
         BottomNavigationView fcMainMenu = findViewById(R.id.fcMainMenu);
         fcMainMenu.setSelectedItemId(R.id.bRandom);
         fcMainMenu.setOnItemSelectedListener(new OnItemNavSelectedListener(this));
-        BdConnection app = new BdConnection();  //Instanciamos la conexion
-
-        recipes = app.retrieveAllRecipes();
 
         getSupportActionBar().setTitle("Random");
         btnShuffle = findViewById(R.id.btnShuffle);
-
-        fcRandom = findViewById(R.id.fcRandom);
-        fcRandom.setVisibility(View.INVISIBLE);
-
-        fcRandom.setOnTouchListener(this);
+        vpRandom = findViewById(R.id.vpRandom);
+        pbRandom = findViewById(R.id.pbRandom);
+        someRecipes = new ArrayList<>();
+        lastIdRecipes = new ArrayList<>();
 
         btnShuffle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int recipeIndex = (int) (Math.random() * recipes.size());
-                FragmentRandom fr = new FragmentRandom();
-                Bundle arguments = new Bundle();
-                arguments.putParcelable("recipe", recipes.get(recipeIndex));
-                fr.setArguments(arguments);
-                FragmentManager fm = getSupportFragmentManager();
-                FragmentTransaction ft = fm.beginTransaction();
-                ft.replace(R.id.fcRandom, fr);
-                ft.commit();
-                fcRandom.setVisibility(View.VISIBLE);
+                bringRecipe();
+
+                pbRandom.setVisibility(View.VISIBLE);
                 btnShuffle.setVisibility(View.INVISIBLE);
+                btnShuffle.setEnabled(false);
                 findViewById(R.id.textView11).setVisibility(View.INVISIBLE);
-                /*
-                MOVES THE BUTTOM
-                ConstraintLayout cl = findViewById(R.id.cl);
-                ConstraintSet constraintSet = new ConstraintSet();
-                constraintSet.clone(cl);
-                constraintSet.connect(R.id.btnShuffle,ConstraintSet.TOP,R.id.cl,ConstraintSet.TOP,0);
-                constraintSet.applyTo(cl);
-                 */
+            }
+        });
+
+        vpRandom.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                if(position == 5) {
+                    vpRandom.setVisibility(View.INVISIBLE);
+                    pbRandom.setVisibility(View.VISIBLE);
+                    bringRecipe();
+                }
             }
         });
 
@@ -134,41 +146,82 @@ public class ActivityRandom extends AppCompatActivity implements View.OnTouchLis
         startActivity(new Intent(this, ActivityLogin.class));
     }
 
-    @Override
-    public boolean onTouch(View view, MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                // Se ha iniciado el toque, guarda la posición inicial
-                startX = event.getX();
-                break;
+    private class RecipeLoader {
+        private final ApiRequests apiRequests;
+        private final MutableLiveData<List<Recipe>> recipeLiveData;
+        public RecipeLoader(ApiRequests apiRequests) {
+            this.apiRequests = apiRequests;
+            recipeLiveData = new MutableLiveData<>();
+        }
+        public LiveData<List<Recipe>> getRecipe() {
+            return recipeLiveData;
+        }
+        public void loadRecipe() {
+            do {
+                recipeId = (int) (Math.random() * 50) + 1; //PDTE CAMBIAR POR LA CANTIDAD TOTAL DE RECETAS (PET API)
+                Toast.makeText(ActivityRandom.this, "ID: " + recipeId, Toast.LENGTH_SHORT).show();
+            } while(lastIdRecipes.contains(recipeId));
+            apiRequests.getRecipeById(recipeId).enqueue(new Callback<List<RecipeId_Recipe_User>>() {
+                @Override
+                public void onResponse(Call<List<RecipeId_Recipe_User>> call, Response<List<RecipeId_Recipe_User>> response) {
+                    if (response.isSuccessful()) {
+                        List<RecipeId_Recipe_User> recipeApis = response.body();
+                        List<Recipe> recipes = new ArrayList<>();
 
-            case MotionEvent.ACTION_UP:
-                // Se ha liberado el toque, compara la posición inicial con la posición final
-                float endX = event.getX();
-                float deltaX = endX - startX;
-
-                // Si el desplazamiento horizontal es mayor a cierto umbral, realiza la acción de scroll
-                if (Math.abs(deltaX) > 100) {
-                    if (deltaX > 0) {
-                        // Desplazamiento hacia la derecha, selecciona la pestaña anterior
-
-                    } else {
-                        // Desplazamiento hacia la izquierda, selecciona la pestaña siguiente
-                        if (recipes.size() != 0) {
-                            int recipeIndex = (int) (Math.random() * recipes.size());
-                            FragmentRandom fr = new FragmentRandom();
-                            Bundle arguments = new Bundle();
-                            arguments.putParcelable("recipe", recipes.get(recipeIndex));
-                            fr.setArguments(arguments);
-                            FragmentManager fm = getSupportFragmentManager();
-                            FragmentTransaction ft = fm.beginTransaction();
-                            ft.replace(R.id.fcRandom, fr);
-                            ft.commit();
+                        for (RecipeId_Recipe_User recipeApi : recipeApis) {
+                            Recipe recipe = new Recipe(
+                                    recipeApi.getRecipeDetails().getName(),
+                                    recipeApi.getRecipeDetails().getDescription(),
+                                    (ArrayList<String>) recipeApi.getRecipeDetails().getSteps(),
+                                    recipeApi.getRecipeDetails().getDateCreated(),
+                                    recipeApi.getRecipeDetails().getDifficulty(),
+                                    recipeApi.getUser().getUsername(),
+                                    recipeApi.getRecipeDetails().getImage(),
+                                    recipeApi.getRecipeDetails().getCountry(),
+                                    (ArrayList<String>) recipeApi.getRecipeDetails().getTags(),
+                                    (ArrayList<String>) recipeApi.getRecipeDetails().getIngredients(),
+                                    recipeApi.getRecipeId(),
+                                    recipeApi.getUser().getToken()
+                            );
+                            recipes.add(recipe);
                         }
+                        recipeLiveData.postValue(recipes);
+                    } else {
+                        // La solicitud no fue exitosa
+                        //Toast.makeText(ActivityRandom.this, "Bad id, trying again ... " + someRecipes.size(), Toast.LENGTH_SHORT).show();
+                        loadRecipe();
                     }
                 }
-                break;
+                @Override
+                public void onFailure(Call<List<RecipeId_Recipe_User>> call, Throwable t) {
+                    Toast.makeText(ActivityRandom.this, "Something went wrong - " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+
         }
-        return true;
+    }
+
+    private void onRecipeLoaded(List<Recipe> recipes) {
+        if(someRecipes.size() <= 5) {
+            someRecipes.add(recipes.get(0));
+            lastIdRecipes.add(recipeId);
+            bringRecipe();
+        } else {
+            pbRandom.setVisibility(View.INVISIBLE);
+            vpRandom.setVisibility(View.VISIBLE);
+
+            adapter = new AdapterFragmentRandom(getSupportFragmentManager(), getLifecycle(), someRecipes);
+            vpRandom.setAdapter(adapter);
+
+            adapter.notifyDataSetChanged();
+            someRecipes.clear();
+        }
+    }
+
+    private void bringRecipe() {
+        //olvidamos asynctask y metemos lifecycle, que es mas actual y esta mejor optimizado
+        RecipeLoader recipesLoader = new RecipeLoader(ApiClient.getInstance().getService());
+        recipesLoader.getRecipe().observe(this, this::onRecipeLoaded);
+        recipesLoader.loadRecipe();
     }
 }

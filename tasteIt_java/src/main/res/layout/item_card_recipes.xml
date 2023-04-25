@@ -29,8 +29,8 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/ivPhotoRecipe"
-            android:layout_width="165dp"
-            android:layout_height="165dp"
+            android:layout_width="155dp"
+            android:layout_height="155dp"
             android:padding="2dp"
             android:layout_margin="3dp"
             android:src="@drawable/recipe_demo"
@@ -119,7 +119,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAlignment="textStart"
-                android:maxLines="7"
+                android:maxLines="6"
+                android:ellipsize="end"
                 android:text="@string/lorem_ipsum"
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintEnd_toEndOf="parent"

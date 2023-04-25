@@ -166,9 +166,4 @@ public class FragmentSearch extends Fragment {
         }
         adapter.notifyDataSetChanged();
     }
-
-    public void updateList(ArrayList<Object> dataListAux, int dataView) {
-        this.dataListAux = new ArrayList<>(dataListAux);
-        changeDataType(dataView);
-    }
 }

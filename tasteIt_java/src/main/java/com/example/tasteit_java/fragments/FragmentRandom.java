@@ -21,12 +21,14 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
 public class FragmentRandom extends Fragment {
-    GestureDetector gestureDetector;
-
     private Recipe recipe;
 
     public FragmentRandom() {
         // Required empty public constructor
+    }
+
+    public FragmentRandom(Recipe recipe) {
+        this.recipe = recipe;
     }
 
     public static FragmentRandom newInstance(Recipe recipe) {
@@ -50,9 +52,8 @@ public class FragmentRandom extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_random, container, false);
-        if(getArguments() != null){
 
-
+        if(recipe != null){
             ImageView ivPhoto = view.findViewById(R.id.ivRecipePhoto);
             TextView tvRecipeName = view.findViewById(R.id.tvRecipeName);
             TextView tvNameCreator = view.findViewById(R.id.tvNameCreator);
@@ -76,38 +77,7 @@ public class FragmentRandom extends Fragment {
                 cgIngredients.addView(chip);
             }
 
-
         }
-
-        view.setOnTouchListener(new View.OnTouchListener() {
-            private float lastX;
-            private boolean isScrolling;
-            @Override
-            public boolean onTouch(View view, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        // Record the initial X position of touch
-                        lastX = event.getX();
-                        break;
-                    case MotionEvent.ACTION_MOVE:
-                        // Calculate the horizontal distance moved
-                        float deltaX = event.getX() - lastX;
-
-                        // If the horizontal distance moved is greater than a threshold value,
-                        // consider it as a horizontal scroll
-                        if (Math.abs(deltaX) > 10) {
-                            isScrolling = true;
-                        }
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        // Reset scrolling flag
-                        isScrolling = false;
-                        break;
-                }
-                return isScrolling;
-            }
-        });
-        // Inflate the layout for this fragment
 
         return view;
     }

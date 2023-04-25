@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewStub;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -28,6 +29,7 @@ import com.example.tasteit_java.clases.OnItemNavSelectedListener;
 import com.example.tasteit_java.clases.OnLoadMoreListener;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.Utils;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -44,8 +46,9 @@ public class ActivityMain extends AppCompatActivity {
     private AdapterEndlessRecyclerMain adapterEndlessRecyclerMain;
     private int skipper;
     private FloatingActionButton bCreate;
+    private ShimmerFrameLayout shimmer;
+
     private RecyclerView rvRecipes;
-    private ProgressBar pgMain;
     private String token;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -54,18 +57,11 @@ public class ActivityMain extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        BottomNavigationView fcMainMenu = findViewById(R.id.fcMainMenu);
-        fcMainMenu.setSelectedItemId(R.id.bHome);
-        fcMainMenu.setOnItemSelectedListener(new OnItemNavSelectedListener(this));
-
-        pgMain = findViewById(R.id.pbMain);
         rvRecipes = findViewById(R.id.rvRecipes);
         bCreate = findViewById(R.id.bCreate);
-
         skipper = 0;
 
         rvRecipes.setHasFixedSize(true);
-
         bringRecipes();
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -119,12 +115,18 @@ public class ActivityMain extends AppCompatActivity {
     //MENU superior
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        shimmer = findViewById(R.id.shimmer);
+        shimmer.startShimmer();
+
         getMenuInflater().inflate(R.menu.main_menu, menu);
 
         Bitmap originalBitmap = Utils.decodeBase64(new BdConnection().retrieveUserbyUid(token).getImgProfile());
         BitmapDrawable roundedBitmapDrawable = new BitmapDrawable(getResources(), Utils.getRoundBitmapWithImage(originalBitmap));
         menu.getItem(0).setIcon(roundedBitmapDrawable);
+
+        BottomNavigationView fcMainMenu = findViewById(R.id.fcMainMenu);
+        fcMainMenu.setSelectedItemId(R.id.bHome);
+        fcMainMenu.setOnItemSelectedListener(new OnItemNavSelectedListener(this));
 
         return true;
     }
@@ -224,7 +226,8 @@ public class ActivityMain extends AppCompatActivity {
 
     private void onRecipesLoaded(List<Recipe> recipes) {
         // Actualizar la UI con la lista de recetas
-        pgMain.setVisibility(View.GONE);
+        shimmer.stopShimmer();
+        shimmer.setVisibility(View.GONE);
 
         if(adapterEndlessRecyclerMain.getItemCount() > 0) {
             adapterEndlessRecyclerMain.dataList.remove(adapterEndlessRecyclerMain.getItemCount() - 1);
