@@ -1,41 +1,41 @@
 package com.example.tasteit_java.fragments;
 
-import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
+import android.widget.Button;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.tasteit_java.ActivityProfile;
 import com.example.tasteit_java.R;
-import com.example.tasteit_java.adapters.AdapterListViewComments;
+import com.example.tasteit_java.adapters.AdapterRecyclerCommentsRecipe;
 import com.example.tasteit_java.bdConnection.BdConnection;
-import com.example.tasteit_java.clases.Comment;
-import com.example.tasteit_java.clases.Recipe;
-
-import java.util.ArrayList;
+import com.example.tasteit_java.clases.User;
+import com.example.tasteit_java.clases.Utils;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class FragmentCommentsRecipe extends Fragment {
 
-    private Recipe recipe;
-    private BdConnection connection;
-    private ListView lvComments;
-    private AdapterListViewComments adapter;
-
-
+    private int recipeId;
+    private RecyclerView rvLvComments;
+    private AdapterRecyclerCommentsRecipe adapter;
+    private ConstraintLayout clComment;
+    private static Button btnAddComment, btnEditComment;
 
     public FragmentCommentsRecipe() {
         // Required empty public constructor
     }
 
-    public static FragmentCommentsRecipe newInstance(Recipe recipe) {
+    public static FragmentCommentsRecipe newInstance(int recipeId) {
         FragmentCommentsRecipe fragment = new FragmentCommentsRecipe();
         Bundle args = new Bundle();
-        args.putParcelable("recipe", recipe);
+        args.putInt("recipeId", recipeId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -44,7 +44,7 @@ public class FragmentCommentsRecipe extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            recipe = (Recipe) getArguments().getParcelable("recipe");
+            recipeId = getArguments().getInt("recipeId");
             getArguments().clear();
         }
     }
@@ -53,24 +53,58 @@ public class FragmentCommentsRecipe extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_comments_recipe, container, false);
+        View view = inflater.inflate(R.layout.fragment_comments, container, false);
 
-        connection = new BdConnection();
+        adapter = new AdapterRecyclerCommentsRecipe(getContext(), recipeId);
+        rvLvComments = view.findViewById(R.id.rvLvComments);
+        rvLvComments.setAdapter(adapter);
 
-        ArrayList<Comment> listComments = connection.getCommentsOnRecipe(recipe.getId());
+        rvLvComments.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        adapter = new AdapterListViewComments(getContext(), listComments);
-        lvComments = view.findViewById(R.id.lvComments);
-        lvComments.setAdapter(adapter);
-        /*lvComments.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(getActivity().getApplicationContext(), ActivityProfile.class);
-                intent.putExtra("uid", listComments.get(i).getTokenUser());
-                startActivity(intent);
-            }
-        });*/
+        clComment = view.findViewById(R.id.clComment);
+        clComment.setVisibility(View.INVISIBLE);
+        clComment.setClickable(false);
+
         return view;
     }
+
+    /*public void hideAddComment(Boolean visibility) {
+        if(!visibility) {
+            clComment.setVisibility(View.VISIBLE);
+            clComment.setClickable(true);
+
+            User user = new BdConnection().retrieveUserbyUid(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            Bitmap bitmap = Utils.decodeBase64(user.getImgProfile());
+            ivMyPhoto.setImageBitmap(bitmap);
+
+            btnAddComment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    new BdConnection().commentUser(FirebaseAuth.getInstance().getCurrentUser().getUid(), uidProfile, etComment.getText().toString());
+                    adapter.updateComments();
+                    etComment.setText("");
+                }
+            });
+
+            btnEditComment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    new BdConnection().editComment(editCommentId, etComment.getText().toString());
+                    adapter.updateComments();
+                    etComment.setText("");
+
+                    btnEditComment.setVisibility(View.INVISIBLE);
+                    btnEditComment.setEnabled(false);
+
+                    btnAddComment.setVisibility(View.VISIBLE);
+                    btnAddComment.setEnabled(true);
+                }
+            });
+
+        } else {
+            clComment.setVisibility(View.INVISIBLE);
+            clComment.setClickable(false);
+        }
+    }*/
 
 }

@@ -76,6 +76,33 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:shimmer_auto_start="true"
+        app:layout_constraintBottom_toTopOf="@+id/fcMainMenu"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:rowCount="3"
+            android:columnCount="2">
+
+            <include layout="@layout/hint_item_card_search_recipe" />
+            <include layout="@layout/hint_item_card_search_user" />
+            <include layout="@layout/hint_item_card_search_user" />
+            <include layout="@layout/hint_item_card_search_recipe" />
+            <include layout="@layout/hint_item_card_search_recipe" />
+            <include layout="@layout/hint_item_card_search_user" />
+
+        </GridLayout>
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/vpPaginator"
         android:layout_width="match_parent"
@@ -85,23 +112,6 @@
         app:layout_constraintBottom_toTopOf="@+id/fcMainMenu"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
         app:layout_constraintVertical_bias="0" />
-
-    <LinearLayout
-        android:id="@+id/pbSearch"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/fcMainMenu"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
-        app:layout_constraintVertical_bias="0.5"
-        android:visibility="invisible">
-
-        <ProgressBar
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
-
-    </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/fcMainMenu"
@@ -113,15 +123,5 @@
         android:layout_alignParentBottom="true"
         app:menu="@menu/nav_main_menu"
         app:layout_constraintBottom_toBottomOf="parent"/>
-
-    <!--<androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fcMainMenu"
-        android:name="com.example.tasteit_java.fragments.FragmentMainMenu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout="@layout/fragment_main_menu" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

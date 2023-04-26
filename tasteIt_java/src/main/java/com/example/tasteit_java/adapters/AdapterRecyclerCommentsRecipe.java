@@ -9,19 +9,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,54 +23,43 @@ import com.example.tasteit_java.ActivityProfile;
 import com.example.tasteit_java.R;
 import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.Comment;
-import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
 import com.example.tasteit_java.fragments.FragmentComments;
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Set;
 
-import okhttp3.internal.Util;
-
-public class AdapterRecyclerCommentsProfile extends RecyclerView.Adapter<AdapterRecyclerCommentsProfile.ViewHolder> {
+public class AdapterRecyclerCommentsRecipe extends RecyclerView.Adapter<AdapterRecyclerCommentsRecipe.ViewHolder> {
 
     private Context context;
-    private String uidProfile;
-    private Boolean myProfile;
+    private int recipeId;
     private ArrayList<Comment> comments;
 
-    public AdapterRecyclerCommentsProfile(Context context, String uid, Boolean myProfile) {
+    public AdapterRecyclerCommentsRecipe(Context context, int recipeId) {
         this.context = context;
-        this.uidProfile = uid;
-        this.myProfile = myProfile;
+        this.recipeId = recipeId;
         comments = new ArrayList<>();
 
-        new TaskLoadUserComments().execute();
+        new TaskLoadRecipeComments().execute();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView ivAuthor;
-        TextView tvAuthor;
-        TextView tvComment, tvDateCreated;
-        ImageButton ibtnOptions;
+        ImageView ivUserPicture;
+        TextView tvAuthor, tvComment, tvDateCreated, tvRating;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            ivAuthor = itemView.findViewById(R.id.ivAuthor);
+            ivUserPicture = itemView.findViewById(R.id.ivUserPicture);
             tvAuthor = itemView.findViewById(R.id.tvAuthor);
             tvComment = itemView.findViewById(R.id.tvComment);
-            ibtnOptions = itemView.findViewById(R.id.ibtnOptions);
+            tvRating = itemView.findViewById(R.id.tvRating);
             tvDateCreated = itemView.findViewById(R.id.tvDateCreated);
         }
     }
 
     @NonNull
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_profile_comments, null, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_recipe_comment, null, false);
         return new ViewHolder(view);
         //return null;
     }
@@ -87,7 +70,7 @@ public class AdapterRecyclerCommentsProfile extends RecyclerView.Adapter<Adapter
         User user = new BdConnection().retrieveUserbyUid(comments.get(position).getTokenUser());
         String token = Utils.getUserToken();
 
-        PopupMenu.OnMenuItemClickListener popupListener = new PopupMenu.OnMenuItemClickListener() {
+        /*PopupMenu.OnMenuItemClickListener popupListener = new PopupMenu.OnMenuItemClickListener() {
 
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
@@ -134,13 +117,14 @@ public class AdapterRecyclerCommentsProfile extends RecyclerView.Adapter<Adapter
                     popupMenu.show();
                 }
             });
-        }
+        }*/
 
         holder.tvAuthor.setText(user.getUsername());
         holder.tvComment.setText(comments.get(position).getComment());
+        holder.tvDateCreated.setText(comments.get(position).getDateCreated());
 
         Bitmap bitmap = Utils.decodeBase64(user.getImgProfile());
-        holder.ivAuthor.setImageBitmap(bitmap);
+        holder.ivUserPicture.setImageBitmap(bitmap);
 
         View.OnClickListener listenerProfile = new View.OnClickListener() {
             @Override
@@ -151,7 +135,7 @@ public class AdapterRecyclerCommentsProfile extends RecyclerView.Adapter<Adapter
             }
         };
 
-        holder.ivAuthor.setOnClickListener(listenerProfile);
+        holder.ivUserPicture.setOnClickListener(listenerProfile);
         holder.tvComment.setOnClickListener(listenerProfile);
         holder.tvAuthor.setOnClickListener(listenerProfile);
     }
@@ -167,23 +151,23 @@ public class AdapterRecyclerCommentsProfile extends RecyclerView.Adapter<Adapter
     }
 
     public void updateComments() {
-        new TaskLoadUserComments().execute();
+        new TaskLoadRecipeComments().execute();
         notifyDataSetChanged();
     }
 
-    class TaskLoadUserComments extends AsyncTask<ArrayList<Comment>, Void,ArrayList<Comment>> {
+    class TaskLoadRecipeComments extends AsyncTask<ArrayList<Comment>, Void,ArrayList<Comment>> {
         @Override
         protected void onPreExecute() {
 
         }
         @Override
         protected ArrayList<Comment> doInBackground(ArrayList<Comment>... hashMaps) {
-            return new BdConnection().retrieveCommentsbyUid(uidProfile);
+            return new BdConnection().getCommentsOnRecipe(recipeId);
         }
         @Override
-        protected void onPostExecute(ArrayList<Comment> userComments) {
+        protected void onPostExecute(ArrayList<Comment> recipeComments) {
             //super.onPostExecute(recipes);
-            comments = new ArrayList<>(userComments);
+            comments = new ArrayList<>(recipeComments);
             notifyDataSetChanged();
         }
     }

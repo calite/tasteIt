@@ -1,31 +1,14 @@
 package com.example.tasteit_java;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.view.GestureDetector;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
 
-import com.example.tasteit_java.adapters.AdapterGridViewMain;
-import com.example.tasteit_java.adapters.AdapterRecyclerCommentsProfile;
 import com.example.tasteit_java.adapters.AdapterRecyclerProfileData;
-import com.example.tasteit_java.bdConnection.BdConnection;
-import com.example.tasteit_java.clases.Recipe;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-
-import java.util.ArrayList;
 
 public class ActivityProfileData extends AppCompatActivity {
     private RecyclerView rvListData;

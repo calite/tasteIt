@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     card_view:cardCornerRadius="8dp"
     card_view:cardElevation="8dp"
-    card_view:cardBackgroundColor="#F3C2C2"
+    card_view:cardBackgroundColor="@color/silver"
     card_view:cardUseCompatPadding="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,22 +18,20 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            card_view:layout_constraintBottom_toTopOf="@+id/ivPhotoUser"
+            card_view:layout_constraintBottom_toTopOf="@+id/ivPhotoRecipe"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintVertical_bias="0"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:id="@+id/tvNameUser"
+                android:id="@+id/tvNameRecipe"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
-                android:text="Username"
                 android:textAlignment="center"
                 android:textSize="15dp"
                 android:textColor="@color/black"
-                style="@style/recipeName"
                 card_view:layout_constraintEnd_toEndOf="parent"
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toTopOf="parent" />
@@ -41,21 +39,45 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/ivPhotoUser"
+            android:id="@+id/ivPhotoRecipe"
             android:layout_width="125dp"
             android:layout_height="125dp"
             android:padding="2dp"
             android:layout_marginHorizontal="10dp"
             android:layout_marginVertical="5dp"
-            android:src="@drawable/ic_default_face"
             card_view:layout_constraintBottom_toBottomOf="parent"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toTopOf="parent"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintVertical_bias="1"
-            app:shapeAppearanceOverlay="@style/roundedImageView"
-            app:strokeColor="@color/maroon"
+            app:shapeAppearanceOverlay="@style/cornerRoundImageView"
+            app:strokeColor="@color/gray"
             app:strokeWidth="2dp" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:background="@drawable/s_oval"
+            android:backgroundTint="@color/gray"
+            card_view:layout_constraintBottom_toBottomOf="@+id/ivPhotoRecipe"
+            card_view:layout_constraintEnd_toEndOf="@+id/ivPhotoRecipe"
+            card_view:layout_constraintHorizontal_bias="0.95"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintTop_toTopOf="@+id/ivPhotoRecipe"
+            card_view:layout_constraintVertical_bias="0.95">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@drawable/ic_star"
+                android:backgroundTint="@color/silver"
+                card_view:layout_constraintStart_toStartOf="parent"
+                card_view:layout_constraintBottom_toBottomOf="parent"
+                card_view:layout_constraintEnd_toEndOf="parent"
+                card_view:layout_constraintTop_toTopOf="parent"
+                card_view:layout_constraintHorizontal_bias="0.75"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

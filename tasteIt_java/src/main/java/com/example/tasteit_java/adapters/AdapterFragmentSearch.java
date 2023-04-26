@@ -25,7 +25,6 @@ public class AdapterFragmentSearch extends FragmentStateAdapter {
     private static final int NUM_PAGES = 4;
     private ArrayList<Object> dataListAux;
     private String busqueda;
-    private int dataView;
 
     public AdapterFragmentSearch(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, String busqueda, ArrayList<Object> dataListAux) {
         super(fragmentManager, lifecycle);

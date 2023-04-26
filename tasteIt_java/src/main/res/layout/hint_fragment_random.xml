@@ -5,11 +5,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    card_view:cardBackgroundColor="#F3C2C2"
+    card_view:cardBackgroundColor="@color/silver"
     card_view:cardCornerRadius="10dp"
     card_view:cardElevation="4dp"
     card_view:cardUseCompatPadding="true"
     tools:context=".fragments.FragmentRandom">
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer"
+        app:shimmer_auto_start="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -19,7 +25,7 @@
             android:id="@+id/constraintLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/maroon"
+            android:background="@color/silver"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -30,7 +36,6 @@
                 android:layout_height="150dp"
                 android:padding="2dp"
                 android:layout_marginVertical="10dp"
-                android:src="@drawable/recipe_demo"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.05"
                 app:layout_constraintStart_toStartOf="parent"
@@ -40,30 +45,11 @@
                 app:strokeColor="@color/black"
                 app:strokeWidth="2dp" />
 
-            <TextView
-                android:id="@+id/tvRecipeName"
-                style="@style/recipeHeader"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/comfortaa_bold"
-                android:layout_marginHorizontal="15dp"
-                android:singleLine="true"
-                android:textAlignment="center"
-                android:text="Recipe Name "
-                android:textSize="18sp"
-                app:layout_constraintBottom_toTopOf="@+id/rbRating"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/ivRecipePhoto"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.7" />
-
             <RatingBar
                 android:id="@+id/rbRating"
                 style="?android:attr/ratingBarStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/maroon"
                 android:isIndicator="true"
                 android:numStars="5"
                 android:stepSize="0.1"
@@ -73,24 +59,6 @@
                 app:layout_constraintStart_toEndOf="@+id/ivRecipePhoto"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.593" />
-
-            <TextView
-                android:id="@+id/tvNameCreator"
-                style="@style/recipeHeader"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/comfortaa_bold"
-                android:layout_marginHorizontal="20dp"
-                android:singleLine="true"
-                android:textAlignment="center"
-                android:text="Name Creator"
-                android:textSize="15sp"
-                android:textStyle="italic"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/ivRecipePhoto"
-                app:layout_constraintTop_toBottomOf="@+id/rbRating" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -108,78 +76,43 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="Description:"
-                android:textColor="@color/maroon"
+                android:textColor="@color/gray"
                 android:textSize="20dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/tvDescription"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text=""
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView17" />
-
-            <TextView
                 android:id="@+id/textView18"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="37dp"
                 android:text="Difficulty:"
-                android:textColor="@color/maroon"
+                android:textColor="@color/gray"
                 android:textSize="20dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvDescription" />
-
-            <TextView
-                android:id="@+id/tvDifficulty"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text=""
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView18" />
+                app:layout_constraintTop_toBottomOf="@+id/textView17" />
 
             <TextView
                 android:id="@+id/textView19"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="37dp"
                 android:text="Country:"
-                android:textColor="@color/maroon"
+                android:textColor="@color/gray"
                 android:textSize="20dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvDifficulty" />
-
-            <TextView
-                android:id="@+id/tvCountry"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text=""
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView19" />
+                app:layout_constraintTop_toBottomOf="@+id/textView18" />
 
             <TextView
                 android:id="@+id/textView21"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="37dp"
                 android:text="Ingredients:"
-                android:textColor="@color/maroon"
+                android:textColor="@color/gray"
                 android:textSize="20dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvCountry" />
-
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/cgIngredients"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@+id/textView21" />
+                app:layout_constraintTop_toBottomOf="@+id/textView19" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -187,10 +120,12 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:src="@drawable/siguientebtn"
-            android:tint="@color/maroon"
+            android:tint="@color/gray"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
 
 </androidx.cardview.widget.CardView>

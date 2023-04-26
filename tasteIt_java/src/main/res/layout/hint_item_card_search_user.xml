@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     card_view:cardCornerRadius="8dp"
     card_view:cardElevation="8dp"
-    card_view:cardBackgroundColor="#F3C2C2"
+    card_view:cardBackgroundColor="@color/silver"
     card_view:cardUseCompatPadding="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -29,11 +29,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
-                android:text="Username"
                 android:textAlignment="center"
                 android:textSize="15dp"
                 android:textColor="@color/black"
-                style="@style/recipeName"
                 card_view:layout_constraintEnd_toEndOf="parent"
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintTop_toTopOf="parent" />
@@ -47,14 +45,13 @@
             android:padding="2dp"
             android:layout_marginHorizontal="10dp"
             android:layout_marginVertical="5dp"
-            android:src="@drawable/ic_default_face"
             card_view:layout_constraintBottom_toBottomOf="parent"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toTopOf="parent"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintVertical_bias="1"
             app:shapeAppearanceOverlay="@style/roundedImageView"
-            app:strokeColor="@color/maroon"
+            app:strokeColor="@color/gray"
             app:strokeWidth="2dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

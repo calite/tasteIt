@@ -66,8 +66,6 @@ public class FragmentComments extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
-    private ArrayList<Comment> uidsComments;
     private String uidProfile;
     private Boolean myProfile;
     private static int editCommentId;
@@ -117,15 +115,12 @@ public class FragmentComments extends Fragment {
         if (getArguments() != null) {
             this.myProfile = getArguments().getBoolean(ARG_PARAM2);
             this.uidProfile = getArguments().getString(ARG_PARAM3);
-            new TaskLoadUserComments().execute();
-            //mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_comments, container, false);
 
         adapter = new AdapterRecyclerCommentsProfile(getContext(), uidProfile, myProfile);
@@ -133,8 +128,6 @@ public class FragmentComments extends Fragment {
         rvLvComments.setAdapter(adapter);
 
         rvLvComments.setLayoutManager(new LinearLayoutManager(getContext()));
-        DividerItemDecoration divider = new DividerItemDecoration(rvLvComments.getContext(), DividerItemDecoration.VERTICAL);
-        rvLvComments.addItemDecoration(divider);
 
         if(!myProfile) {
             ivMyPhoto = view.findViewById(R.id.ivMyPhoto);
@@ -195,23 +188,6 @@ public class FragmentComments extends Fragment {
         } else {
             clComment.setVisibility(View.INVISIBLE);
             clComment.setClickable(false);
-        }
-    }
-
-    class TaskLoadUserComments extends AsyncTask<ArrayList<Comment>, Void,ArrayList<Comment>> {
-        @Override
-        protected void onPreExecute() {
-
-        }
-        @Override
-        protected ArrayList<Comment> doInBackground(ArrayList<Comment>... hashMaps) {
-            return new BdConnection().retrieveCommentsbyUid(uidProfile);
-        }
-        @Override
-        protected void onPostExecute(ArrayList<Comment> userComments) {
-            //super.onPostExecute(recipes);
-            uidsComments = new ArrayList<>(userComments);
-            adapter.notifyDataSetChanged();
         }
     }
 

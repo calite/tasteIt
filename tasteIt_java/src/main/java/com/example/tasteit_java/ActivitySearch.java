@@ -30,6 +30,7 @@ import com.example.tasteit_java.clases.OnItemNavSelectedListener;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -49,9 +50,8 @@ public class ActivitySearch extends AppCompatActivity {
     private EditText tvSearch;
     private AdapterFragmentSearch adapter;
     private ArrayList<Object> dataListAux;
-    private LinearLayout pbSearch;
+    private ShimmerFrameLayout shimmer;
     private String busqueda;
-    Logger log = Logger.getLogger(ActivityMain.class.getName());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +63,6 @@ public class ActivitySearch extends AppCompatActivity {
         fcMainMenu.setOnItemSelectedListener(new OnItemNavSelectedListener(this));
 
         initializeViews();
-        pbSearch.setVisibility(View.VISIBLE);
         bringRecipes(); //Llamariamos a una peticion para sacar las recetas mas comentadas o populares de primeras y luego ya cuando se busca algo lo cambiamos
 
         tlSearch.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -88,7 +87,9 @@ public class ActivitySearch extends AppCompatActivity {
             public void onClick(View view) {
                 busqueda = tvSearch.getText().toString();
                 if (busqueda.length() > 0) { //Aqui sacariamos los resultados de la búsqueda y creariamos el adapter de nuevo
-                    pbSearch.setVisibility(View.VISIBLE);
+                    vpPaginator.setVisibility(View.GONE);
+                    shimmer.setVisibility(View.VISIBLE);
+                    shimmer.startShimmer();
                     dataListAux.clear();
                     bringRecipes();
                     new TaskLoadUser().execute();
@@ -116,7 +117,8 @@ public class ActivitySearch extends AppCompatActivity {
         tlSearch = findViewById(R.id.tlSearch);
         vpPaginator = findViewById(R.id.vpPaginator);
         ivsearch = findViewById(R.id.ivsearch);
-        pbSearch = findViewById(R.id.pbSearch);
+        shimmer = findViewById(R.id.shimmer);
+        shimmer.startShimmer();
     }
 
     //MENU superior
@@ -243,15 +245,16 @@ public class ActivitySearch extends AppCompatActivity {
         // Actualizar la UI con la lista de recetas
         dataListAux.addAll(recipes);
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        adapter = new AdapterFragmentSearch(fragmentManager, getLifecycle(), busqueda, dataListAux);
+        adapter = new AdapterFragmentSearch(getSupportFragmentManager(), getLifecycle(), busqueda, dataListAux);
         vpPaginator.setAdapter(adapter);
 
         //if (adapter.getItemCount() > 0) {
             //adapter.dataList.remove(adapter.getItemCount() - 1);
         //}
 
-        pbSearch.setVisibility(View.GONE);
+        shimmer.stopShimmer();
+        shimmer.setVisibility(View.GONE);
+        vpPaginator.setVisibility(View.VISIBLE);
         adapter.notifyDataSetChanged();
         //adapter.setLoaded();
     }

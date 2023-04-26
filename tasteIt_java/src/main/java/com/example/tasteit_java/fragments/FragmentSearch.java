@@ -29,6 +29,7 @@ import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
+import com.facebook.shimmer.ShimmerFrameLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +56,7 @@ public class FragmentSearch extends Fragment {
     private String search;
     private int dataView;
     private RecyclerView rvSearchItems;
-    private ProgressBar pbSearch;
+    private ShimmerFrameLayout shimmer;
     private ArrayList<Object> dataListAux;
     private AdapterEndlessRecyclerSearch adapter;
 

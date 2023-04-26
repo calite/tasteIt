@@ -33,7 +33,7 @@ public class AdapterRecyclerPhotosProfile extends RecyclerView.Adapter<AdapterRe
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_profile_gridview, null, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_card_profile_rec, null, false);
         return new ViewHolder(view);
         //return null;
     }

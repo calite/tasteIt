@@ -1,38 +1,25 @@
 package com.example.tasteit_java.fragments;
 
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.Toast;
 
-import com.example.tasteit_java.ActivityMain;
-import com.example.tasteit_java.ActivityRecipe;
 import com.example.tasteit_java.ApiService.ApiClient;
 import com.example.tasteit_java.ApiService.ApiRequests;
-import com.example.tasteit_java.ApiService.RecipeId_Recipe;
 import com.example.tasteit_java.ApiService.RecipeId_Recipe_User;
 import com.example.tasteit_java.R;
-import com.example.tasteit_java.adapters.AdapterGridViewMain;
-import com.example.tasteit_java.adapters.AdapterGridViewProfile;
 import com.example.tasteit_java.adapters.AdapterRecyclerPhotosProfile;
-import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.Recipe;
+import com.facebook.shimmer.ShimmerFrameLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,12 +39,9 @@ public class FragmentPhotos extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-    //VARIABLES PARA EL GRID
-    //private GridView gvPhotos;
-    //private AdapterGridViewProfile adapter;
     private RecyclerView rvGridPhotos;
     private AdapterRecyclerPhotosProfile adapter;
+    private ShimmerFrameLayout shimmer;
 
     // TODO: Rename and change types of parameters
     //private ArrayList<Recipe> recipes;
@@ -107,6 +91,9 @@ public class FragmentPhotos extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_photos, container, false);
+
+        shimmer = view.findViewById(R.id.shimmer);
+        shimmer.startShimmer();
 
         bringRecipes();
 
@@ -173,16 +160,17 @@ public class FragmentPhotos extends Fragment {
     }
 
     private void onRecipesLoaded(List<Recipe> recipes) {
-        if(adapter.getItemCount() > 0) {
+        /*if(adapter.getItemCount() > 0) {
             adapter.arrayListPhotos.remove(adapter.getItemCount() - 1);
-        }
+        }*/
 
         adapter.arrayListPhotos.addAll(recipes);
+        shimmer.stopShimmer();
+        shimmer.setVisibility(View.GONE);
         adapter.notifyDataSetChanged();
     }
 
     private void bringRecipes() {
-        //olvidamos asynctask y metemos lifecycle, que es mas actual y esta mejor optimizado
         RecipesLoader recipesLoader = new RecipesLoader(ApiClient.getInstance().getService());
         recipesLoader.getRecipes().observe(this, this::onRecipesLoaded);
         recipesLoader.loadRecipes();

@@ -8,13 +8,11 @@
     android:orientation="vertical">
 
     <Toolbar
-        android:id="@+id/toolbar_terms"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         />
 
     <TextView
-        android:id="@+id/tvTermsTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/bar_title_terms"
@@ -27,7 +25,6 @@
         />
 
     <TextView
-        android:id="@+id/tvTerms1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/terms1"
@@ -37,7 +34,6 @@
         android:layout_margin="8dp" />
 
     <TextView
-        android:id="@+id/tvTerms2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/terms2"
@@ -47,7 +43,6 @@
         android:layout_margin="8dp" />
 
     <TextView
-        android:id="@+id/tvTerms3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/terms3"

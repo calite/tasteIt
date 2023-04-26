@@ -11,9 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="RECIPES"
+        android:textAlignment="center"
         android:textColor="@color/maroon"
         android:textSize="25dp"
-        android:textAlignment="center"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -40,15 +40,14 @@
 
     </com.google.android.material.tabs.TabLayout>
 
-
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/vpPaginator"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/fcvMainMenu"
+        app:layout_constraintBottom_toTopOf="@+id/fcMainMenu"
         app:layout_constraintTop_toBottomOf="@+id/tlRecipes"
-        app:layout_constraintVertical_bias="0"/>
+        app:layout_constraintVertical_bias="0" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/bCreate"
@@ -57,8 +56,8 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
-        android:backgroundTint="@color/maroon"
         android:background="@drawable/s_oval"
+        android:backgroundTint="@color/maroon"
         app:borderWidth="0dp"
         app:elevation="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -72,21 +71,11 @@
         android:id="@+id/fcMainMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:itemTextColor="@color/white"
+        android:layout_alignParentBottom="true"
         android:background="@color/maroon"
         app:itemIconTint="@color/white"
-        android:layout_alignParentBottom="true"
-        app:menu="@menu/nav_main_menu"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-
-    <!--<androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fcvMainMenu"
-        android:name="com.example.tasteit_java.fragments.FragmentMainMenu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical"
+        app:itemTextColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout="@layout/fragment_main_menu" />-->
+        app:menu="@menu/nav_main_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

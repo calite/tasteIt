@@ -2,7 +2,6 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     card_view:cardCornerRadius="5dp"
@@ -14,18 +13,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="2dp">
-
-        <!--<ImageView
-            android:id="@+id/ivPhotoRecipe"
-            android:layout_width="165dp"
-            android:layout_height="165dp"
-            android:background="@color/maroon"
-            android:scaleType="centerCrop"
-            android:layout_margin="5dp"
-            card_view:layout_constraintBottom_toBottomOf="parent"
-            card_view:layout_constraintStart_toStartOf="parent"
-            card_view:layout_constraintTop_toTopOf="parent"
-            card_view:layout_constraintVertical_bias="0.5" />-->
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/ivPhotoRecipe"
@@ -80,7 +67,6 @@
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/clInfo"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_margin="5dp"

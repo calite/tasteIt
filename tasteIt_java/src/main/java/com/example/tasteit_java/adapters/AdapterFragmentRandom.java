@@ -8,17 +8,17 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.fragments.FragmentRandom;
-import com.example.tasteit_java.fragments.FragmentSearch;
 
 import java.util.ArrayList;
 
 public class AdapterFragmentRandom extends FragmentStateAdapter {
     private static final int NUM_PAGES = 6;
-    private ArrayList<Recipe> recipes;
+    private ArrayList<Object> recipes;
 
     public AdapterFragmentRandom(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, ArrayList<Recipe> recipes) {
         super(fragmentManager, lifecycle);
         this.recipes = new ArrayList<>(recipes);
+        this.recipes.add(null);
     }
 
     @NonNull

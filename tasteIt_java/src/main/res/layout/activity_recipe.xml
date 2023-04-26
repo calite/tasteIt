@@ -140,16 +140,6 @@
         app:tint="@color/white"
         />
 
-    <!--<androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fcvMainMenu"
-        android:name="com.example.tasteit_java.fragments.FragmentMainMenu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout="@layout/fragment_main_menu" />-->
-
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/fcMainMenu"
         android:layout_width="match_parent"

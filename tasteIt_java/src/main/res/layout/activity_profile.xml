@@ -84,7 +84,6 @@
                 app:layout_constraintVertical_bias="0.2" />
 
             <TextView
-                android:id="@+id/tvRecipe"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -120,7 +119,6 @@
                 app:layout_constraintVertical_bias="0.2" />
 
             <TextView
-                android:id="@+id/tvFollowers"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -156,7 +154,6 @@
                 app:layout_constraintVertical_bias="0.2" />
 
             <TextView
-                android:id="@+id/tvFollowing"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -192,7 +189,6 @@
                 app:layout_constraintVertical_bias="0.2" />
 
             <TextView
-                android:id="@+id/tvLikes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -267,17 +263,6 @@
             android:layout_alignParentBottom="true"
             app:menu="@menu/nav_main_menu"
             app:layout_constraintBottom_toBottomOf="parent"/>
-
-        <!--<androidx.fragment.app.FragmentContainerView
-            android:id="@+id/fcMainMenu"
-            android:name="com.example.tasteit_java.fragments.FragmentMainMenu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintVertical_bias="0"
-            tools:layout="@layout/fragment_main_menu" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

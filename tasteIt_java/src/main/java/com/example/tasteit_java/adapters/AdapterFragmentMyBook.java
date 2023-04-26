@@ -6,12 +6,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.example.tasteit_java.fragments.FragmentFollowedRecipes;
-import com.example.tasteit_java.fragments.FragmentLikedRecipes;
-import com.example.tasteit_java.fragments.FragmentMyRecipes;
+import com.example.tasteit_java.fragments.FragmentMyBook;
 
 public class AdapterFragmentMyBook extends FragmentStateAdapter {
-
+    private static final int NUM_PAGES = 3;
     private String token;
 
     public AdapterFragmentMyBook(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, String token) {
@@ -22,21 +20,11 @@ public class AdapterFragmentMyBook extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        switch (position) {
-            case 0:
-                return FragmentMyRecipes.newInstance(token);
-            case 1:
-                return FragmentLikedRecipes.newInstance(token);
-            case 2:
-                return FragmentFollowedRecipes.newInstance(token);
-            default:
-                return FragmentMyRecipes.newInstance(token);
-        }
-
+        return new FragmentMyBook(token, position);
     }
 
     @Override
     public int getItemCount() {
-        return 3;
+        return NUM_PAGES;
     }
 }

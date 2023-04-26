@@ -12,30 +12,29 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.tasteit_java.adapters.AdapterEndlessRecyclerMain;
 import com.example.tasteit_java.adapters.AdapterFragmentMyBook;
 import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.OnItemNavSelectedListener;
 import com.example.tasteit_java.clases.Utils;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class ActivityMyBook extends AppCompatActivity {
-
     private FloatingActionButton bCreate;
     private TabLayout tlRecipes;
     private ViewPager2 vpPaginator;
     private String token;
-
+    private AdapterFragmentMyBook adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_book);
 
-        BottomNavigationView fcMainMenu = findViewById(R.id.fcMainMenu);
-        fcMainMenu.setSelectedItemId(R.id.bMyBook);
-        fcMainMenu.setOnItemSelectedListener(new OnItemNavSelectedListener(this));
+        initializeViews();
 
         //recoger token usuario firebase
         token = Utils.getUserToken();
@@ -44,11 +43,8 @@ public class ActivityMyBook extends AppCompatActivity {
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("My Book");
 
-        //my recipes, liked recipes and followed recipes Fragments
-        vpPaginator = findViewById(R.id.vpPaginator);
-        tlRecipes = findViewById(R.id.tlRecipes);
-
-        vpPaginator.setAdapter(new AdapterFragmentMyBook(getSupportFragmentManager(), getLifecycle(), token));
+        adapter = new AdapterFragmentMyBook(getSupportFragmentManager(), getLifecycle(), token);
+        vpPaginator.setAdapter(adapter);
 
         tlRecipes.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -67,6 +63,14 @@ public class ActivityMyBook extends AppCompatActivity {
             }
         });
 
+        vpPaginator.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                //super.onPageSelected(position);
+                tlRecipes.selectTab(tlRecipes.getTabAt(position));
+            }
+        });
+
         //boton crear receta
         bCreate = findViewById(R.id.bCreate);
         bCreate.setOnClickListener(new View.OnClickListener() {
@@ -76,6 +80,11 @@ public class ActivityMyBook extends AppCompatActivity {
                 startActivity(i);
             }
         });
+    }
+
+    private void initializeViews() {
+        vpPaginator = findViewById(R.id.vpPaginator);
+        tlRecipes = findViewById(R.id.tlRecipes);
     }
 
     //MENU superior
@@ -90,6 +99,10 @@ public class ActivityMyBook extends AppCompatActivity {
         Bitmap originalBitmap = Utils.decodeBase64(new BdConnection().retrieveUserbyUid(Utils.getUserToken()).getImgProfile());
         BitmapDrawable roundedBitmapDrawable = new BitmapDrawable(getResources(), Utils.getRoundBitmapWithImage(originalBitmap));
         menu.getItem(0).setIcon(roundedBitmapDrawable);
+
+        BottomNavigationView fcMainMenu = findViewById(R.id.fcMainMenu);
+        fcMainMenu.setSelectedItemId(R.id.bMyBook);
+        fcMainMenu.setOnItemSelectedListener(new OnItemNavSelectedListener(this));
 
         return true;
     }
