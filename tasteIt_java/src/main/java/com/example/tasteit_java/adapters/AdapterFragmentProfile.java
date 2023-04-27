@@ -23,7 +23,6 @@ public class AdapterFragmentProfile extends FragmentStateAdapter {
 
     private Boolean myProfile;
     private String uidProfile;
-    private FragmentComments fragmentComments;
 
     public AdapterFragmentProfile(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, String uid, Boolean myProfile) {
         super(fragmentManager, lifecycle);
@@ -40,8 +39,7 @@ public class AdapterFragmentProfile extends FragmentStateAdapter {
             case 1:
                 return FragmentPhotos.newInstance(uidProfile);
             case 2:
-                fragmentComments = FragmentComments.newInstance(uidProfile, myProfile);
-                return fragmentComments;
+                return FragmentComments.newInstance(uidProfile, myProfile);
             default:
                 return null;
         }

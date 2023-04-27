@@ -139,7 +139,7 @@ public class AdapterEndlessRecyclerSearch extends Adapter {
     class RecipeViewHolder extends ViewHolder {
 
         private final ImageView ivPhotoRecipe;
-        private final TextView tvRating;
+        private final TextView tvDifficulty;
         private final TextView tvNameRecipe;
         private int recipeId;
 
@@ -147,7 +147,7 @@ public class AdapterEndlessRecyclerSearch extends Adapter {
             super(view);
             // Define click listener for the ViewHolder's View
             ivPhotoRecipe = view.findViewById(R.id.ivPhotoRecipe);
-            tvRating = view.findViewById(R.id.tvRating);
+            tvDifficulty = view.findViewById(R.id.tvDifficulty);
             tvNameRecipe = view.findViewById(R.id.tvNameRecipe);
 
             view.setOnClickListener(new View.OnClickListener() {
@@ -162,7 +162,7 @@ public class AdapterEndlessRecyclerSearch extends Adapter {
 
         void bindRow(@NonNull Recipe recipe) {
             tvNameRecipe.setText(recipe.getName());
-            tvRating.setText(recipe.getRating());
+            tvDifficulty.setText(String.valueOf(recipe.getDifficulty()));
             Bitmap bitmap = Utils.decodeBase64(recipe.getImage());
             ivPhotoRecipe.setImageBitmap(bitmap);
             recipeId = recipe.getId();

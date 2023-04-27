@@ -9,261 +9,266 @@
     android:scrollbars="vertical"
     tools:context=".ActivityProfile">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
-
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/ivUserPicture"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:padding="2dp"
-            android:src="@drawable/ic_default_face"
-            app:layout_constraintBottom_toTopOf="@+id/vSeparator"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.122"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.1"
-            app:shapeAppearanceOverlay="@style/roundedImageView"
-            app:strokeColor="@color/maroon"
-            app:strokeWidth="2dp" />
-
-        <TextView
-            android:id="@+id/tvUserName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:text="Profile Name"
-            android:textSize="18sp"
-            android:textColor="@color/black"
-            android:textAlignment="center"
-            app:layout_constraintBottom_toTopOf="@+id/vSeparator"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/ivUserPicture"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.25" />
-
-        <Button
-            android:id="@+id/btnFollow"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_marginTop="24dp"
-            android:background="@drawable/btn_follow"
-            android:enabled="false"
-            android:text="Follow"
-            android:textSize="11dp"
-            android:visibility="invisible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.42"
-            app:layout_constraintStart_toEndOf="@+id/ivUserPicture"
-            app:layout_constraintTop_toBottomOf="@+id/tvUserName" />
+        android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/tagRecipe"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@+id/vSeparator"
-            app:layout_constraintEnd_toStartOf="@+id/tagFollowers"
-            app:layout_constraintHorizontal_bias="0.142"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ivUserPicture"
-            app:layout_constraintVertical_bias="0.3">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true">
 
-            <TextView
-                android:id="@+id/tvReciperCounter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="0"
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/ivUserPicture"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:padding="2dp"
+                app:layout_constraintBottom_toTopOf="@+id/vSeparator"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_bias="0.122"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.2" />
+                app:layout_constraintVertical_bias="0.1"
+                app:shapeAppearanceOverlay="@style/roundedImageView"
+                app:strokeColor="@color/maroon"
+                app:strokeWidth="2dp" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/tvUserName"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Recipes"
-                android:textColor="@color/maroon"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvReciperCounter" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/tagFollowers"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@+id/vSeparator"
-            app:layout_constraintEnd_toStartOf="@+id/tagFollowing"
-            app:layout_constraintHorizontal_bias="0.265"
-            app:layout_constraintStart_toEndOf="@+id/tagRecipe"
-            app:layout_constraintTop_toBottomOf="@+id/ivUserPicture"
-            app:layout_constraintVertical_bias="0.3">
-
-            <TextView
-                android:id="@+id/tvFollowersCounter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="0"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.2" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Followers"
+                android:singleLine="true"
+                android:textAlignment="center"
                 android:textColor="@color/black"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvFollowersCounter" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/tagFollowing"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@+id/vSeparator"
-            app:layout_constraintEnd_toStartOf="@+id/tagLikes"
-            app:layout_constraintHorizontal_bias="0.265"
-            app:layout_constraintStart_toEndOf="@+id/tagFollowers"
-            app:layout_constraintTop_toBottomOf="@+id/ivUserPicture"
-            app:layout_constraintVertical_bias="0.3">
-
-            <TextView
-                android:id="@+id/tvFollowingCounter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="0"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toTopOf="@+id/vSeparator"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/ivUserPicture"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.2" />
+                app:layout_constraintVertical_bias="0.25" />
 
-            <TextView
+            <Button
+                android:id="@+id/btnFollow"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Followings"
-                android:textColor="@color/black"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvFollowingCounter" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/tagLikes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@+id/vSeparator"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.265"
-            app:layout_constraintStart_toEndOf="@+id/tagFollowing"
-            app:layout_constraintTop_toBottomOf="@+id/ivUserPicture"
-            app:layout_constraintVertical_bias="0.3">
-
-            <TextView
-                android:id="@+id/tvLikesCounter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="0"
+                android:layout_height="40dp"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/btn_follow"
+                android:enabled="false"
+                android:text="Follow"
+                android:textSize="11dp"
+                android:visibility="invisible"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.2" />
+                app:layout_constraintHorizontal_bias="0.42"
+                app:layout_constraintStart_toEndOf="@+id/ivUserPicture"
+                app:layout_constraintTop_toBottomOf="@+id/tvUserName" />
 
-            <TextView
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/tagRecipe"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Likes"
-                android:textColor="@color/maroon"
-                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintBottom_toTopOf="@+id/vSeparator"
+                app:layout_constraintEnd_toStartOf="@+id/tagFollowers"
+                app:layout_constraintHorizontal_bias="0.142"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvLikesCounter" />
+                app:layout_constraintTop_toBottomOf="@+id/ivUserPicture"
+                app:layout_constraintVertical_bias="0.3">
+
+                <TextView
+                    android:id="@+id/tvReciperCounter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="0"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.2" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Recipes"
+                    android:textColor="@color/maroon"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvReciperCounter" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/tagFollowers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@+id/vSeparator"
+                app:layout_constraintEnd_toStartOf="@+id/tagFollowing"
+                app:layout_constraintHorizontal_bias="0.265"
+                app:layout_constraintStart_toEndOf="@+id/tagRecipe"
+                app:layout_constraintTop_toBottomOf="@+id/ivUserPicture"
+                app:layout_constraintVertical_bias="0.3">
+
+                <TextView
+                    android:id="@+id/tvFollowersCounter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="0"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.2" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Followers"
+                    android:textColor="@color/black"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvFollowersCounter" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/tagFollowing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@+id/vSeparator"
+                app:layout_constraintEnd_toStartOf="@+id/tagLikes"
+                app:layout_constraintHorizontal_bias="0.265"
+                app:layout_constraintStart_toEndOf="@+id/tagFollowers"
+                app:layout_constraintTop_toBottomOf="@+id/ivUserPicture"
+                app:layout_constraintVertical_bias="0.3">
+
+                <TextView
+                    android:id="@+id/tvFollowingCounter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="0"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.2" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Followings"
+                    android:textColor="@color/black"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvFollowingCounter" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/tagLikes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@+id/vSeparator"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.265"
+                app:layout_constraintStart_toEndOf="@+id/tagFollowing"
+                app:layout_constraintTop_toBottomOf="@+id/ivUserPicture"
+                app:layout_constraintVertical_bias="0.3">
+
+                <TextView
+                    android:id="@+id/tvLikesCounter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="0"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.2" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Likes"
+                    android:textColor="@color/maroon"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvLikesCounter" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <Space
+                android:id="@+id/space"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                app:layout_constraintBottom_toTopOf="@+id/vSeparator"
+                app:layout_constraintTop_toBottomOf="@+id/tagLikes" />
+
+            <View
+                android:id="@+id/vSeparator"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"
+                android:backgroundTint="@color/maroon"
+                app:layout_constraintTop_toBottomOf="@+id/space"
+                app:layout_constraintVertical_bias="1"
+                app:layout_constraintVertical_weight="1"
+                tools:layout_editor_absoluteX="-1dp" />
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tlUser"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/vSeparator"
+                app:tabTextAppearance="@style/TabItem">
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Bio" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Photos" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Comments" />
+
+            </com.google.android.material.tabs.TabLayout>
+
+            <!--si no ves nada comenta este fragment container -->
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/vpPaginator"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:orientation="horizontal"
+
+                app:layout_constraintBottom_toTopOf="@+id/fcMainMenu"
+                app:layout_constraintTop_toBottomOf="@+id/tlUser"
+                app:layout_constraintVertical_bias="0" />
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/fcMainMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="@color/maroon"
+                app:itemIconTint="@color/white"
+                app:itemTextColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:menu="@menu/nav_main_menu" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <Space
-            android:id="@+id/space"
-            android:layout_width="match_parent"
-            android:layout_height="20dp"
-            app:layout_constraintBottom_toTopOf="@+id/vSeparator"
-            app:layout_constraintTop_toBottomOf="@+id/tagLikes" />
-
-        <View
-            android:id="@+id/vSeparator"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray"
-            android:backgroundTint="@color/maroon"
-            app:layout_constraintTop_toBottomOf="@+id/space"
-            app:layout_constraintVertical_bias="1"
-            app:layout_constraintVertical_weight="1"
-            tools:layout_editor_absoluteX="-1dp" />
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tlUser"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tabTextAppearance="@style/TabItem"
-            app:layout_constraintTop_toBottomOf="@+id/vSeparator">
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Bio" />
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Photos" />
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Comments" />
-
-        </com.google.android.material.tabs.TabLayout>
-
-        <!--si no ves nada comenta este fragment container -->
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/vpPaginator"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:orientation="horizontal"
-
-            app:layout_constraintBottom_toTopOf="@+id/fcMainMenu"
-            app:layout_constraintTop_toBottomOf="@+id/tlUser"
-            app:layout_constraintVertical_bias="0" />
-
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/fcMainMenu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:itemTextColor="@color/white"
-            android:background="@color/maroon"
-            app:itemIconTint="@color/white"
-            android:layout_alignParentBottom="true"
-            app:menu="@menu/nav_main_menu"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.facebook.shimmer.ShimmerFrameLayout>
 
 </ScrollView>

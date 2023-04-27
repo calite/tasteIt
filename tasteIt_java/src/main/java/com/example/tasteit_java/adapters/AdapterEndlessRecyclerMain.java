@@ -119,7 +119,7 @@ public class AdapterEndlessRecyclerMain extends RecyclerView.Adapter {
     class RecipeViewHolder extends RecyclerView.ViewHolder {
 
         private final ImageView ivPhotoRecipe;
-        private final TextView tvRating;
+        private final TextView tvDifficulty;
         private final TextView tvNameRecipe;
         private final TextView tvNameCreator;
         private final TextView tvDescriptionRecipe;
@@ -130,7 +130,7 @@ public class AdapterEndlessRecyclerMain extends RecyclerView.Adapter {
             super(view);
             // Define click listener for the ViewHolder's View
             ivPhotoRecipe = view.findViewById(R.id.ivPhotoRecipe);
-            tvRating = view.findViewById(R.id.tvRating);
+            tvDifficulty = view.findViewById(R.id.tvDifficulty);
             tvNameRecipe = view.findViewById(R.id.tvNameRecipe);
             tvNameCreator = view.findViewById(R.id.tvNameCreator);
             tvDescriptionRecipe = view.findViewById(R.id.tvDescriptionRecipe);
@@ -150,7 +150,7 @@ public class AdapterEndlessRecyclerMain extends RecyclerView.Adapter {
             tvNameRecipe.setText(recipe.getName());
             tvNameCreator.setText(recipe.getCreator());
             tvDescriptionRecipe.setText(recipe.getDescription());
-            tvRating.setText(recipe.getRating());
+            tvDifficulty.setText(String.valueOf(recipe.getDifficulty()));
             Bitmap bitmap = Utils.decodeBase64(recipe.getImage());
             ivPhotoRecipe.setImageBitmap(bitmap);
             recipeId = recipe.getId();

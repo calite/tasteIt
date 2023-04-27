@@ -21,6 +21,7 @@ import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.OnItemNavSelectedListener;
 import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,6 +38,7 @@ public class ActivityProfile extends AppCompatActivity {
     private TextView tvUserName, tvReciperCounter, tvFollowersCounter, tvFollowingCounter, tvLikesCounter;
     private ImageView ivUserPicture;
     private Button btnFollow;
+    private ShimmerFrameLayout shimmer;
     private ConstraintLayout tagRecipe, tagFollowers, tagFollowing, tagLikes;
     private BdConnection connection;
     private String uid;
@@ -50,6 +52,9 @@ public class ActivityProfile extends AppCompatActivity {
         BottomNavigationView fcMainMenu = findViewById(R.id.fcMainMenu);
         fcMainMenu.setSelectedItemId(R.id.bHome);
         fcMainMenu.setOnItemSelectedListener(new OnItemNavSelectedListener(this));
+
+        shimmer = findViewById(R.id.shimmer);
+        shimmer.startShimmer();
 
         if(getIntent().getExtras() != null) {
             Bundle params = getIntent().getExtras();
@@ -285,6 +290,9 @@ public class ActivityProfile extends AppCompatActivity {
             retrieveData(uid);
             adapter = new AdapterFragmentProfile(getSupportFragmentManager(),getLifecycle(), uid, myProfile);
             vpPaginator.setAdapter(adapter);
+
+            shimmer.stopShimmer();
+            shimmer.hideShimmer();
         }
     }
 

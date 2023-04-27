@@ -147,11 +147,14 @@ public class ActivityLogin extends AppCompatActivity {
                         goHome();
                     } else {
                         log.log(Level.INFO, "Logged user doesn't exist anymore");
+                        dialog.dismiss();
+                        dialog.hide();
                     }
                 }
             });
         } else {
             dialog.dismiss();
+            dialog.hide();
         }
     }
 
@@ -324,7 +327,6 @@ public class ActivityLogin extends AppCompatActivity {
     }
 
     private Dialog setProgressDialog() {
-
         View view = View.inflate(ActivityLogin.this, R.layout.item_waiting_for_login, null);
 
         Dialog dialog = new Dialog(ActivityLogin.this, R.style.DialogTheme);

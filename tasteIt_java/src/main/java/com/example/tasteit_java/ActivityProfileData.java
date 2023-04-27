@@ -7,13 +7,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.example.tasteit_java.adapters.AdapterRecyclerProfileData;
+import com.facebook.shimmer.ShimmerFrameLayout;
 
 public class ActivityProfileData extends AppCompatActivity {
     private RecyclerView rvListData;
     private AdapterRecyclerProfileData adapter;
     private String uidProfile;
+    private ShimmerFrameLayout shimmer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,17 +25,20 @@ public class ActivityProfileData extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        shimmer = findViewById(R.id.shimmer);
+        shimmer.startShimmer();
+
         Bundle params = getIntent().getExtras();
         uidProfile = params.getString("uid");
         int dataType = params.getInt("dataType");
 
         switch (dataType) {
             case 1: { //Recipes
-                getSupportActionBar().setTitle("My Recipes");
+                getSupportActionBar().setTitle("Recipes");
                 break;
             }
             case 2: { //Followers
-                getSupportActionBar().setTitle("My Followers");
+                getSupportActionBar().setTitle("Followers");
                 break;
             }
             case 3: { //Following
@@ -46,12 +52,11 @@ public class ActivityProfileData extends AppCompatActivity {
         }
 
         rvListData = findViewById(R.id.rvListData);
-        adapter = new AdapterRecyclerProfileData(this, uidProfile, dataType, this);
-        rvListData.setAdapter(adapter);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        rvListData.setLayoutManager(linearLayoutManager);
 
-        rvListData.setLayoutManager(new LinearLayoutManager(this));
-        DividerItemDecoration divider = new DividerItemDecoration(rvListData.getContext(), DividerItemDecoration.VERTICAL);
-        rvListData.addItemDecoration(divider);
+        adapter = new AdapterRecyclerProfileData(this, uidProfile, dataType, this, shimmer);
+        rvListData.setAdapter(adapter);
 
         adapter.notifyDataSetChanged();
     }

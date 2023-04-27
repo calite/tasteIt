@@ -226,8 +226,6 @@ public class ActivityMain extends AppCompatActivity {
 
     private void onRecipesLoaded(List<Recipe> recipes) {
         // Actualizar la UI con la lista de recetas
-        shimmer.stopShimmer();
-        shimmer.setVisibility(View.GONE);
 
         if(adapterEndlessRecyclerMain.getItemCount() > 0) {
             adapterEndlessRecyclerMain.dataList.remove(adapterEndlessRecyclerMain.getItemCount() - 1);
@@ -236,6 +234,9 @@ public class ActivityMain extends AppCompatActivity {
         adapterEndlessRecyclerMain.dataList.addAll(recipes);
         adapterEndlessRecyclerMain.setLoaded();
         adapterEndlessRecyclerMain.notifyDataSetChanged();
+
+        shimmer.stopShimmer();
+        shimmer.setVisibility(View.GONE);
     }
 
     private void bringRecipes() {

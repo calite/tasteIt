@@ -24,13 +24,15 @@
 
         <EditText
             android:id="@+id/etRecipeName"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/comfortaa_light"
             android:hint="Recipe Name"
+            android:singleLine="true"
             android:inputType="text"
             app:backgroundTint="@color/maroon"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
         <TextView

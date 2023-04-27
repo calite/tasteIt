@@ -37,6 +37,7 @@ import com.example.tasteit_java.clases.Comment;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -72,7 +73,7 @@ public class FragmentComments extends Fragment {
 
     private RecyclerView rvLvComments;
     private AdapterRecyclerCommentsProfile adapter;
-
+    private ShimmerFrameLayout shimmer;
     private ConstraintLayout clComment;
     private ShapeableImageView ivMyPhoto;
     private static EditText etComment;
@@ -115,6 +116,7 @@ public class FragmentComments extends Fragment {
         if (getArguments() != null) {
             this.myProfile = getArguments().getBoolean(ARG_PARAM2);
             this.uidProfile = getArguments().getString(ARG_PARAM3);
+            getArguments().clear();
         }
     }
 
@@ -123,7 +125,10 @@ public class FragmentComments extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_comments, container, false);
 
-        adapter = new AdapterRecyclerCommentsProfile(getContext(), uidProfile, myProfile);
+        shimmer = view.findViewById(R.id.shimmer);
+        shimmer.startShimmer();
+
+        adapter = new AdapterRecyclerCommentsProfile(getContext(), uidProfile, myProfile, shimmer);
         rvLvComments = view.findViewById(R.id.rvLvComments);
         rvLvComments.setAdapter(adapter);
 

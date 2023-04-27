@@ -4,7 +4,8 @@
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/maroon</item>
         <item name="colorPrimaryVariant">@color/maroon</item>
-        <item name="colorOnPrimary">#1C1C1C</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="cardBackgroundColor">#F82F2F</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
         <item name="colorSecondaryVariant">@color/teal_200</item>

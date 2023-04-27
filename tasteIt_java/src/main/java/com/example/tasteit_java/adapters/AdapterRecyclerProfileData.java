@@ -32,8 +32,11 @@ import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.shape.ShapeAppearanceModel;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -45,25 +48,26 @@ import retrofit2.Response;
 
 public class AdapterRecyclerProfileData extends RecyclerView.Adapter<AdapterRecyclerProfileData.ViewHolder> {
 
+    private ShimmerFrameLayout shimmer;
     private Context context;
     private String uidProfile;
     private int dataType;
     private ArrayList<Object> data;
     private LifecycleOwner lifecycleOwner;
 
-    public AdapterRecyclerProfileData(Context context, String uid, int dataType, LifecycleOwner lifecycleOwner) {
+    public AdapterRecyclerProfileData(Context context, String uid, int dataType, LifecycleOwner lifecycleOwner, ShimmerFrameLayout shimmer) {
         this.context = context;
         this.uidProfile = uid;
         this.dataType = dataType;
         data = new ArrayList<>();
-
+        this.shimmer = shimmer;
         this.lifecycleOwner = lifecycleOwner;
 
         new TaskLoadUser().execute();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView ivAuthor;
+        ShapeableImageView ivAuthor;
         TextView tvAuthor, tvComment, tvDateCreated, tvCreator;
         Button btnFollow;
         ChipGroup cgTags;
@@ -141,6 +145,7 @@ public class AdapterRecyclerProfileData extends RecyclerView.Adapter<AdapterRecy
                         }
                     });
 
+                    ivAuthor.setShapeAppearanceModel(ShapeAppearanceModel.builder(context, R.style.cornerRoundImageView, R.style.cornerRoundImageView).build());
                     ivAuthor.setImageBitmap(Utils.decodeBase64(temp.getImage()));
                     break;
                 }
@@ -245,6 +250,8 @@ public class AdapterRecyclerProfileData extends RecyclerView.Adapter<AdapterRecy
         protected void onPostExecute(ArrayList<Object> dataCol) {
             //super.onPostExecute(recipes);
             data.addAll(dataCol);
+            shimmer.stopShimmer();
+            shimmer.setVisibility(View.GONE);
             notifyDataSetChanged();
         }
     }

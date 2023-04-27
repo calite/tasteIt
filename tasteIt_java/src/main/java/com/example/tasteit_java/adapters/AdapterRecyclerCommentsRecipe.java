@@ -26,6 +26,7 @@ import com.example.tasteit_java.clases.Comment;
 import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
 import com.example.tasteit_java.fragments.FragmentComments;
+import com.facebook.shimmer.ShimmerFrameLayout;
 
 import java.util.ArrayList;
 
@@ -33,12 +34,14 @@ public class AdapterRecyclerCommentsRecipe extends RecyclerView.Adapter<AdapterR
 
     private Context context;
     private int recipeId;
+    private ShimmerFrameLayout shimmer;
     private ArrayList<Comment> comments;
 
-    public AdapterRecyclerCommentsRecipe(Context context, int recipeId) {
+    public AdapterRecyclerCommentsRecipe(Context context, int recipeId, ShimmerFrameLayout shimmer) {
         this.context = context;
         this.recipeId = recipeId;
         comments = new ArrayList<>();
+        this.shimmer = shimmer;
 
         new TaskLoadRecipeComments().execute();
     }
@@ -169,6 +172,8 @@ public class AdapterRecyclerCommentsRecipe extends RecyclerView.Adapter<AdapterR
             //super.onPostExecute(recipes);
             comments = new ArrayList<>(recipeComments);
             notifyDataSetChanged();
+            shimmer.stopShimmer();
+            shimmer.setVisibility(View.GONE);
         }
     }
 

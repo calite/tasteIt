@@ -8,30 +8,32 @@
     android:fillViewport="true"
     tools:context=".ActivityNewRecipe">
 
-
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/ivRecipePhoto"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginVertical="10dp"
+        android:padding="2dp"
         android:src="@drawable/placeholder"
+        app:shapeAppearanceOverlay="@style/cornerRoundImageView"
+        app:strokeColor="@color/maroon"
+        app:strokeWidth="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <ImageButton
         android:id="@+id/ibPickPhoto"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginStart="100dp"
+        android:layout_marginStart="95dp"
         android:layout_marginTop="116dp"
         android:backgroundTint="@color/maroon"
         android:src="@drawable/ic_change_photo"
         app:layout_constraintStart_toStartOf="@+id/ivRecipePhoto"
         app:layout_constraintTop_toTopOf="parent"
         app:tint="@color/white" />
-
 
     <View
         android:id="@+id/vSeparator"
@@ -68,7 +70,6 @@
             android:text="Ingredients" />
 
     </com.google.android.material.tabs.TabLayout>
-
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/vpPaginator"

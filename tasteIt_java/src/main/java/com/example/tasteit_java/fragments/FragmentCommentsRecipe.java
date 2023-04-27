@@ -18,6 +18,7 @@ import com.example.tasteit_java.adapters.AdapterRecyclerCommentsRecipe;
 import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class FragmentCommentsRecipe extends Fragment {
@@ -25,6 +26,7 @@ public class FragmentCommentsRecipe extends Fragment {
     private int recipeId;
     private RecyclerView rvLvComments;
     private AdapterRecyclerCommentsRecipe adapter;
+    private ShimmerFrameLayout shimmer;
     private ConstraintLayout clComment;
     private static Button btnAddComment, btnEditComment;
 
@@ -55,7 +57,10 @@ public class FragmentCommentsRecipe extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_comments, container, false);
 
-        adapter = new AdapterRecyclerCommentsRecipe(getContext(), recipeId);
+        shimmer = view.findViewById(R.id.shimmer);
+        shimmer.startShimmer();
+
+        adapter = new AdapterRecyclerCommentsRecipe(getContext(), recipeId, shimmer);
         rvLvComments = view.findViewById(R.id.rvLvComments);
         rvLvComments.setAdapter(adapter);
 

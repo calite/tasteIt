@@ -29,6 +29,7 @@ import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.OnItemNavSelectedListener;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.Utils;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
@@ -54,7 +55,7 @@ public class ActivityRecipe extends AppCompatActivity {
     private TextView tvNameCreator;
     private TabLayout tlRecipe;
     private ViewPager2 vpPaginator;
-    private ProgressBar pgRecipe;
+    private ShimmerFrameLayout shimmer;
     private FloatingActionButton bLike;
     private int recipeId;
     private String token;
@@ -83,7 +84,8 @@ public class ActivityRecipe extends AppCompatActivity {
         tvNameCreator = findViewById(R.id.tvNameCreator);
         tlRecipe = findViewById(R.id.tlRecipe);
         vpPaginator = findViewById(R.id.vpPaginator);
-        pgRecipe = findViewById(R.id.pgRecipe);
+        shimmer = findViewById(R.id.shimmer);
+        shimmer.startShimmer();
 
         //recogemos la receta pasada como parametro y el uid
         if(getIntent().getExtras() != null) {
@@ -339,17 +341,13 @@ public class ActivityRecipe extends AppCompatActivity {
             bLike.setRotationX(180);
         }else{bLike.setRotationX(0);}
 
-        pgRecipe.setVisibility(View.GONE);
-
+        shimmer.stopShimmer();
+        shimmer.hideShimmer();
     }
 
     private void bringRecipe() {
-        //olvidamos asynctask y metemos lifecycle, que es mas actual y esta mejor optimizado
-
         RecipeLoader recipesLoader = new RecipeLoader(ApiClient.getInstance().getService());
-
         recipesLoader.getRecipe().observe(this, this::onRecipeLoaded);
-
         recipesLoader.loadRecipe();
     }
 

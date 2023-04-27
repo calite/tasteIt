@@ -27,4 +27,7 @@
         <item name="android:fontFamily">@font/comfortaa_medium</item>
         <item name="android:includeFontPadding">false</item>
     </style>
+    <style name="HintTabItem" parent="TabItem">
+        <item name="android:textColor">@color/silver</item>
+    </style>
 </resources>

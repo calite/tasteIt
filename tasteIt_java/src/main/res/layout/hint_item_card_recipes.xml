@@ -29,8 +29,8 @@
             app:strokeWidth="2dp" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:background="@drawable/s_oval"
             android:backgroundTint="@color/gray"
             card_view:layout_constraintBottom_toBottomOf="@+id/ivPhotoRecipe"
@@ -41,9 +41,9 @@
             card_view:layout_constraintVertical_bias="0.95">
 
             <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:background="@drawable/ic_star"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:background="@drawable/dificultad"
                 android:backgroundTint="@color/silver"
                 card_view:layout_constraintStart_toStartOf="parent"
                 card_view:layout_constraintBottom_toBottomOf="parent"
