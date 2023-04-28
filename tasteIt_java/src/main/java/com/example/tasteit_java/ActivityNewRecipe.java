@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.TableLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -81,6 +82,8 @@ public class ActivityNewRecipe extends AppCompatActivity {
 
     private ApiClient apiClient;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,9 +128,6 @@ public class ActivityNewRecipe extends AppCompatActivity {
             }
         });
 
-        //ñapa
-        tlRecipe.selectTab(tlRecipe.getTabAt(2));
-        tlRecipe.selectTab(tlRecipe.getTabAt(0));
 
         //seleccionar foto
         ibPickPhoto = findViewById(R.id.ibPickPhoto);
@@ -266,7 +266,11 @@ public class ActivityNewRecipe extends AppCompatActivity {
         EditText etIngredientName = FragmentIngredientsNewRecipe.getEtIngredientName();
         if(FragmentIngredientsNewRecipe.getIngredients().size() == 0) {
             status = false;
-            etIngredientName.setError("");
+            if (etIngredientName == null) {
+                tlRecipe.getTabAt(2).select();
+            }else {
+                etIngredientName.setError("");
+            }
         }
         return status;
     }
@@ -470,7 +474,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
     }
 
     public void editRecipe() {
-
+        Toast.makeText(this, "EDITING", Toast.LENGTH_SHORT).show();
         apiClient = ApiClient.getInstance();
 
         String name = FragmentInfoNewRecipe.getRecipeName().getText().toString();

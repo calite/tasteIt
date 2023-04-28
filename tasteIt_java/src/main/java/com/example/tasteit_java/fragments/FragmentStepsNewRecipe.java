@@ -71,7 +71,7 @@ public class FragmentStepsNewRecipe extends Fragment {
     public static void setSteps(ArrayList<String> steps){
         for(String step:steps){
             listSteps.add(step);
-            adapter.notifyDataSetChanged();
+           // adapter.notifyDataSetChanged();
         }
     }
     public static ArrayList<String> getSteps() {
