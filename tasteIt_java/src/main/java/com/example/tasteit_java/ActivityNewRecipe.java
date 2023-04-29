@@ -386,7 +386,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
         FragmentInfoNewRecipe.setTags(recipe.getTags());
         //STEPS
         FragmentStepsNewRecipe.setSteps(recipe.getSteps());
-        //INGREDIENTS TODO
+        //INGREDIENTS
         FragmentIngredientsNewRecipe.setIngredients(recipe.getIngredients());
 
     }
@@ -453,6 +453,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
                     if (response.isSuccessful()) {
                         //AQUI DEVOLVEMOS AL MAIN!
                         Toast.makeText(ActivityNewRecipe.this, "Good!", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(ActivityNewRecipe.this, ActivityMain.class));
                     } else {
                         // Handle the error
                         Log.e("API_ERROR", "Response error: " + response.code() + " " + response.message());
@@ -525,6 +526,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
                     if (response.isSuccessful()) {
                         //AQUI DEVOLVEMOS AL MAIN!
                         Toast.makeText(ActivityNewRecipe.this, "Good!", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(ActivityNewRecipe.this, ActivityMain.class));
                     } else {
                         // Handle the error
                         Log.e("API_ERROR", "Response error: " + response.code() + " " + response.message());
