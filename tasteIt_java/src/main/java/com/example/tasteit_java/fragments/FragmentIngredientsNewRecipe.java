@@ -74,6 +74,27 @@ public class FragmentIngredientsNewRecipe extends Fragment {
         });
 
 
+        if(loadRecipe){
+            for(String s:ingredients){
+                Chip chip = new Chip(getContext());
+                chip.setText(s);
+                chip.setCloseIconResource(R.drawable.ic_close);
+                chip.setCloseIconVisible(true);
+                chip.setChipBackgroundColor(ColorStateList.valueOf(getResources().getColor(R.color.maroon)));
+                chip.setTextColor(Color.WHITE);
+                chip.setOnCloseIconClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ingredients.remove(s);
+                        cgIngredients.removeView(chip);
+                    }
+                });
+                cgIngredients.addView(chip);
+            }
+
+
+        }
+
         return view;
     }
 
