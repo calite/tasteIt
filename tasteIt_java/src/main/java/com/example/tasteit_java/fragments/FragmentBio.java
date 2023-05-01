@@ -103,7 +103,7 @@ public class FragmentBio extends Fragment {
         }
         @Override
         protected User doInBackground(User... hashMaps) {
-            return new BdConnection().retrieveUserbyUid(uidProfile);
+            return new BdConnection().retrieveAllUserbyUid(uidProfile);
         }
         @Override
         protected void onPostExecute(User userBio) {

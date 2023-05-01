@@ -1,10 +1,13 @@
 package com.example.tasteit_java;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -27,6 +30,7 @@ import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
 import com.example.tasteit_java.fragments.FragmentComments;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
@@ -34,6 +38,12 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
+
+import java.util.UUID;
 
 public class ActivityEditProfile extends AppCompatActivity {
 
@@ -50,10 +60,8 @@ public class ActivityEditProfile extends AppCompatActivity {
     private BdConnection connection;
 
     private User user;
-
-    private Bitmap newProfileImage;
-
-    private Uri filePath;
+    private Uri newFilePath;
+    private Uri lastFileUrl;
 
     private ConstraintLayout constraintLayout, clPassword;
 
@@ -67,6 +75,8 @@ public class ActivityEditProfile extends AppCompatActivity {
 
         initializeViews();
         retrieveData();
+
+        //etUsername.setText(FirebaseAuth.getInstance().getCurrentUser().getIdToken(false).getResult().getToken());
 
         //Menu superior
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -105,9 +115,10 @@ public class ActivityEditProfile extends AppCompatActivity {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(saveData()) {
-                    finish();
-                }
+                uploadImage(newFilePath);
+                //if(saveData()) {
+                  //  finish();
+                //}
             }
         });
     }
@@ -159,7 +170,7 @@ public class ActivityEditProfile extends AppCompatActivity {
     private void retrieveData() {
         connection = new BdConnection();
 
-        user = connection.retrieveUserbyUid(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        user = connection.retrieveAllUserbyUid(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         tvUsername.setText(user.getUsername());
         etUsername.setText(user.getUsername());
@@ -167,18 +178,21 @@ public class ActivityEditProfile extends AppCompatActivity {
         etBiography.setText(user.getBiography());
         etEmail.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
 
-        Bitmap bitmap = Utils.decodeBase64(user.getImgProfile());
-        ivProfilePhoto.setImageBitmap(bitmap);
+        //Bitmap bitmap = Utils.decodeBase64(user.getImgProfile());
+        Picasso.with(this)
+                .load("https://firebasestorage.googleapis.com/v0/b/tasteit-java.appspot.com/o/images%2F035d70df-1048-4c15-ba6a-c4d81d44a026?alt=media&token=d2c0ebf1-3b4e-40a4-9162-94fbc2070008")
+                .into(ivProfilePhoto);
 
-        newProfileImage = bitmap;
+        lastFileUrl = Uri.parse(user.getImgProfile());
+        newFilePath = null;
     }
     //END Recogida de datos
 
     //GUARDADO DE DATOS
-    private boolean saveData() {
+    private boolean saveData(Uri imgUrl) {
         connection = new BdConnection();
 
-        String imagenB64 = Utils.encodeTobase64(newProfileImage);
+        String imagenB64 = (imgUrl != null ? imgUrl.toString() : lastFileUrl.toString());
         String username = etUsername.getText().toString();
         String bio = etBiography.getText().toString();
         String oldPassword = etOldPassword.getText().toString();
@@ -225,14 +239,20 @@ public class ActivityEditProfile extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 101) {
-            Utils.onActivityResult(this, requestCode, resultCode, data, filePath, ivProfilePhoto);
+            newFilePath = data.getData();
+            Utils.onActivityResult(this, requestCode, resultCode, data, newFilePath, ivProfilePhoto);
         }
-        if(requestCode == 202) {
+        /*if(requestCode == 202) {
             if(data.getExtras() != null) {
+                Uri uri = data.getData();
+                Toast.makeText(this, "ahora esta?", Toast.LENGTH_SHORT).show();
+
+                newFilePath = uri;
+
                 Bitmap photo = (Bitmap) data.getExtras().get("data");
                 ivProfilePhoto.setImageBitmap(photo);
             }
-        }
+        }*/
     }
     //END PHOTO PICKER
 
@@ -260,5 +280,35 @@ public class ActivityEditProfile extends AppCompatActivity {
         startActivity(new Intent(this, ActivityLogin.class));
     }
     //END LOGOUT
+
+    private void uploadImage(Uri filePath) {
+
+        if (filePath != null) {
+            final StorageReference ref = FirebaseStorage.getInstance().getReference().child("images/" + UUID.randomUUID().toString());
+            UploadTask uploadTask = ref.putFile(filePath);
+            Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
+                    }
+
+                    // Continue with the task to get the download URL
+                    return ref.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()) {
+                        Uri downloadUri = task.getResult();
+                        saveData(downloadUri);
+                    } else {
+                        // Handle failures
+                        // ...
+                    }
+                }
+            });
+        }
+    }
 
 }

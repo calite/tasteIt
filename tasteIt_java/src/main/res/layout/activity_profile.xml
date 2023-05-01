@@ -12,7 +12,7 @@
     <com.facebook.shimmer.ShimmerFrameLayout
         android:id="@+id/shimmer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -23,6 +23,10 @@
                 android:id="@+id/ivUserPicture"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
+
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+
                 android:padding="2dp"
                 app:layout_constraintBottom_toTopOf="@+id/vSeparator"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -56,7 +60,7 @@
                 android:background="@drawable/btn_follow"
                 android:enabled="false"
                 android:text="Follow"
-                android:textSize="11dp"
+                android:textSize="11sp"
                 android:visibility="invisible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.42"

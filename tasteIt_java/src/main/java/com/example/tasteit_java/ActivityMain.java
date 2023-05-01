@@ -3,6 +3,8 @@ package com.example.tasteit_java;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
@@ -33,6 +35,8 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +44,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class ActivityMain extends AppCompatActivity {
 
@@ -120,8 +125,8 @@ public class ActivityMain extends AppCompatActivity {
 
         getMenuInflater().inflate(R.menu.main_menu, menu);
 
-        Bitmap originalBitmap = Utils.decodeBase64(new BdConnection().retrieveUserbyUid(token).getImgProfile());
-        BitmapDrawable roundedBitmapDrawable = new BitmapDrawable(getResources(), Utils.getRoundBitmapWithImage(originalBitmap));
+        Bitmap bitmap = Utils.uriToBitmap(this, "https://firebasestorage.googleapis.com/v0/b/tasteit-java.appspot.com/o/images%2F035d70df-1048-4c15-ba6a-c4d81d44a026?alt=media&token=d2c0ebf1-3b4e-40a4-9162-94fbc2070008");
+        BitmapDrawable roundedBitmapDrawable = new BitmapDrawable(getResources(), Utils.getRoundBitmapWithImage(bitmap));
         menu.getItem(0).setIcon(roundedBitmapDrawable);
 
         BottomNavigationView fcMainMenu = findViewById(R.id.fcMainMenu);

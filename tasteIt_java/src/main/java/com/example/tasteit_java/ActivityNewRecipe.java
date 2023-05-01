@@ -90,7 +90,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
         setContentView(R.layout.activity_new_recipe);
 
 
-         app = new BdConnection();  //Instanciamos la conexion
+        app = new BdConnection();  //Instanciamos la conexion
 
         token = Utils.getUserToken();
 

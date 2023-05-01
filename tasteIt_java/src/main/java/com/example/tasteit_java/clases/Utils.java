@@ -3,6 +3,7 @@ package com.example.tasteit_java.clases;
 import static androidx.core.app.ActivityCompat.startActivityForResult;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,6 +13,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.net.Uri;
+import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.widget.ImageView;
@@ -21,7 +23,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileDescriptor;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,7 +38,7 @@ public class Utils {
     private static final int TAKE_PICTURE = 202;
 
     //base64
-    public static String encodeTobase64(Bitmap image){
+    public static String encodeTobase64(Bitmap image) {
         System.gc();  //For memory efficiency
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.JPEG, 50, baos);
@@ -46,6 +52,7 @@ public class Utils {
         byte[] decodedBytes = Base64.decode(input, 0);
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
+
     //validate Email
     public static boolean isEmail(String email) {
 
@@ -54,6 +61,7 @@ public class Utils {
 
         return mat.matches();
     }
+
     //selector de fotos
     public static void selectImageFromMedia(Activity activity) {
         Intent intent = new Intent();
@@ -74,13 +82,8 @@ public class Utils {
                     try {
                         //creamos imagen
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(activity.getApplicationContext().getContentResolver(), data.getData());
-                        //almacenamos el path
-                        filePath = data.getData();
                         //cambiamos imagen del perfil
                         ivRecipePhoto.setImageBitmap(bitmap);
-                        //subimos la imagen a firebase
-                        //uploadImage(); DESCOMENTAR!
-                        //el upload se debe hacer en el save
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -122,7 +125,7 @@ public class Utils {
         Matrix matrix = new Matrix();
         matrix.postScale(scaleFactor, scaleFactor);
 
-        Bitmap bitmap = Bitmap.createBitmap(originalBitmap, 0,0, originalBitmap.getWidth(), originalBitmap.getHeight(), matrix, true);
+        Bitmap bitmap = Bitmap.createBitmap(originalBitmap, 0, 0, originalBitmap.getWidth(), originalBitmap.getHeight(), matrix, true);
 
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
@@ -151,4 +154,18 @@ public class Utils {
         return output;
     }
 
+    public static Bitmap uriToBitmap(Context context, String selectedFileUri) {
+        try {
+            URL url = new URL(selectedFileUri);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+        } catch (IOException e) {
+            // Log exception
+            return null;
+        }
+    }
 }

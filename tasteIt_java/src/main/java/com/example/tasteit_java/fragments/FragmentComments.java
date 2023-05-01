@@ -162,7 +162,7 @@ public class FragmentComments extends Fragment {
             clComment.setVisibility(View.VISIBLE);
             clComment.setClickable(true);
 
-            User user = new BdConnection().retrieveUserbyUid(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            User user = new BdConnection().retrieveAllUserbyUid(FirebaseAuth.getInstance().getCurrentUser().getUid());
             Bitmap bitmap = Utils.decodeBase64(user.getImgProfile());
             ivMyPhoto.setImageBitmap(bitmap);
 

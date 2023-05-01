@@ -78,6 +78,8 @@
                 android:layout_width="75dp"
                 android:layout_height="75dp"
                 android:padding="2dp"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:shapeAppearanceOverlay="@style/roundedImageView"

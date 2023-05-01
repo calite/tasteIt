@@ -65,7 +65,7 @@ public class AdapterFragmentComments extends BaseAdapter {
         TextView tvComment = view.findViewById(R.id.tvComment);
         LinearLayout llComment = view.findViewById(R.id.llComment);
 
-        User user = new BdConnection().retrieveUserbyUid(comments.get(i).getTokenUser());
+        User user = new BdConnection().retrieveAllUserbyUid(comments.get(i).getTokenUser());
 
         if(comments.get(i).getTokenUser().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
             llComment.setOnLongClickListener(new View.OnLongClickListener() {

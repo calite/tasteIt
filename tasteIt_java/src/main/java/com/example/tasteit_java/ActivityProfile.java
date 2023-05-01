@@ -2,6 +2,8 @@ package com.example.tasteit_java;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -10,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -25,6 +28,9 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import org.neo4j.driver.Query;
 import org.neo4j.driver.Result;
@@ -187,9 +193,11 @@ public class ActivityProfile extends AppCompatActivity {
     private void retrieveData(String uid) {
 
         tvUserName.setText(userProfile.getUsername());
+        //ivUserPicture.setImageBitmap(Utils.uriToBitmap(getApplicationContext(), userProfile.getImgProfile()));
 
-        Bitmap bitmap = Utils.decodeBase64(userProfile.getImgProfile());
-        ivUserPicture.setImageBitmap(bitmap);
+        Picasso.with(this)
+                .load("https://firebasestorage.googleapis.com/v0/b/tasteit-java.appspot.com/o/images%2F035d70df-1048-4c15-ba6a-c4d81d44a026?alt=media&token=d2c0ebf1-3b4e-40a4-9162-94fbc2070008")
+                .into(ivUserPicture);
 
         Session session = connection.openSession();
 

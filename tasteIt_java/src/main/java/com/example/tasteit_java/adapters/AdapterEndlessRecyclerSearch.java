@@ -24,6 +24,7 @@ import com.example.tasteit_java.clases.OnLoadMoreListener;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -36,12 +37,14 @@ public class AdapterEndlessRecyclerSearch extends Adapter {
     private static final int TYPE_FOOTER = 2;
     private int visibleThreshold = 4;
     private int lastVisibleItem, totalItemCount, firstVisibleItem;
+    private RecyclerView recyclerView;
     private boolean loading;
     private OnLoadMoreListener onLoadMoreListener;
 
     public AdapterEndlessRecyclerSearch(RecyclerView recyclerView, ArrayList<Object> dataList, String search) {
         this.search = search;
         this.dataList = new ArrayList<>(dataList);
+        this.recyclerView = recyclerView;
 
         /*if (recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
 
@@ -192,6 +195,9 @@ public class AdapterEndlessRecyclerSearch extends Adapter {
 
         void bindRow(@NonNull User user) {
             tvNameUser.setText(user.getUsername());
+            /*Picasso.with(recyclerView.getContext())
+                    .load(user.getImgProfile())
+                    .into(ivPhotoUser);*/
             Bitmap bitmap = Utils.decodeBase64(user.getImgProfile());
             ivPhotoUser.setImageBitmap(bitmap);
             token = user.getUid();

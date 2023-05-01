@@ -92,7 +92,7 @@ public class BdConnection implements AutoCloseable {
 
     }*/
 
-    public void register(final String username, final String token) {
+    public void register(final String username, final String token) { //NO ESTA
         // To learn more about the Cypher syntax, see https://neo4j.com/docs/cypher-manual/current/
         // The Reference Card is also a good resource for keywords https://neo4j.com/docs/cypher-refcard/current/
         try {
@@ -114,7 +114,7 @@ public class BdConnection implements AutoCloseable {
         }
     }
 
-    public void createRecipe(Recipe recipe, String token){
+    public void createRecipe(Recipe recipe, String token){ //SI ESTA
 
         Recipe r = recipe;
         //creacion receta
@@ -173,7 +173,7 @@ public class BdConnection implements AutoCloseable {
     }
 
     //temporal para el main
-    public ArrayList<Recipe> retrieveAllRecipes() {
+    public ArrayList<Recipe> retrieveAllRecipes() { //SI ESTA
 
         ArrayList<Recipe> listRecipes = new ArrayList<>();
 
@@ -227,7 +227,7 @@ public class BdConnection implements AutoCloseable {
         }
     }
 
-    public ArrayList<Recipe> retrieveAllRecipesbyUid(String uid) {
+    public ArrayList<Recipe> retrieveAllRecipesbyUid(String uid) { //SI ESTA
 
         ArrayList<Recipe> listRecipes = new ArrayList<>();
 
@@ -283,7 +283,7 @@ public class BdConnection implements AutoCloseable {
         }
     }
 
-    public ArrayList<Comment> retrieveCommentsbyUid(String uid) {
+    public ArrayList<Comment> retrieveCommentsbyUid(String uid) { //NO ESTA
 
         ArrayList<Comment> comments = new ArrayList<>();
 
@@ -315,7 +315,7 @@ public class BdConnection implements AutoCloseable {
     }
 
     //Metodo para traer TODOS los datos de un usuario
-    public User retrieveAllUserbyUid(String uid) {
+    public User retrieveAllUserbyUid(String uid) { //NO ESTA
 
         User user = null;
 
@@ -346,38 +346,7 @@ public class BdConnection implements AutoCloseable {
         }
     }
 
-    public User retrieveUserbyUid(String uid) {
-
-        User user = null;
-
-        try {
-            //Iniciamos una sesion con la bd (el driver se configura en el constructor)
-            Session session = openSession();
-            //Creamos la sentencia que se ejecutara y guardamos el resultado
-            Query query = new Query("MATCH (n:User) WHERE n.token = '" + uid + "' RETURN n.username, n.biography, n.imgProfile;");
-            Result result = session.run(query);
-            while (result.hasNext()) //Mientras haya registros..
-            {
-                Record record = result.next(); //Guardamos el registro
-                String name = record.get(0).asString();
-                String biography = record.get(1).asString();
-                String imgProfile = record.get(2).asString();
-                user = new User(name, biography, imgProfile);
-            }
-
-            closeSession(session); //Cerramos la sesión
-            return user; //Retornamos el valor
-            // You should capture any errors along with the query and data for traceability
-        } catch (Neo4jException ex) {
-            LOGGER.log(Level.SEVERE, " raised an exception", ex);
-            throw ex;
-        } catch (NoSuchRecordException ex) {
-            LOGGER.log(Level.SEVERE, "No record found raised an exception", ex);
-            throw ex;
-        }
-    }
-
-    public String retrieveNameCurrentUser(String uid) {
+    public String retrieveNameCurrentUser(String uid) { //NO ES NECESARIO
 
         String userName = null;
 
@@ -406,7 +375,7 @@ public class BdConnection implements AutoCloseable {
 
     }
 
-    public void commentRecipe(int rid, String uid, String comment, float rating) {
+    public void commentRecipe(int rid, String uid, String comment, float rating) { //NO ESTA
 
         try {
             //Iniciamos una sesion con la bd
@@ -431,7 +400,7 @@ public class BdConnection implements AutoCloseable {
 
     }
 
-    public void reportRecipe(int rid, String uid, String comment) {
+    public void reportRecipe(int rid, String uid, String comment) { //NO ESTA
 
         try {
             //Iniciamos una sesion con la bd
@@ -456,7 +425,7 @@ public class BdConnection implements AutoCloseable {
 
     }
 
-    public void commentUser(String senderId, String receiverId, String comment) {
+    public void commentUser(String senderId, String receiverId, String comment) { //NO ESTA
         try {
             //Iniciamos una sesion con la bd
             Session session = openSession();
@@ -479,7 +448,7 @@ public class BdConnection implements AutoCloseable {
         }
     }
 
-    public boolean isLiked(int rid, String uid){
+    public boolean isLiked(int rid, String uid){ //NO ESTA
         try {
             //Iniciamos una sesion con la bd
             Session session = openSession();
@@ -506,7 +475,7 @@ public class BdConnection implements AutoCloseable {
         }
     }
 
-    public boolean likeRecipe(int rid, String uid) {
+    public boolean likeRecipe(int rid, String uid) { //NO ESTA
 
         try {
             //Iniciamos una sesion con la bd
@@ -545,7 +514,7 @@ public class BdConnection implements AutoCloseable {
         }
     }
 
-    public ArrayList<Recipe> recipesLiked(String uid) {
+    public ArrayList<Recipe> recipesLiked(String uid) { //SI ESTA
 
         //MATCH (u:User)-[:Liked]->(r:Recipe)-[:Created]-(u1:User) WHERE u.token = '' Return u1.username, r, ID(r)
 
@@ -604,7 +573,7 @@ public class BdConnection implements AutoCloseable {
 
     }
 
-    public ArrayList<Recipe> recipesFollowed(String uid) {
+    public ArrayList<Recipe> recipesFollowed(String uid) { //SI ESTA
 
         //MATCH (u1:User)-[f:Following]->(u2:User)-[c:Created]->(r:Recipe) WHERE  u1.token = 'xmg10sMQgMS4392zORWGW7TQ1Qg2' Return r
 
@@ -662,7 +631,7 @@ public class BdConnection implements AutoCloseable {
 
     }
 
-    public ArrayList<Comment> getCommentsOnRecipe(int rid) {
+    public ArrayList<Comment> getCommentsOnRecipe(int rid) { //NO ESTA
 
         ArrayList<Comment> listComments = new ArrayList<>();
 
@@ -698,7 +667,7 @@ public class BdConnection implements AutoCloseable {
 
     }
 
-    public void changeDataUser(String uid, String username, String imgProfile, String bio) {
+    public void changeDataUser(String uid, String username, String imgProfile, String bio) { //NO ESTA
         //MATCH (n:User) WHERE n.token = 'jj85oho2sXgPMNuQKkTORWs8gVF2' SET n.username = 'prueba'
         try {
             //Iniciamos una sesion con la bd
@@ -718,7 +687,7 @@ public class BdConnection implements AutoCloseable {
         }
     }
 
-    public void followUser(String uidCurrent, String uidUser) {
+    public void followUser(String uidCurrent, String uidUser) { //NO ESTA
         // MATCH (a:User {token: 'x'}), (b:User {token: 'y'}) MERGE (a)-[following:Following {dateCreated:'" + today + "'}]->(b) //El usuario a sigue al usuario b
         try {
             //Iniciamos una sesion con la bd
@@ -742,7 +711,7 @@ public class BdConnection implements AutoCloseable {
         }
     }
 
-    public void unFollowUser(String uidCurrent, String uidUser) {
+    public void unFollowUser(String uidCurrent, String uidUser) { //NO ESTA
         //MATCH (a:User {username:"prueba"})-[following:Following]->(b:User{username:"verito"}) DELETE following
         try {
             //Iniciamos una sesion con la bd
@@ -762,7 +731,7 @@ public class BdConnection implements AutoCloseable {
         }
     }
 
-    public boolean isFollowing(String uidCurrent, String uidUser) {
+    public boolean isFollowing(String uidCurrent, String uidUser) { //NO ESTA
         //MATCH (a:User {token:'" + uidCurrent + "'}), (b:User {token:'" + uidUser + "'}) RETURN exists((a)-[:Following]->(b))
         try {
             //Iniciamos una sesion con la bd
@@ -782,7 +751,7 @@ public class BdConnection implements AutoCloseable {
         }
     }
 
-    public ArrayList<User> retrieveFollowersByUid(String uid) {
+    public ArrayList<User> retrieveFollowersByUid(String uid) { //NO ESTA
         ArrayList<User> users = new ArrayList<>();
 
         try {
@@ -814,7 +783,7 @@ public class BdConnection implements AutoCloseable {
         }
     }
 
-    public ArrayList<User> retrieveFollowingByUid(String uid) {
+    public ArrayList<User> retrieveFollowingByUid(String uid) { //NO ESTA
         ArrayList<User> users = new ArrayList<>();
 
         try {
@@ -847,7 +816,7 @@ public class BdConnection implements AutoCloseable {
     }
 
 
-    public void editComment(int idComment, String comment) {
+    public void editComment(int idComment, String comment) { //NO ESTA
         //MATCH (:User)-[c:Commented]->(:User) WHERE ID(c) = 24 SET c.comment = "maquina!2";
         try {
             //Iniciamos una sesion con la bd
@@ -867,7 +836,7 @@ public class BdConnection implements AutoCloseable {
         }
     }
 
-    public void removeComment(int idComment) {
+    public void removeComment(int idComment) { //NO ESTA
         //MATCH (:User)-[c:Commented]->(:User) WHERE ID(c) = " + idComment + " DELETE c;
         try {
             //Iniciamos una sesion con la bd

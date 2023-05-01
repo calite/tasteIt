@@ -70,7 +70,7 @@ public class AdapterRecyclerCommentsRecipe extends RecyclerView.Adapter<AdapterR
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         int pos = position;
-        User user = new BdConnection().retrieveUserbyUid(comments.get(position).getTokenUser());
+        User user = new BdConnection().retrieveAllUserbyUid(comments.get(position).getTokenUser());
         String token = Utils.getUserToken();
 
         /*PopupMenu.OnMenuItemClickListener popupListener = new PopupMenu.OnMenuItemClickListener() {

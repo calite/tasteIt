@@ -129,7 +129,7 @@ public class ActivitySearch extends AppCompatActivity {
         menu.getItem(1).setVisible(false);
         menu.getItem(2).setVisible(false);
 
-        Bitmap originalBitmap = Utils.decodeBase64(new BdConnection().retrieveUserbyUid(Utils.getUserToken()).getImgProfile());
+        Bitmap originalBitmap = Utils.uriToBitmap(getApplicationContext(),"https://firebasestorage.googleapis.com/v0/b/tasteit-java.appspot.com/o/images%2F035d70df-1048-4c15-ba6a-c4d81d44a026?alt=media&token=d2c0ebf1-3b4e-40a4-9162-94fbc2070008");
         BitmapDrawable roundedBitmapDrawable = new BitmapDrawable(getResources(), Utils.getRoundBitmapWithImage(originalBitmap));
         menu.getItem(0).setIcon(roundedBitmapDrawable);
 
