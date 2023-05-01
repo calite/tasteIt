@@ -163,28 +163,28 @@ public class FragmentMyBook extends Fragment {
                     break;
                 }
                 case 1: {
-                    apiRequests.getRecipesLiked(token).enqueue(new Callback<List<RecipeId_Recipe>>() {
+                    apiRequests.getRecipesLiked(token).enqueue(new Callback<List<RecipeId_Recipe_User>>() {
                         @Override
-                        public void onResponse(Call<List<RecipeId_Recipe>> call, Response<List<RecipeId_Recipe>> response) {
+                        public void onResponse(Call<List<RecipeId_Recipe_User>> call, Response<List<RecipeId_Recipe_User>> response) {
                             if (response.isSuccessful()) {
-                                List<RecipeId_Recipe> recipesApi = response.body();
+                                List<RecipeId_Recipe_User> recipesApi = response.body();
                                 List<Recipe> recipes = new ArrayList<>();
 
                                 //tratamos los datos
-                                for (RecipeId_Recipe recipeApi : recipesApi) {
+                                for (RecipeId_Recipe_User recipeApi : recipesApi) {
                                     Recipe recipe = new Recipe(
                                             recipeApi.getRecipeDetails().getName(),
                                             recipeApi.getRecipeDetails().getDescription(),
                                             (ArrayList<String>) recipeApi.getRecipeDetails().getSteps(),
                                             recipeApi.getRecipeDetails().getDateCreated(),
                                             recipeApi.getRecipeDetails().getDifficulty(),
-                                            "kek",
+                                            recipeApi.getUser().getUsername(),
                                             recipeApi.getRecipeDetails().getImage(),
                                             recipeApi.getRecipeDetails().getCountry(),
                                             (ArrayList<String>) recipeApi.getRecipeDetails().getTags(),
                                             (ArrayList<String>) recipeApi.getRecipeDetails().getIngredients(),
                                             recipeApi.getRecipeId(),
-                                            "kek"
+                                            recipeApi.getUser().getToken()
                                     );
                                     recipes.add(recipe);
                                 }
@@ -194,7 +194,7 @@ public class FragmentMyBook extends Fragment {
                             }
                         }
                         @Override
-                        public void onFailure(Call<List<RecipeId_Recipe>> call, Throwable t) {
+                        public void onFailure(Call<List<RecipeId_Recipe_User>> call, Throwable t) {
                             // Hubo un error en la solicitud
                             Toast.makeText(getContext(), "Failed to load data", Toast.LENGTH_SHORT).show();
                         }
