@@ -1,7 +1,9 @@
 package com.example.tasteit_java.ApiService;
 
+import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.request.EditRecipeRequest;
 import com.example.tasteit_java.request.RecipeRequest;
+import com.google.protobuf.Api;
 
 import java.util.List;
 
@@ -33,6 +35,9 @@ public interface ApiRequests {
 
     @GET("user/followers_recipes/{token}")
     Call<List<RecipeId_Recipe_User>> getRecipesFollowed(@Path("token") String token); //devuelve recetas de tus seguidores
+
+    @GET("user/bytoken/{token}")
+    Call<ApiUser> getUserByToken(@Path("token") String token); //Devuelve el usuario por uid
 
     @Headers("Content-Type: application/json")
     @POST("/recipe/create")
