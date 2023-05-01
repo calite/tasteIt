@@ -19,6 +19,7 @@ import com.example.tasteit_java.ApiService.RecipeId_Recipe_User;
 import com.example.tasteit_java.R;
 import com.example.tasteit_java.adapters.AdapterRecyclerPhotosProfile;
 import com.example.tasteit_java.clases.Recipe;
+import com.example.tasteit_java.clases.Utils;
 import com.facebook.shimmer.ShimmerFrameLayout;
 
 import java.util.ArrayList;
@@ -42,6 +43,7 @@ public class FragmentPhotos extends Fragment {
     private RecyclerView rvGridPhotos;
     private AdapterRecyclerPhotosProfile adapter;
     private ShimmerFrameLayout shimmer;
+    private String accessToken;
 
     // TODO: Rename and change types of parameters
     //private ArrayList<Recipe> recipes;
@@ -84,6 +86,8 @@ public class FragmentPhotos extends Fragment {
         if (getArguments() != null) {
             uidParam = getArguments().getString(ARG_PARAM1);
             //mParam2 = getArguments().getString(ARG_PARAM2);
+
+            accessToken = Utils.getUserAcessToken();
         }
     }
 
@@ -171,8 +175,8 @@ public class FragmentPhotos extends Fragment {
     }
 
     private void bringRecipes() {
-        RecipesLoader recipesLoader = new RecipesLoader(ApiClient.getInstance().getService());
-        recipesLoader.getRecipes().observe(this, this::onRecipesLoaded);
+        RecipesLoader recipesLoader = new RecipesLoader(ApiClient.getInstance(accessToken).getService());
+        recipesLoader.getRecipes().observe(getViewLifecycleOwner(), this::onRecipesLoaded);
         recipesLoader.loadRecipes();
     }
 }
