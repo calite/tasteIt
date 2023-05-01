@@ -56,11 +56,15 @@ public class ActivityMain extends AppCompatActivity {
     private RecyclerView rvRecipes;
     private String token;
 
+    private String accessToken;
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        accessToken = Utils.getUserAcessToken();
 
         rvRecipes = findViewById(R.id.rvRecipes);
         bCreate = findViewById(R.id.bCreate);
@@ -246,7 +250,7 @@ public class ActivityMain extends AppCompatActivity {
 
     private void bringRecipes() {
         //olvidamos asynctask y metemos lifecycle, que es mas actual y esta mejor optimizado
-        RecipesLoader recipesLoader = new RecipesLoader(ApiClient.getInstance().getService());
+        RecipesLoader recipesLoader = new RecipesLoader(ApiClient.getInstance(accessToken).getService());
         recipesLoader.getRecipes().observe(this, this::onRecipesLoaded);
         recipesLoader.loadRecipes();
     }

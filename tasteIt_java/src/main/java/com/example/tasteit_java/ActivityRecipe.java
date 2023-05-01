@@ -65,12 +65,16 @@ public class ActivityRecipe extends AppCompatActivity {
 
     String creatorToken = "";
 
+    private String accessToken;
+
     boolean seeEdit = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe);
+
+        accessToken = Utils.getUserAcessToken();
 
         BottomNavigationView fcMainMenu = findViewById(R.id.fcMainMenu);
         fcMainMenu.setSelectedItemId(R.id.bHome);
@@ -346,7 +350,7 @@ public class ActivityRecipe extends AppCompatActivity {
     }
 
     private void bringRecipe() {
-        RecipeLoader recipesLoader = new RecipeLoader(ApiClient.getInstance().getService());
+        RecipeLoader recipesLoader = new RecipeLoader(ApiClient.getInstance(accessToken).getService());
         recipesLoader.getRecipe().observe(this, this::onRecipeLoaded);
         recipesLoader.loadRecipe();
     }

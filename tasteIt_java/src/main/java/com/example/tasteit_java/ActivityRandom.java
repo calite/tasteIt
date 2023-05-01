@@ -42,10 +42,14 @@ public class ActivityRandom extends AppCompatActivity {
     private ArrayList<Integer> lastIdRecipes;
     private AdapterFragmentRandom adapter;
     private ViewPager2 vpRandom;
+    private String accessToken;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_random);
+
+        accessToken = Utils.getUserAcessToken();
 
         BottomNavigationView fcMainMenu = findViewById(R.id.fcMainMenu);
         fcMainMenu.setSelectedItemId(R.id.bRandom);
@@ -183,7 +187,7 @@ public class ActivityRandom extends AppCompatActivity {
     }
 
     private void bringRecipe() {
-        RecipeLoader recipesLoader = new RecipeLoader(ApiClient.getInstance().getService());
+        RecipeLoader recipesLoader = new RecipeLoader(ApiClient.getInstance(accessToken).getService());
         recipesLoader.getRecipe().observe(this, this::onRecipeLoaded);
         recipesLoader.loadRecipe();
     }

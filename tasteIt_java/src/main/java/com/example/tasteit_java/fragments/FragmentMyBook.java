@@ -19,6 +19,7 @@ import com.example.tasteit_java.ApiService.RecipeId_Recipe_User;
 import com.example.tasteit_java.R;
 import com.example.tasteit_java.adapters.AdapterEndlessRecyclerMain;
 import com.example.tasteit_java.clases.Recipe;
+import com.example.tasteit_java.clases.Utils;
 import com.facebook.shimmer.ShimmerFrameLayout;
 
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ public class FragmentMyBook extends Fragment {
     private RecyclerView rvRecipes;
     private ShimmerFrameLayout shimmer;
     private AdapterEndlessRecyclerMain adapter;
+    private String accessToken;
 
     public FragmentMyBook() {
         // Required empty public constructor
@@ -42,6 +44,8 @@ public class FragmentMyBook extends Fragment {
     public FragmentMyBook(String token, int dataView) {
         this.token = token;
         this.dataView = dataView;
+
+        accessToken = Utils.getUserAcessToken();
     }
 
     public static FragmentMyBook newInstance(String token) {
@@ -258,7 +262,7 @@ public class FragmentMyBook extends Fragment {
     }
 
     private void bringRecipes() {
-        RecipesLoader recipesLoader = new RecipesLoader(ApiClient.getInstance().getService());
+        RecipesLoader recipesLoader = new RecipesLoader(ApiClient.getInstance(accessToken).getService());
         recipesLoader.getRecipes().observe(getViewLifecycleOwner(), this::onRecipesLoaded);
         recipesLoader.loadRecipes();
     }
