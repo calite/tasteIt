@@ -68,6 +68,7 @@ public class ActivitySearch extends AppCompatActivity {
         tlSearch.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                tvSearch.setText("");
                 vpPaginator.setCurrentItem(tab.getPosition());
             }
 
