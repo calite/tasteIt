@@ -82,6 +82,8 @@ public class ActivityNewRecipe extends AppCompatActivity {
 
     private ApiClient apiClient;
 
+    private String accessToken;
+
 
 
     @Override
@@ -89,6 +91,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_recipe);
 
+        accessToken = Utils.getUserAcessToken();
 
         app = new BdConnection();  //Instanciamos la conexion
 
@@ -394,7 +397,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
     private void bringRecipe() {
         //olvidamos asynctask y metemos lifecycle, que es mas actual y esta mejor optimizado
 
-        ActivityNewRecipe.RecipeLoader recipesLoader = new ActivityNewRecipe.RecipeLoader(ApiClient.getInstance().getService());
+        ActivityNewRecipe.RecipeLoader recipesLoader = new ActivityNewRecipe.RecipeLoader(ApiClient.getInstance(accessToken).getService());
 
         recipesLoader.getRecipe().observe(this, this::onRecipeLoaded);
 
@@ -403,7 +406,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
 
     public void createRecipe() {
 
-        apiClient = ApiClient.getInstance();
+        apiClient = ApiClient.getInstance(accessToken);
 
         String name = FragmentInfoNewRecipe.getRecipeName().getText().toString();
         String description = FragmentInfoNewRecipe.getDescriptionRecipe().getText().toString();
@@ -476,7 +479,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
 
     public void editRecipe() {
         Toast.makeText(this, "EDITING", Toast.LENGTH_SHORT).show();
-        apiClient = ApiClient.getInstance();
+        apiClient = ApiClient.getInstance(accessToken);
 
         String name = FragmentInfoNewRecipe.getRecipeName().getText().toString();
         String description = FragmentInfoNewRecipe.getDescriptionRecipe().getText().toString();

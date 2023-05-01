@@ -52,11 +52,14 @@ public class ActivitySearch extends AppCompatActivity {
     private ArrayList<Object> dataListAux;
     private ShimmerFrameLayout shimmer;
     private String busqueda;
+    private String accessToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
+        accessToken = Utils.getUserAcessToken();
 
         BottomNavigationView fcMainMenu = findViewById(R.id.fcMainMenu);
         fcMainMenu.setSelectedItemId(R.id.bSearch);
@@ -68,6 +71,7 @@ public class ActivitySearch extends AppCompatActivity {
         tlSearch.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                tvSearch.setText("");
                 vpPaginator.setCurrentItem(tab.getPosition());
             }
 
@@ -261,7 +265,7 @@ public class ActivitySearch extends AppCompatActivity {
 
     private void bringRecipes() {
         //olvidamos asynctask y metemos lifecycle, que es mas actual y esta mejor optimizado
-        RecipesLoader recipesLoader = new RecipesLoader(ApiClient.getInstance().getService());
+        RecipesLoader recipesLoader = new RecipesLoader(ApiClient.getInstance(accessToken).getService());
         recipesLoader.getRecipes().observe(ActivitySearch.this, this::onRecipesLoaded);
         recipesLoader.loadRecipes();
     }
