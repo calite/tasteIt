@@ -128,7 +128,7 @@ public class FragmentMyBook extends Fragment {
         public void loadRecipes() {
             switch (dataView) {
                 case 0: {
-                    apiRequests.getRecipesByUser(token).enqueue(new Callback<List<RecipeId_Recipe_User>>() {
+                    apiRequests.getRecipesByUser(token, 0).enqueue(new Callback<List<RecipeId_Recipe_User>>() {
                         @Override
                         public void onResponse(Call<List<RecipeId_Recipe_User>> call, Response<List<RecipeId_Recipe_User>> response) {
                             if (response.isSuccessful()) {
@@ -167,7 +167,7 @@ public class FragmentMyBook extends Fragment {
                     break;
                 }
                 case 1: {
-                    apiRequests.getRecipesLiked(token).enqueue(new Callback<List<RecipeId_Recipe_User>>() {
+                    apiRequests.getRecipesLiked(token, 0).enqueue(new Callback<List<RecipeId_Recipe_User>>() {
                         @Override
                         public void onResponse(Call<List<RecipeId_Recipe_User>> call, Response<List<RecipeId_Recipe_User>> response) {
                             if (response.isSuccessful()) {
@@ -206,7 +206,7 @@ public class FragmentMyBook extends Fragment {
                     break;
                 }
                 case 2: {
-                    apiRequests.getRecipesFollowed(token).enqueue(new Callback<List<RecipeId_Recipe_User>>() {
+                    apiRequests.getRecipesFollowed(token, 0).enqueue(new Callback<List<RecipeId_Recipe_User>>() {
                         @Override
                         public void onResponse(Call<List<RecipeId_Recipe_User>> call, Response<List<RecipeId_Recipe_User>> response) {
                             if (response.isSuccessful()) {

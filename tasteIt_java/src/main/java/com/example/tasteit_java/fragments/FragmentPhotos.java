@@ -123,7 +123,7 @@ public class FragmentPhotos extends Fragment {
         }
 
         public void loadRecipes() {
-            apiRequests.getRecipesByUser(uidParam).enqueue(new Callback<List<RecipeId_Recipe_User>>() {
+            apiRequests.getRecipesByUser(uidParam, 0).enqueue(new Callback<List<RecipeId_Recipe_User>>() {
                 @Override
                 public void onResponse(Call<List<RecipeId_Recipe_User>> call, Response<List<RecipeId_Recipe_User>> response) {
                     if (response.isSuccessful()) {

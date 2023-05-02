@@ -1,10 +1,6 @@
 package com.example.tasteit_java;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,28 +19,21 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.tasteit_java.ApiService.ApiClient;
 import com.example.tasteit_java.ApiService.ApiRequests;
-import com.example.tasteit_java.ApiService.ApiUser;
-import com.example.tasteit_java.ApiService.RecipeId_Recipe_User;
+import com.example.tasteit_java.ApiService.UserApi;
 import com.example.tasteit_java.adapters.AdapterFragmentProfile;
 import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.OnItemNavSelectedListener;
-import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import org.neo4j.driver.Query;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.Session;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -55,6 +44,7 @@ public class ActivityProfile extends AppCompatActivity {
     private ViewPager2 vpPaginator;
     private AdapterFragmentProfile adapter;
     private User userProfile;
+    private String accessToken;
     private TextView tvUserName, tvReciperCounter, tvFollowersCounter, tvFollowingCounter, tvLikesCounter;
     private ImageView ivUserPicture;
     private Button btnFollow;
@@ -76,6 +66,7 @@ public class ActivityProfile extends AppCompatActivity {
         shimmer = findViewById(R.id.shimmer);
         shimmer.startShimmer();
 
+        accessToken = Utils.getUserToken();
         if (getIntent().getExtras() != null) {
             Bundle params = getIntent().getExtras();
             uid = params.getString("uid");
@@ -298,7 +289,7 @@ public class ActivityProfile extends AppCompatActivity {
         //adapter.updateFragments(userProfile.getBiography());
     }
 
-    //carga de recetas asyncrona
+    //carga de usuario asyncrona
     private class UserLoader {
 
         private final ApiRequests apiRequests;
@@ -314,20 +305,18 @@ public class ActivityProfile extends AppCompatActivity {
         }
 
         public void loadUser() {
-            apiRequests.getUserByToken(uid).enqueue(new Callback<ApiUser>() {
+            apiRequests.getUserByToken(uid).enqueue(new Callback<UserApi>() {
                 @Override
-                public void onResponse(Call<ApiUser> call, Response<ApiUser> response) {
+                public void onResponse(Call<UserApi> call, Response<UserApi> response) {
                     if (response.isSuccessful()) {
-                        ApiUser UserApi = response.body();
-                        User users = null;
-                        User temp = new User(
-                                UserApi.getUser().getUsername(),
-                                UserApi.getUser().getBiography(),
-                                UserApi.getUser().getImgProfile(),
-                                UserApi.getUser().getToken()
+                        UserApi userApi = response.body();
+                        User user = new User(
+                                userApi.getUsername(),
+                                userApi.getBiography(),
+                                userApi.getImgProfile(),
+                                userApi.getToken()
                         );
-                        users = temp;
-                        userLiveData.postValue(users);
+                        userLiveData.postValue(user);
                     } else {
                         Toast.makeText(ActivityProfile.this, "Primer error", Toast.LENGTH_SHORT).show();
                         // La solicitud no fue exitosa
@@ -335,7 +324,7 @@ public class ActivityProfile extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Call<ApiUser> call, Throwable t) {
+                public void onFailure(Call<UserApi> call, Throwable t) {
                     // Hubo un error en la solicitud
                     Toast.makeText(ActivityProfile.this, "Failed to load data: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 }
@@ -355,7 +344,7 @@ public class ActivityProfile extends AppCompatActivity {
 
     private void bringUser() {
         //olvidamos asynctask y metemos lifecycle, que es mas actual y esta mejor optimizado
-        UserLoader userLoader = new UserLoader(ApiClient.getInstance().getService());
+        UserLoader userLoader = new UserLoader(ApiClient.getInstance(accessToken).getService());
         userLoader.getUser().observe(this, this::onUserLoaded);
         userLoader.loadUser();
     }
