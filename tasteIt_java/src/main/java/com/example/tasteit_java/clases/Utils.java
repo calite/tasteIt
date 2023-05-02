@@ -119,6 +119,12 @@ public class Utils {
         return firebaseUser.getIdToken(false).getResult().getToken();
     }
 
+    public static void refreshToken() {
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        firebaseUser.getIdToken(true);
+    }
+
+
     //Metodo para pasarle un bitmap y que lo devuelva redondeado
     public static Bitmap getRoundBitmapWithImage(Bitmap originalBitmap) {
         //Cambiamos el tamaño a la imagen original para que siempre sea igual

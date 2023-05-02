@@ -145,10 +145,12 @@ public class ActivityLogin extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         log.log(Level.INFO, currentUser.getUid() + " " + currentUser.getEmail());
                         goHome();
+                        dialog.dismiss();
                     } else {
                         log.log(Level.INFO, "Logged user doesn't exist anymore");
-                        dialog.dismiss();
                         dialog.hide();
+                        dialog.dismiss();
+
                     }
                 }
             });

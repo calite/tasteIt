@@ -40,6 +40,10 @@ import com.squareup.picasso.Target;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -119,6 +123,14 @@ public class ActivityMain extends AppCompatActivity {
         //recoger token usuario firebase
         token = Utils.getUserToken();
 
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                Utils.refreshToken();
+                Logger.getGlobal().log(Level.INFO,"Attempting to refresh token");
+            }
+        },1,1800000);
+
     }
 
     //MENU superior
@@ -129,9 +141,9 @@ public class ActivityMain extends AppCompatActivity {
 
         getMenuInflater().inflate(R.menu.main_menu, menu);
 
-        Bitmap bitmap = Utils.uriToBitmap(this, "https://firebasestorage.googleapis.com/v0/b/tasteit-java.appspot.com/o/images%2F035d70df-1048-4c15-ba6a-c4d81d44a026?alt=media&token=d2c0ebf1-3b4e-40a4-9162-94fbc2070008");
-        BitmapDrawable roundedBitmapDrawable = new BitmapDrawable(getResources(), Utils.getRoundBitmapWithImage(bitmap));
-        menu.getItem(0).setIcon(roundedBitmapDrawable);
+        //Bitmap bitmap = Utils.uriToBitmap(this, "https://firebasestorage.googleapis.com/v0/b/tasteit-java.appspot.com/o/images%2F035d70df-1048-4c15-ba6a-c4d81d44a026?alt=media&token=d2c0ebf1-3b4e-40a4-9162-94fbc2070008");
+        //BitmapDrawable roundedBitmapDrawable = new BitmapDrawable(getResources(), Utils.getRoundBitmapWithImage(bitmap));
+        //menu.getItem(0).setIcon(roundedBitmapDrawable);
 
         BottomNavigationView fcMainMenu = findViewById(R.id.fcMainMenu);
         fcMainMenu.setSelectedItemId(R.id.bHome);

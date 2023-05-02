@@ -164,7 +164,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
 
 
     }
-
+/*
     private void saveRecipe(String token, BdConnection app){
         //fecha
         Calendar c = Calendar.getInstance();
@@ -219,7 +219,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
             Toast.makeText(ActivityNewRecipe.this, "Fill the required Fields", Toast.LENGTH_SHORT).show();
         }
     }
-
+ */
     //comprobacion de campos
     private boolean checkFields() {
 

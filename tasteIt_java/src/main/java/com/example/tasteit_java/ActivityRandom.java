@@ -171,9 +171,13 @@ public class ActivityRandom extends AppCompatActivity {
 
     private void onRecipeLoaded(List<Recipe> recipes) {
         if(someRecipes.size() <= 4) {
-            someRecipes.add(recipes.get(0));
-            lastIdRecipes.add(recipeId);
+            //A VECES SE TRAE recipes COMO NULL Y PETABA, AHORA NO PETA, SE SALTA ESA RECETA, PERO HABRIA QUE MIRAR POR QUE ES NULL A VECES XD
+            if(recipes.size() != 0){
+                someRecipes.add(recipes.get(0));
+                lastIdRecipes.add(recipeId);
+            }
             bringRecipe();
+
         } else {
             adapter = new AdapterFragmentRandom(getSupportFragmentManager(), getLifecycle(), someRecipes);
             vpRandom.setAdapter(adapter);
