@@ -3,7 +3,7 @@ package com.example.tasteit_java.request;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class EditRecipeRequest {
+public class RecipeEditRequest {
 
     @SerializedName("name")
     @Expose
@@ -41,7 +41,7 @@ public class EditRecipeRequest {
     @Expose
     private int rid;
 
-    public EditRecipeRequest(int rid, String name, String description, String country, String image, int difficulty, String ingredients, String steps, String tags) {
+    public RecipeEditRequest(int rid, String name, String description, String country, String image, int difficulty, String ingredients, String steps, String tags) {
         this.rid = rid;
         this.name = name;
         this.description = description;
@@ -53,7 +53,7 @@ public class EditRecipeRequest {
         this.tags = tags;
     }
 
-    public EditRecipeRequest() {
+    public RecipeEditRequest() {
     }
 
     public int getRecipeId() {

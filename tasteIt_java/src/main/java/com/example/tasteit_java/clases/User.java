@@ -13,7 +13,6 @@ public class User implements Serializable  {
     private ArrayList<Comment> userComments;
     private String uid;
 
-
     public User(String username, String biography, String imgProfile) {
         this.username = username;
         this.biography = biography;
