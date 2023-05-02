@@ -1,10 +1,6 @@
 package com.example.tasteit_java;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,8 +13,13 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.tasteit_java.ApiService.ApiClient;
+import com.example.tasteit_java.ApiService.ApiRequests;
+import com.example.tasteit_java.ApiService.UserApi;
 import com.example.tasteit_java.adapters.AdapterFragmentProfile;
 import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.OnItemNavSelectedListener;
@@ -28,19 +29,22 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import org.neo4j.driver.Query;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.Session;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ActivityProfile extends AppCompatActivity {
     private TabLayout tlUser;
     private ViewPager2 vpPaginator;
     private AdapterFragmentProfile adapter;
     private User userProfile;
+    private String accessToken;
     private TextView tvUserName, tvReciperCounter, tvFollowersCounter, tvFollowingCounter, tvLikesCounter;
     private ImageView ivUserPicture;
     private Button btnFollow;
@@ -62,10 +66,11 @@ public class ActivityProfile extends AppCompatActivity {
         shimmer = findViewById(R.id.shimmer);
         shimmer.startShimmer();
 
-        if(getIntent().getExtras() != null) {
+        accessToken = Utils.getUserToken();
+        if (getIntent().getExtras() != null) {
             Bundle params = getIntent().getExtras();
             uid = params.getString("uid");
-            if(!FirebaseAuth.getInstance().getCurrentUser().getUid().equals(uid)) {
+            if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals(uid)) {
                 myProfile = false;
             } else {
                 myProfile = true;
@@ -77,7 +82,7 @@ public class ActivityProfile extends AppCompatActivity {
 
         connection = new BdConnection();
         initializeViews();
-        new TaskLoadUser().execute();
+        bringUser();
 
         //menu superior
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -112,7 +117,7 @@ public class ActivityProfile extends AppCompatActivity {
         btnFollow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(connection.isFollowing(FirebaseAuth.getInstance().getCurrentUser().getUid(), uid)) {
+                if (connection.isFollowing(FirebaseAuth.getInstance().getCurrentUser().getUid(), uid)) {
                     connection.unFollowUser(FirebaseAuth.getInstance().getCurrentUser().getUid(), uid);
                     btnFollow.setText("FOLLOW");
                 } else {
@@ -174,7 +179,7 @@ public class ActivityProfile extends AppCompatActivity {
             btnFollow.setVisibility(View.INVISIBLE);
             btnFollow.setEnabled(false);
         } else {
-            if(connection.isFollowing(FirebaseAuth.getInstance().getCurrentUser().getUid(), uid)) {
+            if (connection.isFollowing(FirebaseAuth.getInstance().getCurrentUser().getUid(), uid)) {
                 btnFollow.setText("UNFOLLOW");
             }
             btnFollow.setVisibility(View.VISIBLE);
@@ -254,9 +259,11 @@ public class ActivityProfile extends AppCompatActivity {
             case R.id.iCloseSesion:
                 signOut();
             case R.id.iDarkMode:
-                if(AppCompatDelegate.getDefaultNightMode() != AppCompatDelegate.MODE_NIGHT_YES){
+                if (AppCompatDelegate.getDefaultNightMode() != AppCompatDelegate.MODE_NIGHT_YES) {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                }else{AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);}
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                }
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -264,12 +271,13 @@ public class ActivityProfile extends AppCompatActivity {
     //END MENU superior
 
     //LOGOUT
-    public void callSignOut(View view){
+    public void callSignOut(View view) {
         signOut();
     }
-    private void signOut(){
+
+    private void signOut() {
         FirebaseAuth.getInstance().signOut();
-        startActivity (new Intent(this, ActivityLogin.class));
+        startActivity(new Intent(this, ActivityLogin.class));
         finish();
     }
 
@@ -277,31 +285,68 @@ public class ActivityProfile extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        new TaskLoadUser().execute();
+        //bringUser();
         //adapter.updateFragments(userProfile.getBiography());
     }
 
-    //Tareas asincronas para la carga de los datos del usuario (peticiones a la bbdd)
-    class TaskLoadUser extends AsyncTask<User, Void,User> {
-        @Override
-        protected void onPreExecute() {
+    //carga de usuario asyncrona
+    private class UserLoader {
 
-        }
-        @Override
-        protected User doInBackground(User... hashMaps) {
-            return connection.retrieveAllUserbyUid(uid);
-        }
-        @Override
-        protected void onPostExecute(User user) {
-            //super.onPostExecute(recipes);
-            userProfile = user;
-            retrieveData(uid);
-            adapter = new AdapterFragmentProfile(getSupportFragmentManager(),getLifecycle(), uid, myProfile);
-            vpPaginator.setAdapter(adapter);
+        private final ApiRequests apiRequests;
+        private final MutableLiveData<User> userLiveData;
 
-            shimmer.stopShimmer();
-            shimmer.hideShimmer();
+        public UserLoader(ApiRequests apiRequests) {
+            this.apiRequests = apiRequests;
+            userLiveData = new MutableLiveData<>();
         }
+
+        public LiveData<User> getUser() {
+            return userLiveData;
+        }
+
+        public void loadUser() {
+            apiRequests.getUserByToken(uid).enqueue(new Callback<UserApi>() {
+                @Override
+                public void onResponse(Call<UserApi> call, Response<UserApi> response) {
+                    if (response.isSuccessful()) {
+                        UserApi userApi = response.body();
+                        User user = new User(
+                                userApi.getUsername(),
+                                userApi.getBiography(),
+                                userApi.getImgProfile(),
+                                userApi.getToken()
+                        );
+                        userLiveData.postValue(user);
+                    } else {
+                        Toast.makeText(ActivityProfile.this, "Primer error", Toast.LENGTH_SHORT).show();
+                        // La solicitud no fue exitosa
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<UserApi> call, Throwable t) {
+                    // Hubo un error en la solicitud
+                    Toast.makeText(ActivityProfile.this, "Failed to load data: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+    private void onUserLoaded(User users) {
+        userProfile = users;
+        retrieveData(uid);
+        adapter = new AdapterFragmentProfile(getSupportFragmentManager(), getLifecycle(), uid, myProfile);
+        vpPaginator.setAdapter(adapter);
+
+        shimmer.stopShimmer();
+        shimmer.hideShimmer();
+    }
+
+    private void bringUser() {
+        //olvidamos asynctask y metemos lifecycle, que es mas actual y esta mejor optimizado
+        UserLoader userLoader = new UserLoader(ApiClient.getInstance(accessToken).getService());
+        userLoader.getUser().observe(this, this::onUserLoaded);
+        userLoader.loadUser();
     }
 
 }

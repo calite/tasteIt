@@ -1,6 +1,5 @@
 package com.example.tasteit_java;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -8,19 +7,16 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
-import android.widget.TableLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,29 +28,21 @@ import com.example.tasteit_java.ApiService.ApiClient;
 import com.example.tasteit_java.ApiService.ApiRequests;
 import com.example.tasteit_java.ApiService.RecipeId_Recipe_User;
 import com.example.tasteit_java.adapters.AdapterFragmentNewRecipe;
-import com.example.tasteit_java.adapters.AdapterFragmentRecipe;
 import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.Utils;
 import com.example.tasteit_java.fragments.FragmentInfoNewRecipe;
 import com.example.tasteit_java.fragments.FragmentIngredientsNewRecipe;
 import com.example.tasteit_java.fragments.FragmentStepsNewRecipe;
-import com.example.tasteit_java.request.EditRecipeRequest;
+import com.example.tasteit_java.request.RecipeEditRequest;
 import com.example.tasteit_java.request.RecipeRequest;
 import com.google.android.material.tabs.TabLayout;
 
-import org.neo4j.driver.Query;
-import org.neo4j.driver.Result;
-import org.neo4j.driver.Session;
-
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -511,7 +499,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
         String tags = String.join(",", listTags);
         if (checkFields()) {
 
-            EditRecipeRequest r = new EditRecipeRequest();
+            RecipeEditRequest r = new RecipeEditRequest();
             r.setRecipeId(recipeId);
             r.setName(name);
             r.setDescription(description);
