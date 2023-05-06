@@ -18,6 +18,7 @@ import com.example.tasteit_java.clases.Utils;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.squareup.picasso.Picasso;
 
 public class FragmentRandom extends Fragment {
     private Recipe recipe;
@@ -68,8 +69,11 @@ public class FragmentRandom extends Fragment {
             TextView tvCountry = view.findViewById(R.id.tvCountry);
             ChipGroup cgIngredients = view.findViewById(R.id.cgIngredients);
 
-            Bitmap bitmap = Utils.decodeBase64(recipe.getImage());
-            ivPhoto.setImageBitmap(bitmap);
+            try{
+                Picasso.with(getContext()).load(recipe.getImage()).into(ivPhoto);
+            }catch(IllegalArgumentException iae){}
+            //Bitmap bitmap = Utils.decodeBase64(recipe.getImage());
+            //ivPhoto.setImageBitmap(bitmap);
             tvRecipeName.setText(recipe.getName());
             tvNameCreator.setText(recipe.getCreator());
             tvDescription.setText(recipe.getDescription());

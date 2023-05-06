@@ -33,6 +33,7 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
+import com.squareup.picasso.Picasso;
 
 import org.neo4j.driver.Query;
 import org.neo4j.driver.Result;
@@ -309,9 +310,13 @@ public class ActivityRecipe extends AppCompatActivity {
         recipe = listRecipes.get(0);
 
         //UNA VEZ SE HACE LA CARGA DE LA RECETA SE RELLENA LA INFORMACION Y SE HA MOVIDO EL CODIGO QUE DEPENDIESE DE LA MISMA(PAGINATOR Y EL BOTON DE LIKE)
-
-        Bitmap bitmap = Utils.decodeBase64(recipe.getImage());
-        ivRecipePhoto.setImageBitmap(bitmap);
+        try {
+            Picasso.with(this).load(recipe.getImage()).into(ivRecipePhoto);
+        }catch(IllegalArgumentException iae){
+            Toast.makeText(this, "Image not retrieved", Toast.LENGTH_SHORT).show();
+        }
+        //Bitmap bitmap = Utils.decodeBase64(recipe.getImage());
+        //ivRecipePhoto.setImageBitmap(bitmap);
         tvRecipeName.setText(recipe.getName());
         tvNameCreator.setText(recipe.getCreator());
 

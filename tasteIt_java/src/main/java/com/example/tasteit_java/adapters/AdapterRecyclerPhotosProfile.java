@@ -17,6 +17,7 @@ import com.example.tasteit_java.R;
 import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.Utils;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -74,8 +75,12 @@ public class AdapterRecyclerPhotosProfile extends RecyclerView.Adapter<AdapterRe
         }
 
         void bindRow(@NonNull Recipe recipe) {
-            Bitmap bitmap = Utils.decodeBase64(recipe.getImage());
-            ivPhoto.setImageBitmap(bitmap);
+            try{
+                Picasso.with(itemView.getContext()).load(recipe.getImage()).into(ivPhoto);
+            }catch(IllegalArgumentException iae){}
+
+            //Bitmap bitmap = Utils.decodeBase64(recipe.getImage());
+            //ivPhoto.setImageBitmap(bitmap);
             recipeId = recipe.getId();
             creatorToken = recipe.getCreatorToken();
         }

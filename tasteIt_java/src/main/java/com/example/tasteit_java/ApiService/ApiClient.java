@@ -7,7 +7,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
-    private static final String BASE_URL = "https://amazing-diffie.212-227-50-151.plesk.page/";
+    private static final String BASE_URL = "https://great-dhawan.212-227-50-151.plesk.page/";
     private static ApiClient INSTANCE;
     private final ApiRequests service;
 

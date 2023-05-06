@@ -38,6 +38,7 @@ import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.shape.ShapeAppearanceModel;
 import com.google.firebase.auth.FirebaseAuth;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -146,7 +147,10 @@ public class AdapterRecyclerProfileData extends RecyclerView.Adapter<AdapterRecy
                     });
 
                     ivAuthor.setShapeAppearanceModel(ShapeAppearanceModel.builder(context, R.style.cornerRoundImageView, R.style.cornerRoundImageView).build());
-                    ivAuthor.setImageBitmap(Utils.decodeBase64(temp.getImage()));
+                    try{
+                        Picasso.with(itemView.getContext()).load(temp.getImage()).into(ivAuthor);
+                    }catch(IllegalArgumentException iae){}
+                    //ivAuthor.setImageBitmap(Utils.decodeBase64(temp.getImage()));
                     break;
                 }
                 case 2:
@@ -157,7 +161,10 @@ public class AdapterRecyclerProfileData extends RecyclerView.Adapter<AdapterRecy
 
                     tvAuthor.setText(temp.getUsername());
                     tvComment.setText(temp.getBiography());
-                    ivAuthor.setImageBitmap(Utils.decodeBase64(temp.getImgProfile()));
+                    try{
+                        Picasso.with(itemView.getContext()).load(temp.getImgProfile()).into(ivAuthor);
+                    }catch(IllegalArgumentException iae){}
+                    //ivAuthor.setImageBitmap(Utils.decodeBase64(temp.getImgProfile()));
 
                     if (new BdConnection().isFollowing(token, temp.getUid())) {
                         btnFollow.setText("UNFOLLOW");

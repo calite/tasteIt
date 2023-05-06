@@ -166,8 +166,12 @@ public class AdapterEndlessRecyclerSearch extends Adapter {
         void bindRow(@NonNull Recipe recipe) {
             tvNameRecipe.setText(recipe.getName());
             tvDifficulty.setText(String.valueOf(recipe.getDifficulty()));
-            Bitmap bitmap = Utils.decodeBase64(recipe.getImage());
-            ivPhotoRecipe.setImageBitmap(bitmap);
+            try{
+                Picasso.with(itemView.getContext()).load(recipe.getImage()).into(ivPhotoRecipe);
+            }catch(IllegalArgumentException iae){}
+
+            //Bitmap bitmap = Utils.decodeBase64(recipe.getImage());
+            //ivPhotoRecipe.setImageBitmap(bitmap);
             recipeId = recipe.getId();
         }
     }
@@ -195,11 +199,14 @@ public class AdapterEndlessRecyclerSearch extends Adapter {
 
         void bindRow(@NonNull User user) {
             tvNameUser.setText(user.getUsername());
+            try{
+                Picasso.with(recyclerView.getContext()).load(user.getImgProfile()).into(ivPhotoUser);
+            }catch(IllegalArgumentException iae){}
             /*Picasso.with(recyclerView.getContext())
                     .load(user.getImgProfile())
                     .into(ivPhotoUser);*/
-            Bitmap bitmap = Utils.decodeBase64(user.getImgProfile());
-            ivPhotoUser.setImageBitmap(bitmap);
+            //Bitmap bitmap = Utils.decodeBase64(user.getImgProfile());
+            //ivPhotoUser.setImageBitmap(bitmap);
             token = user.getUid();
         }
     }

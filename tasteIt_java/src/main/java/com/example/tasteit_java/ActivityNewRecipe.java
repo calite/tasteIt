@@ -37,6 +37,7 @@ import com.example.tasteit_java.fragments.FragmentStepsNewRecipe;
 import com.example.tasteit_java.request.RecipeEditRequest;
 import com.example.tasteit_java.request.RecipeRequest;
 import com.google.android.material.tabs.TabLayout;
+import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -367,8 +368,13 @@ public class ActivityNewRecipe extends AppCompatActivity {
 
         //UNA VEZ SE HACE LA CARGA DE LA RECETA SE RELLENA LA INFORMACION Y SE HA MOVIDO EL CODIGO QUE DEPENDIESE DE LA MISMA(PAGINATOR Y EL BOTON DE LIKE)
         //GENERAL
-        Bitmap bitmap = Utils.decodeBase64(recipe.getImage());
-        ivRecipePhoto.setImageBitmap(bitmap);
+        try {
+            Picasso.with(this).load(recipe.getImage()).into(ivRecipePhoto);
+        }catch(IllegalArgumentException iae){
+            Toast.makeText(this, "Image not retrieved", Toast.LENGTH_SHORT).show();
+        }
+        //Bitmap bitmap = Utils.decodeBase64(recipe.getImage());
+        //ivRecipePhoto.setImageBitmap(bitmap);
         //INFO
         FragmentInfoNewRecipe.setRecipeName(recipe.getName());
         FragmentInfoNewRecipe.setDescriptionRecipe(recipe.getDescription());

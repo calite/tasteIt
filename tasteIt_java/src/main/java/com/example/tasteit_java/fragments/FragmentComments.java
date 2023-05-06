@@ -41,6 +41,7 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.squareup.picasso.Picasso;
 
 import org.neo4j.driver.Query;
 import org.neo4j.driver.Result;
@@ -163,8 +164,11 @@ public class FragmentComments extends Fragment {
             clComment.setClickable(true);
 
             User user = new BdConnection().retrieveAllUserbyUid(FirebaseAuth.getInstance().getCurrentUser().getUid());
-            Bitmap bitmap = Utils.decodeBase64(user.getImgProfile());
-            ivMyPhoto.setImageBitmap(bitmap);
+            try{
+                Picasso.with(getContext()).load(user.getImgProfile()).into(ivMyPhoto);
+            }catch(IllegalArgumentException iae){}
+            //Bitmap bitmap = Utils.decodeBase64(user.getImgProfile());
+            //ivMyPhoto.setImageBitmap(bitmap);
 
             btnAddComment.setOnClickListener(new View.OnClickListener() {
                 @Override

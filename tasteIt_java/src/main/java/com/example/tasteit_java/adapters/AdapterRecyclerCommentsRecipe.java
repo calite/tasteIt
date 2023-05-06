@@ -27,6 +27,7 @@ import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
 import com.example.tasteit_java.fragments.FragmentComments;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -126,8 +127,9 @@ public class AdapterRecyclerCommentsRecipe extends RecyclerView.Adapter<AdapterR
         holder.tvComment.setText(comments.get(position).getComment());
         holder.tvDateCreated.setText(comments.get(position).getDateCreated());
 
-        Bitmap bitmap = Utils.decodeBase64(user.getImgProfile());
-        holder.ivUserPicture.setImageBitmap(bitmap);
+        Picasso.with(context).load(user.getImgProfile()).into(holder.ivUserPicture);
+        //Bitmap bitmap = Utils.decodeBase64(user.getImgProfile());
+        //holder.ivUserPicture.setImageBitmap(bitmap);
 
         View.OnClickListener listenerProfile = new View.OnClickListener() {
             @Override

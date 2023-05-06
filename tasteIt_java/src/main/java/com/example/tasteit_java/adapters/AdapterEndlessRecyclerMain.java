@@ -20,6 +20,7 @@ import com.example.tasteit_java.R;
 import com.example.tasteit_java.clases.OnLoadMoreListener;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.Utils;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -151,8 +152,11 @@ public class AdapterEndlessRecyclerMain extends RecyclerView.Adapter {
             tvNameCreator.setText(recipe.getCreator());
             tvDescriptionRecipe.setText(recipe.getDescription());
             tvDifficulty.setText(String.valueOf(recipe.getDifficulty()));
-            Bitmap bitmap = Utils.decodeBase64(recipe.getImage());
-            ivPhotoRecipe.setImageBitmap(bitmap);
+            try{
+                Picasso.with(itemView.getContext()).load(recipe.getImage()).into(ivPhotoRecipe);
+            }catch(IllegalArgumentException iae){}
+            //Bitmap bitmap = Utils.decodeBase64(recipe.getImage());
+            //ivPhotoRecipe.setImageBitmap(bitmap);
             recipeId = recipe.getId();
             creatorToken = recipe.getCreatorToken();
         }

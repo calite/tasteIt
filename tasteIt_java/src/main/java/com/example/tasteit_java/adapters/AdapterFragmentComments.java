@@ -19,6 +19,7 @@ import com.example.tasteit_java.clases.Comment;
 import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
 import com.google.firebase.auth.FirebaseAuth;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -80,8 +81,11 @@ public class AdapterFragmentComments extends BaseAdapter {
         tvAuthor.setText(user.getUsername());
         tvComment.setText(comments.get(i).getComment());
 
-        Bitmap bitmap = Utils.decodeBase64(user.getImgProfile());
-        ivAuthor.setImageBitmap(bitmap);
+        try{
+            Picasso.with(context).load(user.getImgProfile()).into(ivAuthor);
+        }catch(IllegalArgumentException iae){}
+        //Bitmap bitmap = Utils.decodeBase64(user.getImgProfile());
+        //ivAuthor.setImageBitmap(bitmap);
 
         return view;
     }

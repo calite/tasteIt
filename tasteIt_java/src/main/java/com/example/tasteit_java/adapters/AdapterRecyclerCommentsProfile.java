@@ -35,6 +35,7 @@ import com.example.tasteit_java.clases.Utils;
 import com.example.tasteit_java.fragments.FragmentComments;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -142,8 +143,11 @@ public class AdapterRecyclerCommentsProfile extends RecyclerView.Adapter<Adapter
         holder.tvAuthor.setText(user.getUsername());
         holder.tvComment.setText(comments.get(position).getComment());
 
-        Bitmap bitmap = Utils.decodeBase64(user.getImgProfile());
-        holder.ivAuthor.setImageBitmap(bitmap);
+        try{
+            Picasso.with(context).load(user.getImgProfile()).into(holder.ivAuthor);
+        }catch(IllegalArgumentException iae){}
+        //Bitmap bitmap = Utils.decodeBase64(user.getImgProfile());
+        //holder.ivAuthor.setImageBitmap(bitmap);
 
         View.OnClickListener listenerProfile = new View.OnClickListener() {
             @Override
