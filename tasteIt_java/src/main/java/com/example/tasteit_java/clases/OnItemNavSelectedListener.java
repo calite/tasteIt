@@ -30,7 +30,7 @@ public class OnItemNavSelectedListener implements BottomNavigationView.OnItemSel
                     activity.finish();
                     activity.startActivity(i);
                 } else {
-                    //Si estamos en la main activity ya podemos actualizar simplemente las recetas
+                    ((ActivityMain) activity).updateList();
                 }
                 return true;
             }

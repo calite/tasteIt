@@ -148,7 +148,7 @@ public class AdapterEndlessRecyclerSearch extends Adapter {
 
         public RecipeViewHolder(View view) {
             super(view);
-            // Define click listener for the ViewHolder's View
+            // Define click listener for the DataViewHolder's View
             ivPhotoRecipe = view.findViewById(R.id.ivPhotoRecipe);
             tvDifficulty = view.findViewById(R.id.tvDifficulty);
             tvNameRecipe = view.findViewById(R.id.tvNameRecipe);
@@ -183,7 +183,7 @@ public class AdapterEndlessRecyclerSearch extends Adapter {
 
         public UserViewHolder(View view) {
             super(view);
-            // Define click listener for the ViewHolder's View
+            // Define click listener for the DataViewHolder's View
             ivPhotoUser = view.findViewById(R.id.ivPhotoUser);
             tvNameUser = view.findViewById(R.id.tvNameUser);
 

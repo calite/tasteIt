@@ -1,56 +1,30 @@
 package com.example.tasteit_java.fragments;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
-import androidx.activity.OnBackPressedCallback;
-import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.tasteit_java.ActivityProfile;
-import com.example.tasteit_java.ActivityRecipe;
+import com.example.tasteit_java.ApiService.ApiClient;
+import com.example.tasteit_java.ApiUtils.UserLoader;
 import com.example.tasteit_java.R;
-import com.example.tasteit_java.adapters.AdapterFragmentComments;
 import com.example.tasteit_java.adapters.AdapterRecyclerCommentsProfile;
-import com.example.tasteit_java.adapters.AdapterRecyclerPhotosProfile;
-import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.Comment;
-import com.example.tasteit_java.clases.Recipe;
-import com.example.tasteit_java.clases.User;
+import com.example.tasteit_java.clases.OnLoadMoreListener;
 import com.example.tasteit_java.clases.Utils;
 import com.facebook.shimmer.ShimmerFrameLayout;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.imageview.ShapeableImageView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.squareup.picasso.Picasso;
 
-import org.neo4j.driver.Query;
-import org.neo4j.driver.Result;
-import org.neo4j.driver.Session;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Set;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -75,6 +49,8 @@ public class FragmentComments extends Fragment {
     private RecyclerView rvLvComments;
     private AdapterRecyclerCommentsProfile adapter;
     private ShimmerFrameLayout shimmer;
+    private int skipper;
+    private String accessToken;
     private ConstraintLayout clComment;
     private ShapeableImageView ivMyPhoto;
     private static EditText etComment;
@@ -118,6 +94,9 @@ public class FragmentComments extends Fragment {
             this.myProfile = getArguments().getBoolean(ARG_PARAM2);
             this.uidProfile = getArguments().getString(ARG_PARAM3);
             getArguments().clear();
+
+            accessToken = Utils.getUserAcessToken();
+            skipper = 0;
         }
     }
 
@@ -129,75 +108,69 @@ public class FragmentComments extends Fragment {
         shimmer = view.findViewById(R.id.shimmer);
         shimmer.startShimmer();
 
-        adapter = new AdapterRecyclerCommentsProfile(getContext(), uidProfile, myProfile, shimmer);
+        bringComments();
+
         rvLvComments = view.findViewById(R.id.rvLvComments);
+        adapter = new AdapterRecyclerCommentsProfile(getContext(), myProfile, rvLvComments);
         rvLvComments.setAdapter(adapter);
 
         rvLvComments.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        if(!myProfile) {
+        adapter.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                if(adapter.getItemCount() > 28) { //habra que ponerle un limite (que en principio puede ser el total de recipes en la bbdd o algo fijo para no sobrecargar el terminal)
+                    Toast.makeText(getContext(), "Finiquitao con " + adapter.getItemCount() + " fotos", Toast.LENGTH_SHORT).show();
+                } else {
+                    adapter.dataList.add(null);
+                    adapter.notifyItemInserted(adapter.getItemCount() - 1);
+
+                    skipper += 10;
+                    bringComments();
+                }
+            }
+
+            @Override
+            public void update() {
+                adapter.dataList.add(0, null);
+                adapter.notifyItemInserted(0);
+
+                skipper = 0;
+                adapter.dataList.clear();
+                bringComments();
+            }
+        });
+
+        /*if(!myProfile) {
             ivMyPhoto = view.findViewById(R.id.ivMyPhoto);
             etComment = view.findViewById(R.id.etComment);
             btnAddComment = view.findViewById(R.id.btnAddComment);
             btnEditComment = view.findViewById(R.id.btnEditComment);
         }
-        clComment = view.findViewById(R.id.clComment);
-        hideAddComment(myProfile);
+        clComment = view.findViewById(R.id.clComment);*/
 
         return view;
     }
 
-    public static void editComment(int id, String comment) {
-        btnAddComment.setVisibility(View.INVISIBLE);
-        btnAddComment.setEnabled(false);
-
-        btnEditComment.setVisibility(View.VISIBLE);
-        btnEditComment.setEnabled(true);
-
-        etComment.setText(comment);
-        editCommentId = id;
+    //Carga de usuario asyncrona
+    private void bringComments() {
+        UserLoader commentsLoader = new UserLoader(ApiClient.getInstance(accessToken).getService(), getContext(), uidProfile, skipper);
+        commentsLoader.getUserComments().observe(getViewLifecycleOwner(), this::onCommentsLoaded);
+        commentsLoader.loadUserComments();
     }
 
-    public void hideAddComment(Boolean visibility) {
-        if(!visibility) {
-            clComment.setVisibility(View.VISIBLE);
-            clComment.setClickable(true);
-
-            User user = new BdConnection().retrieveAllUserbyUid(FirebaseAuth.getInstance().getCurrentUser().getUid());
-            try{
-                Picasso.with(getContext()).load(user.getImgProfile()).into(ivMyPhoto);
-            }catch(IllegalArgumentException iae){}
-            //Bitmap bitmap = Utils.decodeBase64(user.getImgProfile());
-            //ivMyPhoto.setImageBitmap(bitmap);
-
-            btnAddComment.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    new BdConnection().commentUser(FirebaseAuth.getInstance().getCurrentUser().getUid(), uidProfile, etComment.getText().toString());
-                    adapter.updateComments();
-                    etComment.setText("");
-                }
-            });
-
-            btnEditComment.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    new BdConnection().editComment(editCommentId, etComment.getText().toString());
-                    adapter.updateComments();
-                    etComment.setText("");
-
-                    btnEditComment.setVisibility(View.INVISIBLE);
-                    btnEditComment.setEnabled(false);
-
-                    btnAddComment.setVisibility(View.VISIBLE);
-                    btnAddComment.setEnabled(true);
-                }
-            });
-
-        } else {
-            clComment.setVisibility(View.INVISIBLE);
-            clComment.setClickable(false);
+    private void onCommentsLoaded(List<Comment> comments) {
+        if(adapter.getItemViewType(adapter.getItemCount() - 1) != 0) {
+            adapter.dataList.remove(adapter.getItemCount() - 1);
+        } else if(adapter.getItemViewType(0) != 0) {
+            adapter.dataList.remove(0);
         }
+
+        adapter.dataList.addAll(comments);
+        adapter.setLoaded();
+        shimmer.stopShimmer();
+        shimmer.setVisibility(View.GONE);
+        adapter.notifyDataSetChanged();
     }
 
 }

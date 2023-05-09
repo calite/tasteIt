@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tasteit_java.R;
+import com.example.tasteit_java.adapters.AdapterRecyclerCommentsProfile;
 import com.example.tasteit_java.adapters.AdapterRecyclerCommentsRecipe;
 import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.User;
@@ -60,15 +61,15 @@ public class FragmentCommentsRecipe extends Fragment {
         shimmer = view.findViewById(R.id.shimmer);
         shimmer.startShimmer();
 
-        adapter = new AdapterRecyclerCommentsRecipe(getContext(), recipeId, shimmer);
         rvLvComments = view.findViewById(R.id.rvLvComments);
+        adapter = new AdapterRecyclerCommentsRecipe(getContext(), recipeId, shimmer);
         rvLvComments.setAdapter(adapter);
 
         rvLvComments.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        clComment = view.findViewById(R.id.clComment);
-        clComment.setVisibility(View.INVISIBLE);
-        clComment.setClickable(false);
+        //clComment = view.findViewById(R.id.clComment);
+        //clComment.setVisibility(View.INVISIBLE);
+        //clComment.setClickable(false);
 
         return view;
     }

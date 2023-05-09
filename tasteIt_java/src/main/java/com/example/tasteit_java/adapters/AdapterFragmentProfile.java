@@ -1,23 +1,14 @@
 package com.example.tasteit_java.adapters;
 
-import android.os.AsyncTask;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.fragments.FragmentBio;
 import com.example.tasteit_java.fragments.FragmentComments;
 import com.example.tasteit_java.fragments.FragmentPhotos;
-import com.example.tasteit_java.clases.Recipe;
-import com.example.tasteit_java.clases.User;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 public class AdapterFragmentProfile extends FragmentStateAdapter {
 

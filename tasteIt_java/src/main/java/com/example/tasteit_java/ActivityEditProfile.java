@@ -5,16 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 
-import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.Menu;
+import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,14 +20,15 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.tasteit_java.bdConnection.BdConnection;
+import com.example.tasteit_java.ApiService.ApiClient;
+import com.example.tasteit_java.ApiUtils.UserLoader;
 import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
-import com.example.tasteit_java.fragments.FragmentComments;
+import com.example.tasteit_java.request.UserEditRequest;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -43,44 +38,89 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.util.HashMap;
 import java.util.UUID;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class ActivityEditProfile extends AppCompatActivity {
-
     private ImageButton ibPickPhoto;
-
     private ImageView ivProfilePhoto;
-
     private TextView tvUsername, tvConfirmPassword, optChangePass;
-
     private EditText etUsername, etEmail, etNewPassword, etConfirmPassword, etBiography, etOldPassword;
-
     private Button btnSave;
-
-    private BdConnection connection;
-
+    private String accessToken;
+    private String uid;
     private User user;
     private Uri newFilePath;
     private Uri lastFileUrl;
-
+    private ShimmerFrameLayout shimmer;
     private ConstraintLayout constraintLayout, clPassword;
 
     private ConstraintSet constraintSet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
-        initializeViews();
-        retrieveData();
+        shimmer = findViewById(R.id.shimmer);
+        shimmer.startShimmer();
 
-        //etUsername.setText(FirebaseAuth.getInstance().getCurrentUser().getIdToken(false).getResult().getToken());
+        accessToken = Utils.getUserAcessToken();
+        uid = Utils.getUserToken();
+
+        initializeViews();
+        bringUser();
 
         //Menu superior
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Edit Profile");
+    }
+
+    //Metodo para instanciar los elementos de la UI
+    private void initializeViews() {
+        ibPickPhoto = findViewById(R.id.ibPickPhoto);
+        ivProfilePhoto = findViewById(R.id.ivProfilePhoto);
+
+        tvUsername = findViewById(R.id.tvUsername);
+        etUsername = findViewById(R.id.etUsername);
+        etEmail = findViewById(R.id.etEmail);
+        etNewPassword = findViewById(R.id.etNewPassword);
+        etOldPassword = findViewById(R.id.etOldPassword);
+        etBiography = findViewById(R.id.etBiography);
+        tvConfirmPassword = findViewById(R.id.tvConfirmPassword);
+        etConfirmPassword = findViewById(R.id.etConfirmPassword);
+        btnSave = findViewById(R.id.btnSave);
+        optChangePass = findViewById(R.id.optChangePass);
+        clPassword = findViewById(R.id.clPassword);
+
+        optChangePass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (clPassword.getVisibility() != View.VISIBLE) {
+                    clPassword.setVisibility(View.VISIBLE);
+
+                    constraintLayout = findViewById(R.id.mainLayout);
+                    constraintSet = new ConstraintSet();
+                    constraintSet.clone(constraintLayout);
+
+                    constraintSet.connect(btnSave.getId(), ConstraintSet.TOP, clPassword.getId(), ConstraintSet.BOTTOM, 30);
+                    constraintSet.applyTo(constraintLayout);
+                } else {
+                    clPassword.setVisibility(View.INVISIBLE);
+
+                    constraintLayout = findViewById(R.id.mainLayout);
+                    constraintSet = new ConstraintSet();
+                    constraintSet.clone(constraintLayout);
+
+                    constraintSet.connect(btnSave.getId(), ConstraintSet.TOP, optChangePass.getId(), ConstraintSet.BOTTOM, 30);
+                    constraintSet.applyTo(constraintLayout);
+                }
+            }
+        });
 
         //Cambiar foto de perfil
         PopupMenu.OnMenuItemClickListener popupListener = new PopupMenu.OnMenuItemClickListener() {
@@ -115,130 +155,73 @@ public class ActivityEditProfile extends AppCompatActivity {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                uploadImage(newFilePath);
-                //if(saveData()) {
-                  //  finish();
-                //}
-            }
-        });
-    }
-
-    //Metodo para instanciar los elementos de la UI
-    private void initializeViews() {
-        ibPickPhoto = findViewById(R.id.ibPickPhoto);
-        ivProfilePhoto = findViewById(R.id.ivProfilePhoto);
-
-        tvUsername = findViewById(R.id.tvUsername);
-        etUsername = findViewById(R.id.etUsername);
-        etEmail = findViewById(R.id.etEmail);
-        etNewPassword = findViewById(R.id.etNewPassword);
-        etOldPassword = findViewById(R.id.etOldPassword);
-        etBiography = findViewById(R.id.etBiography);
-        tvConfirmPassword = findViewById(R.id.tvConfirmPassword);
-        etConfirmPassword = findViewById(R.id.etConfirmPassword);
-        btnSave = findViewById(R.id.btnSave);
-        optChangePass = findViewById(R.id.optChangePass);
-        clPassword = findViewById(R.id.clPassword);
-
-        optChangePass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(clPassword.getVisibility() != View.VISIBLE) {
-                    clPassword.setVisibility(View.VISIBLE);
-
-                    constraintLayout = findViewById(R.id.mainLayout);
-                    constraintSet = new ConstraintSet();
-                    constraintSet.clone(constraintLayout);
-
-                    constraintSet.connect(btnSave.getId(), ConstraintSet.TOP, clPassword.getId(), ConstraintSet.BOTTOM, 30);
-                    constraintSet.applyTo(constraintLayout);
-                } else {
-                    clPassword.setVisibility(View.INVISIBLE);
-
-                    constraintLayout = findViewById(R.id.mainLayout);
-                    constraintSet = new ConstraintSet();
-                    constraintSet.clone(constraintLayout);
-
-                    constraintSet.connect(btnSave.getId(), ConstraintSet.TOP, optChangePass.getId(), ConstraintSet.BOTTOM, 30);
-                    constraintSet.applyTo(constraintLayout);
+                if(newFilePath != null) {
+                    newFilePath = Uri.parse(uploadImage(newFilePath));
                 }
+
+                String oldPassword = etOldPassword.getText().toString();
+                String newPassword = etNewPassword.getText().toString();
+                String ConfPass = etConfirmPassword.getText().toString();
+
+                if (newPassword.length() >= 8 && newPassword.equals(ConfPass) && oldPassword.length() > 0) {
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    final String email = user.getEmail();
+                    AuthCredential credential = EmailAuthProvider.getCredential(email, oldPassword);
+                    user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                user.updatePassword(newPassword).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(Task<Void> task) {
+                                        if (!task.isSuccessful()) {
+                                            Toast.makeText(ActivityEditProfile.this, "Something went wrong. Please try again later", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            saveDataUser(newFilePath);
+                                            Toast.makeText(ActivityEditProfile.this, "Data and password successfully modified", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                            } else {
+                                Toast.makeText(ActivityEditProfile.this, "Authentication Failed", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                } else if (clPassword.getVisibility() == View.INVISIBLE && oldPassword.length() == 0) {
+                    saveDataUser(newFilePath);
+                    Toast.makeText(getApplicationContext(), "Data saved successfully", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Password must match and be equal or longer than 6 characters", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
     }
 
     //Metodo para traer los datos del perfil
     private void retrieveData() {
-        connection = new BdConnection();
-
-        user = connection.retrieveAllUserbyUid(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
         tvUsername.setText(user.getUsername());
         etUsername.setText(user.getUsername());
 
         etBiography.setText(user.getBiography());
         etEmail.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
 
-        //Bitmap bitmap = Utils.decodeBase64(user.getImgProfile());
         Picasso.with(this)
                 .load(user.getImgProfile())
                 .into(ivProfilePhoto);
 
         lastFileUrl = Uri.parse(user.getImgProfile());
         newFilePath = null;
+
+        shimmer.stopShimmer();
+        shimmer.hideShimmer();
     }
     //END Recogida de datos
-
-    //GUARDADO DE DATOS
-    private boolean saveData(Uri imgUrl) {
-        connection = new BdConnection();
-
-        String imagenB64 = (imgUrl != null ? imgUrl.toString() : lastFileUrl.toString());
-        String username = etUsername.getText().toString();
-        String bio = etBiography.getText().toString();
-        String oldPassword = etOldPassword.getText().toString();
-        String newPassword = etNewPassword.getText().toString();
-        String ConfPass = etConfirmPassword.getText().toString();
-
-        if(newPassword.length() >= 6 && newPassword.equals(ConfPass) && oldPassword.length() > 0) {
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            final String email = user.getEmail();
-            AuthCredential credential = EmailAuthProvider.getCredential(email,oldPassword);
-            user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(Task<Void> task) {
-                    if(task.isSuccessful()){
-                        user.updatePassword(newPassword).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(Task<Void> task) {
-                                if(!task.isSuccessful()){
-                                    Toast.makeText(ActivityEditProfile.this, "Something went wrong. Please try again later", Toast.LENGTH_SHORT).show();
-                                }else {
-                                    connection.changeDataUser(FirebaseAuth.getInstance().getCurrentUser().getUid(), username, imagenB64, bio);
-                                    Toast.makeText(ActivityEditProfile.this, "Data and password successfully modified", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-                    }else {
-                        Toast.makeText(ActivityEditProfile.this, "Authentication Failed", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-            return true;
-        } else if(clPassword.getVisibility() == View.INVISIBLE && oldPassword.length() == 0) {
-            connection.changeDataUser(FirebaseAuth.getInstance().getCurrentUser().getUid(), username, imagenB64, bio);
-            Toast.makeText(this, "Data saved successfully", Toast.LENGTH_SHORT).show();
-            return true;
-        } else {
-            Toast.makeText(this, "Password must match and be equal or longer than 6 characters", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-    }
-    //END GUARDADO DE DATOS
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 101) {
+        if (requestCode == 101) {
             newFilePath = data.getData();
             Utils.onActivityResult(this, requestCode, resultCode, data, newFilePath, ivProfilePhoto);
         }
@@ -270,19 +253,14 @@ public class ActivityEditProfile extends AppCompatActivity {
     }
 
     //END MENU superior
-    //LOGOUT
-    public void callSignOut(View view) {
-        signOut();
-    } //El boton de logout me lo fumaba la verdad
 
+    //LOGOUT
     private void signOut() {
         FirebaseAuth.getInstance().signOut();
         startActivity(new Intent(this, ActivityLogin.class));
     }
-    //END LOGOUT
 
-    private void uploadImage(Uri filePath) {
-
+    private String uploadImage(Uri filePath) {
         if (filePath != null) {
             final StorageReference ref = FirebaseStorage.getInstance().getReference().child("images/" + UUID.randomUUID().toString());
             UploadTask uploadTask = ref.putFile(filePath);
@@ -301,14 +279,61 @@ public class ActivityEditProfile extends AppCompatActivity {
                 public void onComplete(@NonNull Task<Uri> task) {
                     if (task.isSuccessful()) {
                         Uri downloadUri = task.getResult();
-                        saveData(downloadUri);
                     } else {
                         // Handle failures
                         // ...
                     }
                 }
             });
+
+            return ref.getDownloadUrl().toString();
         }
+        return null;
+    }
+
+    //Carga de usuario asyncrona
+    private void bringUser() {
+        UserLoader userCountersLoader = new UserLoader(ApiClient.getInstance(accessToken).getService(), this, uid);
+        userCountersLoader.getAllUser().observe(this, this::onUserLoaded);
+        userCountersLoader.loadAllUser();
+    }
+
+    private void onUserLoaded(HashMap<String, Object> counters) {
+        this.user = (User) counters.get("user");
+        retrieveData();
+    }
+
+    public void saveDataUser(Uri imgUrl) {
+        ApiClient apiClient = ApiClient.getInstance(accessToken);
+
+        String urlImage = (imgUrl != null ? imgUrl.toString() : lastFileUrl.toString());
+        String username = etUsername.getText().toString();
+        String bio = etBiography.getText().toString();
+
+        UserEditRequest editer = new UserEditRequest(Utils.getUserToken(), username, urlImage, bio);
+
+        Call<Void> call = apiClient.getService().editUser(editer);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(ActivityEditProfile.this, "Good!", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(ActivityEditProfile.this, ActivityProfile.class));
+                    finish();
+                } else {
+                    // Handle the error
+                    Log.e("API_ERROR", "Response error: " + response.code() + " " + response.message());
+                    Toast.makeText(ActivityEditProfile.this, "bad!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                // Handle the error
+                Toast.makeText(ActivityEditProfile.this, "bad!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
 }

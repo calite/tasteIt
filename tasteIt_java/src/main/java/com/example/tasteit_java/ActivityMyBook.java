@@ -2,26 +2,36 @@ package com.example.tasteit_java;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.example.tasteit_java.adapters.AdapterEndlessRecyclerMain;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.example.tasteit_java.ApiService.ApiClient;
+import com.example.tasteit_java.ApiUtils.UserLoader;
 import com.example.tasteit_java.adapters.AdapterFragmentMyBook;
-import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.OnItemNavSelectedListener;
+import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.HashMap;
 
 public class ActivityMyBook extends AppCompatActivity {
     private FloatingActionButton bCreate;
@@ -29,19 +39,24 @@ public class ActivityMyBook extends AppCompatActivity {
     private ViewPager2 vpPaginator;
     private String token;
     private AdapterFragmentMyBook adapter;
+    private MenuItem profileImg;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_book);
 
-        initializeViews();
-
         //recoger token usuario firebase
         token = Utils.getUserToken();
+        initializeViews();
 
         //menu superior
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("My Book");
+    }
+
+    private void initializeViews() {
+        vpPaginator = findViewById(R.id.vpPaginator);
+        tlRecipes = findViewById(R.id.tlRecipes);
 
         adapter = new AdapterFragmentMyBook(getSupportFragmentManager(), getLifecycle(), token);
         vpPaginator.setAdapter(adapter);
@@ -82,11 +97,6 @@ public class ActivityMyBook extends AppCompatActivity {
         });
     }
 
-    private void initializeViews() {
-        vpPaginator = findViewById(R.id.vpPaginator);
-        tlRecipes = findViewById(R.id.tlRecipes);
-    }
-
     //MENU superior
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -96,9 +106,8 @@ public class ActivityMyBook extends AppCompatActivity {
         menu.getItem(1).setVisible(false);
         menu.getItem(2).setVisible(false);
 
-        Bitmap originalBitmap = Utils.uriToBitmap(getApplicationContext(), "https://firebasestorage.googleapis.com/v0/b/tasteit-java.appspot.com/o/images%2F035d70df-1048-4c15-ba6a-c4d81d44a026?alt=media&token=d2c0ebf1-3b4e-40a4-9162-94fbc2070008");
-        BitmapDrawable roundedBitmapDrawable = new BitmapDrawable(getResources(), Utils.getRoundBitmapWithImage(originalBitmap));
-        menu.getItem(0).setIcon(roundedBitmapDrawable);
+        profileImg = menu.getItem(0);
+        retrieveProfileImg();
 
         BottomNavigationView fcMainMenu = findViewById(R.id.fcMainMenu);
         fcMainMenu.setSelectedItemId(R.id.bMyBook);
@@ -138,5 +147,35 @@ public class ActivityMyBook extends AppCompatActivity {
     private void signOut(){
         FirebaseAuth.getInstance().signOut();
         startActivity (new Intent(this, ActivityLogin.class));
+    }
+
+    private void retrieveProfileImg() {
+        UserLoader userLoader = new UserLoader(ApiClient.getInstance(Utils.getUserAcessToken()).getService(), this, Utils.getUserToken());
+        userLoader.getAllUser().observe(this, this::onProfileImgLoaded);
+        userLoader.loadAllUser();
+    }
+
+    private void onProfileImgLoaded(HashMap<String, Object> temp) {
+        User user = (User) temp.get("user");
+        Glide.with(this)
+                .load(user.getImgProfile())
+                .into(new CustomTarget<Drawable>() {
+                    @Override
+                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                        Bitmap bitmap = Bitmap.createBitmap(resource.getIntrinsicWidth(),
+                                resource.getIntrinsicHeight(),
+                                Bitmap.Config.ARGB_8888);
+                        Canvas canvas = new Canvas(bitmap);
+                        resource.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+                        resource.draw(canvas);
+
+                        Drawable roundedDrawable = new BitmapDrawable(getResources(), Utils.getRoundBitmapWithImage(bitmap));
+                        profileImg.setIcon(roundedDrawable);
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                    }
+                });
     }
 }

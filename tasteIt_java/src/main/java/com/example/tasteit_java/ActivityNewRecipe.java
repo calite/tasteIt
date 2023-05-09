@@ -27,8 +27,8 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.tasteit_java.ApiService.ApiClient;
 import com.example.tasteit_java.ApiService.ApiRequests;
 import com.example.tasteit_java.ApiService.RecipeId_Recipe_User;
+import com.example.tasteit_java.ApiUtils.RecipeLoader;
 import com.example.tasteit_java.adapters.AdapterFragmentNewRecipe;
-import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.Utils;
 import com.example.tasteit_java.fragments.FragmentInfoNewRecipe;
@@ -56,7 +56,6 @@ public class ActivityNewRecipe extends AppCompatActivity {
     private TabLayout tlRecipe;
     private ViewPager2 vpPaginator;
     private Uri filePath;
-    private BdConnection app;
     private String token;
 
     private EditText etRecipeName;
@@ -81,10 +80,16 @@ public class ActivityNewRecipe extends AppCompatActivity {
         setContentView(R.layout.activity_new_recipe);
 
         accessToken = Utils.getUserAcessToken();
-
-        app = new BdConnection();  //Instanciamos la conexion
-
         token = Utils.getUserToken();
+
+        if(getIntent().getExtras() != null) {
+            editing = true;
+            Bundle params = getIntent().getExtras();
+            recipeId = params.getInt("recipeId");
+            creatorToken = params.getString("creatorToken");
+
+            bringRecipe();
+        }
 
         //menu superior
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -125,7 +130,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
         ibPickPhoto = findViewById(R.id.ibPickPhoto);
         ivRecipePhoto = findViewById(R.id.ivRecipePhoto);
 
-        //Cambiar foto de perfil
+        //Cambiar foto de la receta
         PopupMenu.OnMenuItemClickListener popupListener = new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
@@ -153,17 +158,6 @@ public class ActivityNewRecipe extends AppCompatActivity {
                 popupMenu.show();
             }
         });
-
-        if(getIntent().getExtras() != null) {
-            editing = true;
-            Bundle params = getIntent().getExtras();
-            recipeId = params.getInt("recipeId");
-            creatorToken = params.getString("creatorToken");
-
-            bringRecipe();
-        }
-
-
     }
 /*
     private void saveRecipe(String token, BdConnection app){
@@ -300,71 +294,14 @@ public class ActivityNewRecipe extends AppCompatActivity {
 
     }
 
-    ///////////////////
-
-    private class RecipeLoader {
-
-        private final ApiRequests apiRequests;
-        private final MutableLiveData<List<Recipe>> recipeLiveData;
-
-        public RecipeLoader(ApiRequests apiRequests) {
-            this.apiRequests = apiRequests;
-            recipeLiveData = new MutableLiveData<>();
-        }
-
-        public LiveData<List<Recipe>> getRecipe() {
-            return recipeLiveData;
-        }
-
-        public void loadRecipe() {
-
-
-            apiRequests.getRecipeById(recipeId).enqueue(new Callback<List<RecipeId_Recipe_User>>() {
-                @Override
-                public void onResponse(Call<List<RecipeId_Recipe_User>> call, Response<List<RecipeId_Recipe_User>> response) {
-                    if (response.isSuccessful()) {
-                        List<RecipeId_Recipe_User> recipeApis = response.body();
-                        List<Recipe> recipes = new ArrayList<>();
-                        //tratamos los datos
-                        for (RecipeId_Recipe_User recipeApi : recipeApis) {
-                            Recipe recipe = new Recipe(
-                                    recipeApi.getRecipeDetails().getName(),
-                                    recipeApi.getRecipeDetails().getDescription(),
-                                    (ArrayList<String>) recipeApi.getRecipeDetails().getSteps(),
-                                    recipeApi.getRecipeDetails().getDateCreated(),
-                                    recipeApi.getRecipeDetails().getDifficulty(),
-                                    recipeApi.getUser().getUsername(),
-                                    recipeApi.getRecipeDetails().getImage(),
-                                    recipeApi.getRecipeDetails().getCountry(),
-                                    (ArrayList<String>) recipeApi.getRecipeDetails().getTags(),
-                                    (ArrayList<String>) recipeApi.getRecipeDetails().getIngredients(),
-                                    recipeApi.getRecipeId(),
-                                    recipeApi.getUser().getToken()
-                            );
-                            recipes.add(recipe);
-                            creatorToken = recipeApi.getUser().getToken();
-                        }
-                        recipeLiveData.postValue(recipes);
-                    } else {
-                        // La solicitud no fue exitosa
-                        Toast.makeText(ActivityNewRecipe.this, "something went wrong", Toast.LENGTH_SHORT).show();
-                    }
-
-                }
-
-                @Override
-                public void onFailure(Call<List<RecipeId_Recipe_User>> call, Throwable t) {
-                    Toast.makeText(ActivityNewRecipe.this, "something went wrong", Toast.LENGTH_SHORT).show();
-                }
-            });
-
-        }
+    private void bringRecipe() {
+        RecipeLoader recipesLoader = new RecipeLoader(ApiClient.getInstance(accessToken).getService(), this, recipeId);
+        recipesLoader.getRecipeById().observe(this, this::onRecipeLoaded);
+        recipesLoader.loadRecipeById();
     }
 
-    private void onRecipeLoaded(List<Recipe> recipes) {
-        // Actualizar la UI con la info de la recetas
-
-        recipe = ((ArrayList<Recipe>) recipes).get(0);
+    private void onRecipeLoaded(Recipe recipes) {
+        recipe = recipes;
 
         //UNA VEZ SE HACE LA CARGA DE LA RECETA SE RELLENA LA INFORMACION Y SE HA MOVIDO EL CODIGO QUE DEPENDIESE DE LA MISMA(PAGINATOR Y EL BOTON DE LIKE)
         //GENERAL
@@ -385,21 +322,9 @@ public class ActivityNewRecipe extends AppCompatActivity {
         FragmentStepsNewRecipe.setSteps(recipe.getSteps());
         //INGREDIENTS
         FragmentIngredientsNewRecipe.setIngredients(recipe.getIngredients());
-
-    }
-
-    private void bringRecipe() {
-        //olvidamos asynctask y metemos lifecycle, que es mas actual y esta mejor optimizado
-
-        ActivityNewRecipe.RecipeLoader recipesLoader = new ActivityNewRecipe.RecipeLoader(ApiClient.getInstance(accessToken).getService());
-
-        recipesLoader.getRecipe().observe(this, this::onRecipeLoaded);
-
-        recipesLoader.loadRecipe();
     }
 
     public void createRecipe() {
-
         apiClient = ApiClient.getInstance(accessToken);
 
         String name = FragmentInfoNewRecipe.getRecipeName().getText().toString();

@@ -2,65 +2,58 @@ package com.example.tasteit_java;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewStub;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.tasteit_java.ApiService.ApiClient;
-import com.example.tasteit_java.ApiService.ApiRequests;
-import com.example.tasteit_java.ApiService.RecipeId_Recipe_User;
+import com.example.tasteit_java.ApiUtils.RecipeLoader;
+import com.example.tasteit_java.ApiUtils.UserLoader;
 import com.example.tasteit_java.adapters.AdapterEndlessRecyclerMain;
-import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.OnItemNavSelectedListener;
 import com.example.tasteit_java.clases.OnLoadMoreListener;
 import com.example.tasteit_java.clases.Recipe;
+import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-
 public class ActivityMain extends AppCompatActivity {
-
-    private AdapterEndlessRecyclerMain adapterEndlessRecyclerMain;
+    private AdapterEndlessRecyclerMain adapter;
     private int skipper;
     private FloatingActionButton bCreate;
     private ShimmerFrameLayout shimmer;
-
+    private MenuItem profileImg;
     private RecyclerView rvRecipes;
-    private String token;
-
     private String accessToken;
+    private int allItemsCount;
+    private boolean allItemsLoaded;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -73,6 +66,8 @@ public class ActivityMain extends AppCompatActivity {
         rvRecipes = findViewById(R.id.rvRecipes);
         bCreate = findViewById(R.id.bCreate);
         skipper = 0;
+        allItemsCount = 0;
+        allItemsLoaded = false;
 
         rvRecipes.setHasFixedSize(true);
         bringRecipes();
@@ -80,31 +75,25 @@ public class ActivityMain extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rvRecipes.setLayoutManager(linearLayoutManager);
 
-        adapterEndlessRecyclerMain = new AdapterEndlessRecyclerMain(rvRecipes);
-        rvRecipes.setAdapter(adapterEndlessRecyclerMain);
+        adapter = new AdapterEndlessRecyclerMain(rvRecipes);
+        rvRecipes.setAdapter(adapter);
 
-        adapterEndlessRecyclerMain.setOnLoadMoreListener(new OnLoadMoreListener() {
+        adapter.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-                if(adapterEndlessRecyclerMain.getItemCount() > 28) { //habra que ponerle un limite (que en principio puede ser el total de recipes en la bbdd o algo fijo para no sobrecargar el terminal)
-                    Toast.makeText(ActivityMain.this, "Finiquitao con " + adapterEndlessRecyclerMain.getItemCount() + " recetas", Toast.LENGTH_SHORT).show();
+                if(allItemsLoaded) { //habra que ponerle un limite (que en principio puede ser el total de recipes en la bbdd o algo fijo para no sobrecargar el terminal)
+                    Toast.makeText(ActivityMain.this, "Finiquitao con " + adapter.getItemCount() + " recetas", Toast.LENGTH_SHORT).show();
                 } else {
-                    adapterEndlessRecyclerMain.dataList.add(null);
-                    adapterEndlessRecyclerMain.notifyItemInserted(adapterEndlessRecyclerMain.getItemCount() - 1);
+                    adapter.dataList.add(null);
+                    adapter.notifyItemInserted(adapter.getItemCount() - 1);
 
                     skipper += 10;
                     bringRecipes();
                 }
             }
-
             @Override
             public void update() {
-                adapterEndlessRecyclerMain.dataList.add(0, null);
-                adapterEndlessRecyclerMain.notifyItemInserted(0);
-
-                skipper = 0;
-                adapterEndlessRecyclerMain.dataList.clear();
-                bringRecipes();
+                updateList();
             }
         });
 
@@ -120,14 +109,12 @@ public class ActivityMain extends AppCompatActivity {
             }
         });
 
-        //recoger token usuario firebase
-        token = Utils.getUserToken();
-
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 Utils.refreshToken();
                 Logger.getGlobal().log(Level.INFO,"Attempting to refresh token");
+                accessToken = Utils.getUserAcessToken();
             }
         },1,1800000);
 
@@ -141,9 +128,8 @@ public class ActivityMain extends AppCompatActivity {
 
         getMenuInflater().inflate(R.menu.main_menu, menu);
 
-        //Bitmap bitmap = Utils.uriToBitmap(this, "https://firebasestorage.googleapis.com/v0/b/tasteit-java.appspot.com/o/images%2F035d70df-1048-4c15-ba6a-c4d81d44a026?alt=media&token=d2c0ebf1-3b4e-40a4-9162-94fbc2070008");
-        //BitmapDrawable roundedBitmapDrawable = new BitmapDrawable(getResources(), Utils.getRoundBitmapWithImage(bitmap));
-        //menu.getItem(0).setIcon(roundedBitmapDrawable);
+        profileImg = menu.getItem(0);
+        retrieveProfileImg();
 
         BottomNavigationView fcMainMenu = findViewById(R.id.fcMainMenu);
         fcMainMenu.setSelectedItemId(R.id.bHome);
@@ -189,82 +175,74 @@ public class ActivityMain extends AppCompatActivity {
         startActivity (new Intent(this, ActivityLogin.class));
     }
 
-    //carga de recetas asyncrona
-    private class RecipesLoader {
+    public void updateList() {
+        skipper = 0;
+        allItemsCount = 0;
+        allItemsLoaded = false;
+        adapter.dataList.clear();
+        adapter.notifyDataSetChanged();
 
-        private final ApiRequests apiRequests;
-        private final MutableLiveData<List<Recipe>> recipeLiveData;
+        shimmer.setVisibility(View.VISIBLE);
+        shimmer.startShimmer();
 
-        public RecipesLoader(ApiRequests apiRequests) {
-            this.apiRequests = apiRequests;
-            recipeLiveData = new MutableLiveData<>();
-        }
+        bringRecipes();
+    }
 
-        public LiveData<List<Recipe>> getRecipes() {
-            return recipeLiveData;
-        }
-
-        public void loadRecipes() {
-            apiRequests.getRecipes(skipper).enqueue(new Callback<List<RecipeId_Recipe_User>>() {
-                @Override
-                public void onResponse(Call<List<RecipeId_Recipe_User>> call, Response<List<RecipeId_Recipe_User>> response) {
-                    if (response.isSuccessful()) {
-                        List<RecipeId_Recipe_User> recipeApis = response.body();
-                        List<Recipe> recipes = new ArrayList<>();
-
-                        //tratamos los datos
-                        for (RecipeId_Recipe_User recipeApi : recipeApis) {
-                            Recipe recipe = new Recipe(
-                                    recipeApi.getRecipeDetails().getName(),
-                                    recipeApi.getRecipeDetails().getDescription(),
-                                    (ArrayList<String>) recipeApi.getRecipeDetails().getSteps(),
-                                    recipeApi.getRecipeDetails().getDateCreated(),
-                                    recipeApi.getRecipeDetails().getDifficulty(),
-                                    recipeApi.getUser().getUsername(),
-                                    recipeApi.getRecipeDetails().getImage(),
-                                    recipeApi.getRecipeDetails().getCountry(),
-                                    (ArrayList<String>) recipeApi.getRecipeDetails().getTags(),
-                                    (ArrayList<String>) recipeApi.getRecipeDetails().getIngredients(),
-                                    recipeApi.getRecipeId(),
-                                    recipeApi.getUser().getToken()
-                            );
-                            recipes.add(recipe);
-                        }
-                        recipeLiveData.postValue(recipes);
-                    } else {
-                        // La solicitud no fue exitosa
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<List<RecipeId_Recipe_User>> call, Throwable t) {
-                    // Hubo un error en la solicitud
-                    Toast.makeText(ActivityMain.this, "Failed to load data", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
+    private void bringRecipes() {
+        RecipeLoader recipesLoader = new RecipeLoader(ApiClient.getInstance(accessToken).getService(), this, skipper);
+        recipesLoader.getAllRecipesWSkipper().observe(this, this::onRecipesLoaded);
+        recipesLoader.loadAllRecipesWSkipper();
     }
 
     private void onRecipesLoaded(List<Recipe> recipes) {
-        // Actualizar la UI con la lista de recetas
-
-        if(adapterEndlessRecyclerMain.getItemCount() > 0) {
-            adapterEndlessRecyclerMain.dataList.remove(adapterEndlessRecyclerMain.getItemCount() - 1);
+        if(adapter.getItemCount() > 0) {
+            if(adapter.getItemViewType(adapter.getItemCount() - 1) != 0) {
+                adapter.dataList.remove(adapter.getItemCount() - 1);
+            } else if(adapter.getItemViewType(0) != 0) {
+                adapter.dataList.remove(0);
+            }
         }
 
-        adapterEndlessRecyclerMain.dataList.addAll(recipes);
-        adapterEndlessRecyclerMain.setLoaded();
-        adapterEndlessRecyclerMain.notifyDataSetChanged();
+        adapter.dataList.addAll(recipes);
+        adapter.setLoaded();
+        adapter.notifyDataSetChanged();
+
+        if(adapter.dataList.size() != allItemsCount) {
+            allItemsCount = adapter.dataList.size();
+        } else {
+            allItemsLoaded = true;
+        }
 
         shimmer.stopShimmer();
         shimmer.setVisibility(View.GONE);
     }
 
-    private void bringRecipes() {
-        //olvidamos asynctask y metemos lifecycle, que es mas actual y esta mejor optimizado
-        RecipesLoader recipesLoader = new RecipesLoader(ApiClient.getInstance(accessToken).getService());
-        recipesLoader.getRecipes().observe(this, this::onRecipesLoaded);
-        recipesLoader.loadRecipes();
+    private void retrieveProfileImg() {
+        UserLoader userLoader = new UserLoader(ApiClient.getInstance(accessToken).getService(), this, Utils.getUserToken());
+        userLoader.getAllUser().observe(this, this::onProfileImgLoaded);
+        userLoader.loadAllUser();
     }
 
+    private void onProfileImgLoaded(HashMap<String, Object> temp) {
+        User user = (User) temp.get("user");
+        Glide.with(this)
+                .load(user.getImgProfile())
+                .into(new CustomTarget<Drawable>() {
+                    @Override
+                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                        Bitmap bitmap = Bitmap.createBitmap(resource.getIntrinsicWidth(),
+                                resource.getIntrinsicHeight(),
+                                Bitmap.Config.ARGB_8888);
+                        Canvas canvas = new Canvas(bitmap);
+                        resource.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+                        resource.draw(canvas);
+
+                        Drawable roundedDrawable = new BitmapDrawable(getResources(), Utils.getRoundBitmapWithImage(bitmap));
+                        profileImg.setIcon(roundedDrawable);
+                    }
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                    }
+                });
+    }
 }

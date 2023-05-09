@@ -8,6 +8,7 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -21,7 +22,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
-import com.example.tasteit_java.bdConnection.BdConnection;
+import com.example.tasteit_java.ApiService.ApiClient;
+import com.example.tasteit_java.ApiService.UserApi;
 import com.example.tasteit_java.clases.Utils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -32,8 +34,11 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ActivityLogin extends AppCompatActivity {
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
+public class ActivityLogin extends AppCompatActivity {
     private String email;
     private String password;
     private String confirmPassword;
@@ -44,20 +49,13 @@ public class ActivityLogin extends AppCompatActivity {
     private ConstraintLayout lyTerms;
     private Button bShowPass;
     private Button bShowPass2;
-
     private FirebaseAuth mAuth;
-
-    private BdConnection app;
-
     Logger log = Logger.getLogger(ActivityMain.class.getName());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        app = new BdConnection();
 
         tryLoggin();
 
@@ -249,23 +247,19 @@ public class ActivityLogin extends AppCompatActivity {
     }
 
     private void waitingForConection() {
-
         View view = View.inflate(ActivityLogin.this, R.layout.item_waiting_for_login, null);
         Dialog dialog = new Dialog(ActivityLogin.this, R.style.DialogTheme);
         dialog.setContentView(view);
         dialog.create();
         dialog.show();
-
     }
 
     private void goHome() {
         Intent i = new Intent(this, ActivityMain.class);
 
-        //NEO
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         String uid = firebaseUser.getUid();
         log.log(Level.INFO, uid + " " + firebaseUser.getEmail());
-        //FIN NEO
 
         startActivity(i);
         finish();
@@ -279,11 +273,36 @@ public class ActivityLogin extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    //NEO4J
-                    FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                    String uid = firebaseUser.getUid();
-                    app.register(userName, uid);
-                    //FIN NEO
+                    String uid = Utils.getUserToken();
+                    ApiClient apiClient = ApiClient.getInstance(Utils.getUserAcessToken());
+                    UserApi user = new UserApi();
+                    user.setToken(uid);
+                    user.setImgProfile("https://firebasestorage.googleapis.com/v0/b/tasteit-java.appspot.com/o/images%2Ff7926fb7-0de2-46b0-adf3-fa30b2015111?alt=media&token=7dd5b1bf-edbb-4739-bf67-ab45930125d3");
+                    user.setBiography("");
+                    user.setUsername(userName);
+
+                    Call<Void> call = apiClient.getService().userRegister(user);
+                    call.enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            if (response.isSuccessful()) {
+                                Toast.makeText(ActivityLogin.this, "Good!", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(ActivityLogin.this, ActivityMain.class));
+                                finish();
+                            } else {
+                                // Handle the error
+                                Log.e("API_ERROR", "Response error: " + response.code() + " " + response.message());
+                                Toast.makeText(ActivityLogin.this, "bad!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                            // Handle the error
+                            Toast.makeText(ActivityLogin.this, "bad!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
                     //pantalla de carga
                     waitingForConection();
                     goHome();
@@ -321,7 +340,6 @@ public class ActivityLogin extends AppCompatActivity {
     }
 
     private boolean confirmPassword() {
-
         password = etPassword.getText().toString();
         confirmPassword = etConfirmPassword.getText().toString();
 

@@ -35,12 +35,12 @@
                 android:maxLength="10"
                 android:textSize="11dp"
 
-                app:layout_constraintEnd_toStartOf="@+id/ibtnOptions"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0" />
 
-            <ImageButton
+            <!--<ImageButton
                 android:id="@+id/ibtnOptions"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
@@ -51,7 +51,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0" />
+                app:layout_constraintVertical_bias="0" />-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

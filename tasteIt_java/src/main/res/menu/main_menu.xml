@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto">
 
     <group>
-
         <item
             android:id="@+id/iProfile"
             android:icon="@drawable/ic_default_profile"
             android:title="Profile"
-            app:showAsAction="always" />
+            app:showAsAction="always"/>
         <item
             android:id="@+id/iDarkMode"
             android:title="Dark/Light Mode" />
