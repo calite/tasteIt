@@ -285,7 +285,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 101) {
-            Utils.onActivityResult(this, requestCode, resultCode, data, filePath, ivRecipePhoto);
+            Utils.onActivityResult(this, requestCode, resultCode, data, ivRecipePhoto);
         }
         if(requestCode == 202) {
             Bitmap photo = (Bitmap) data.getExtras().get("data");

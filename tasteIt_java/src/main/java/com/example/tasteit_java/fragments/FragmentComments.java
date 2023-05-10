@@ -111,7 +111,7 @@ public class FragmentComments extends Fragment {
         bringComments();
 
         rvLvComments = view.findViewById(R.id.rvLvComments);
-        adapter = new AdapterRecyclerCommentsProfile(getContext(), myProfile, rvLvComments);
+        adapter = new AdapterRecyclerCommentsProfile(myProfile, rvLvComments);
         rvLvComments.setAdapter(adapter);
 
         rvLvComments.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -132,9 +132,6 @@ public class FragmentComments extends Fragment {
 
             @Override
             public void update() {
-                adapter.dataList.add(0, null);
-                adapter.notifyItemInserted(0);
-
                 skipper = 0;
                 adapter.dataList.clear();
                 bringComments();

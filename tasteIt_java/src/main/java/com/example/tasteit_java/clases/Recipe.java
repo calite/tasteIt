@@ -12,7 +12,7 @@ public class Recipe implements Parcelable {
     private String dateCreated;
     private int difficulty;
     private String creator;
-    private String rating;
+    private float rating;
     private String image;
     private String country;
     private ArrayList<String> tags;
@@ -29,7 +29,7 @@ public class Recipe implements Parcelable {
         dateCreated = in.readString();
         difficulty = in.readInt();
         creator = in.readString();
-        rating = in.readString();
+        rating = in.readFloat();
         image = in.readString();
         country = in.readString();
         tags = in.createStringArrayList();
@@ -140,11 +140,11 @@ public class Recipe implements Parcelable {
         this.creator = creator;
     }
 
-    public String getRating() {
+    public float getRating() {
         return rating;
     }
 
-    public void setRating(String rating) {
+    public void setRating(float rating) {
         this.rating = rating;
     }
 
@@ -197,7 +197,7 @@ public class Recipe implements Parcelable {
         parcel.writeString(dateCreated);
         parcel.writeInt(difficulty);
         parcel.writeString(creator);
-        parcel.writeString(rating);
+        parcel.writeFloat(rating);
         parcel.writeString(image);
         parcel.writeString(country);
         parcel.writeStringList(tags);

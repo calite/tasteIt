@@ -75,7 +75,7 @@ public class Utils {
         startActivityForResult(activity, camera_intent, TAKE_PICTURE, null);
     }
 
-    public static void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data, Uri filePath, ImageView ivRecipePhoto) {
+    public static void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data, ImageView ivRecipePhoto) {
         if (requestCode == SELECT_PICTURE) {
             if (resultCode == Activity.RESULT_OK) {
                 if (data != null) {
@@ -110,18 +110,26 @@ public class Utils {
     }
 
     public static String getUserToken() {
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        return firebaseUser.getUid();
+        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+            FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+            return firebaseUser.getUid();
+        }
+        return null;
     }
 
     public static String getUserAcessToken() {
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        return firebaseUser.getIdToken(false).getResult().getToken();
+        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+            FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+            return firebaseUser.getIdToken(false).getResult().getToken();
+        }
+        return null;
     }
 
     public static void refreshToken() {
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        firebaseUser.getIdToken(true);
+        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+            FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+            firebaseUser.getIdToken(true);
+        }
     }
 
 

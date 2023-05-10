@@ -11,6 +11,7 @@ import com.example.tasteit_java.ApiService.UserCommentApi;
 import com.example.tasteit_java.clases.Comment;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.User;
+import com.example.tasteit_java.fragments.FragmentSearch;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,7 +70,6 @@ public class UserLoader {
                     Integer counter = response.body().get(0);
                     temp.put("recipes", counter);
                 } else {
-                    Toast.makeText(context, "Primer error", Toast.LENGTH_SHORT).show();
                     // La solicitud no fue exitosa
                 }
             }

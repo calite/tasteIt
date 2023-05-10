@@ -133,6 +133,16 @@ public class ActivityProfileData extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onRestart() {
+        skipper = 0;
+        allItemsCount = 0;
+        allItemsLoaded = false;
+        adapter.dataList.clear();
+        retrieveData();
+        super.onRestart();
+    }
+
     private void bringUserRecipes() {
         RecipeLoader recipesLoader = new RecipeLoader(ApiClient.getInstance(accessToken).getService(), this, uidProfile, skipper);
         recipesLoader.getRecipesByUser().observe(this, this::onRecipesLoaded);

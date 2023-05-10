@@ -299,7 +299,7 @@ public class ActivityRecipe extends AppCompatActivity {
         }
 
         if(adapter == null) {
-            adapter = new AdapterFragmentRecipe(getSupportFragmentManager(), getLifecycle(), recipe);
+            adapter = new AdapterFragmentRecipe(getSupportFragmentManager(), getLifecycle(), recipe.getId());
             vpPaginator.setAdapter(adapter);
             shimmer.stopShimmer();
             shimmer.hideShimmer();

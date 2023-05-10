@@ -109,9 +109,6 @@ public class FragmentMyBook extends Fragment {
 
             @Override
             public void update() {
-                adapter.dataList.add(0, null);
-                adapter.notifyItemInserted(0);
-
                 skipper = 0;
                 allItemsCount = 0;
                 allItemsLoaded = false;

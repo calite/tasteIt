@@ -8,9 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
@@ -41,48 +41,52 @@ public class AdapterEndlessRecyclerSearch extends Adapter {
     private boolean loading;
     private OnLoadMoreListener onLoadMoreListener;
 
-    public AdapterEndlessRecyclerSearch(RecyclerView recyclerView, ArrayList<Object> dataList, String search) {
+    public AdapterEndlessRecyclerSearch(RecyclerView recyclerView, String search) {
         this.search = search;
-        this.dataList = new ArrayList<>(dataList);
+        dataList = new ArrayList<>();
         this.recyclerView = recyclerView;
 
-        /*if (recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
+        if (recyclerView.getLayoutManager() instanceof GridLayoutManager) {
 
-            final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView
-                    .getLayoutManager();
+            final GridLayoutManager gridLayoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
 
-            recyclerView.addOnScrollListener(new OnScrollListener() {
+            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                private int totalDistanceScrolled = 0;
+                private int threshold = 200; // umbral de distancia a recorrer en px
                 @Override
                 public void onScrolled(RecyclerView recyclerView,
                                        int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
 
                     if(recyclerView.getScrollState() == RecyclerView.SCROLL_STATE_SETTLING) {
-                        if (linearLayoutManager.findFirstVisibleItemPosition() > 0 && dy > 0) {
-                            totalItemCount = linearLayoutManager.getItemCount();
-                            lastVisibleItem = linearLayoutManager.findLastCompletelyVisibleItemPosition();
+                        totalDistanceScrolled += dy;
+
+                        if (gridLayoutManager.findFirstVisibleItemPosition() > 0 && dy > 0) {
+                            totalItemCount = gridLayoutManager.getItemCount();
+                            lastVisibleItem = gridLayoutManager.findLastCompletelyVisibleItemPosition();
 
                             if (!loading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
                                 // End has been reached
                                 if (onLoadMoreListener != null) {
-                                    Toast.makeText(recyclerView.getContext(), "Aqui recogeriamos mas datos dependiendo", Toast.LENGTH_SHORT).show();
-                                    //onLoadMoreListener.onLoadMore();
+                                    onLoadMoreListener.onLoadMore();
                                 }
                                 loading = true;
+                                totalDistanceScrolled = 0;
                             }
-                        } else {
-                            /*if (!loading && !recyclerView.canScrollVertically(-1) && linearLayoutManager.findFirstVisibleItemPosition() == 1) {
+                        } else if (dy < 0 && gridLayoutManager.findFirstVisibleItemPosition() == 0) {
+                            // Beginning has been reached
+                            if (!loading && totalDistanceScrolled > threshold) {
                                 if (onLoadMoreListener != null) {
-                                    Toast.makeText(recyclerView.getContext(), "ACTUALIZAAAA", Toast.LENGTH_SHORT).show();
                                     onLoadMoreListener.update();
                                 }
                                 loading = true;
+                                totalDistanceScrolled = 0;
                             }
                         }
                     }
                 }
             });
-        }*/
+        }
     }
 
     @Override
@@ -133,7 +137,6 @@ public class AdapterEndlessRecyclerSearch extends Adapter {
         this.onLoadMoreListener = onLoadMoreListener;
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
         return dataList.size();
@@ -148,7 +151,6 @@ public class AdapterEndlessRecyclerSearch extends Adapter {
 
         public RecipeViewHolder(View view) {
             super(view);
-            // Define click listener for the DataViewHolder's View
             ivPhotoRecipe = view.findViewById(R.id.ivPhotoRecipe);
             tvDifficulty = view.findViewById(R.id.tvDifficulty);
             tvNameRecipe = view.findViewById(R.id.tvNameRecipe);
@@ -169,9 +171,6 @@ public class AdapterEndlessRecyclerSearch extends Adapter {
             try{
                 Picasso.with(itemView.getContext()).load(recipe.getImage()).into(ivPhotoRecipe);
             }catch(IllegalArgumentException iae){}
-
-            //Bitmap bitmap = Utils.decodeBase64(recipe.getImage());
-            //ivPhotoRecipe.setImageBitmap(bitmap);
             recipeId = recipe.getId();
         }
     }
@@ -183,7 +182,6 @@ public class AdapterEndlessRecyclerSearch extends Adapter {
 
         public UserViewHolder(View view) {
             super(view);
-            // Define click listener for the DataViewHolder's View
             ivPhotoUser = view.findViewById(R.id.ivPhotoUser);
             tvNameUser = view.findViewById(R.id.tvNameUser);
 
@@ -202,11 +200,6 @@ public class AdapterEndlessRecyclerSearch extends Adapter {
             try{
                 Picasso.with(recyclerView.getContext()).load(user.getImgProfile()).into(ivPhotoUser);
             }catch(IllegalArgumentException iae){}
-            /*Picasso.with(recyclerView.getContext())
-                    .load(user.getImgProfile())
-                    .into(ivPhotoUser);*/
-            //Bitmap bitmap = Utils.decodeBase64(user.getImgProfile());
-            //ivPhotoUser.setImageBitmap(bitmap);
             token = user.getUid();
         }
     }

@@ -2,79 +2,201 @@ package com.example.tasteit_java.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.os.AsyncTask;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.tasteit_java.ActivityMain;
 import com.example.tasteit_java.ActivityProfile;
 import com.example.tasteit_java.R;
-import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.Comment;
-import com.example.tasteit_java.clases.User;
-import com.example.tasteit_java.clases.Utils;
-import com.example.tasteit_java.fragments.FragmentComments;
+import com.example.tasteit_java.clases.OnLoadMoreListener;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class AdapterRecyclerCommentsRecipe extends RecyclerView.Adapter<AdapterRecyclerCommentsRecipe.ViewHolder> {
+public class AdapterRecyclerCommentsRecipe extends RecyclerView.Adapter {
 
+    public ArrayList<Object> dataList;
+    private static final int TYPE_ITEM = 0;
+    private static final int TYPE_FOOTER = 1;
+    private int visibleThreshold = 4;
+    private int lastVisibleItem, totalItemCount, firstVisibleItem;
+    private boolean loading;
+    private OnLoadMoreListener onLoadMoreListener;
     private Context context;
-    private int recipeId;
+    private int commentId;
     private ShimmerFrameLayout shimmer;
-    private ArrayList<Comment> comments;
 
-    public AdapterRecyclerCommentsRecipe(Context context, int recipeId, ShimmerFrameLayout shimmer) {
-        this.context = context;
-        this.recipeId = recipeId;
-        comments = new ArrayList<>();
+    public AdapterRecyclerCommentsRecipe(RecyclerView recyclerView, ShimmerFrameLayout shimmer) {
+        dataList = new ArrayList<>();
         this.shimmer = shimmer;
 
-        new TaskLoadRecipeComments().execute();
-    }
+        if (recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView ivUserPicture;
-        TextView tvAuthor, tvComment, tvDateCreated, tvRating;
+            final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView
+                    .getLayoutManager();
 
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            ivUserPicture = itemView.findViewById(R.id.ivUserPicture);
-            tvAuthor = itemView.findViewById(R.id.tvAuthor);
-            tvComment = itemView.findViewById(R.id.tvComment);
-            tvRating = itemView.findViewById(R.id.tvRating);
-            tvDateCreated = itemView.findViewById(R.id.tvDateCreated);
+            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                private int totalDistanceScrolled = 0;
+                private int threshold = 10; // umbral de distancia a recorrer en px
+                private boolean isScrollingUp = false;
+                @Override
+                public void onScrolled(RecyclerView recyclerView,
+                                       int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+
+                    //Toast.makeText(recyclerView.getContext(), "Distancia: " + totalDistanceScrolled, Toast.LENGTH_SHORT).show();
+
+                    if(recyclerView.getScrollState() == RecyclerView.SCROLL_STATE_SETTLING) {
+                        if (dy < 0) {
+                            // User is scrolling up
+                            isScrollingUp = true;
+                        } else if (dy > 0) {
+                            // User is scrolling down
+                            isScrollingUp = false;
+                        }
+
+                        totalDistanceScrolled += dy;
+
+                        if (linearLayoutManager.findFirstVisibleItemPosition() > 0 && dy > 0) {
+                            totalItemCount = linearLayoutManager.getItemCount();
+                            lastVisibleItem = linearLayoutManager.findLastCompletelyVisibleItemPosition();
+
+                            if (!loading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
+                                // End has been reached
+                                if (onLoadMoreListener != null) {
+                                    onLoadMoreListener.onLoadMore();
+                                }
+                                loading = true;
+                                totalDistanceScrolled = 0;
+                            }
+                        } else if (isScrollingUp && linearLayoutManager.findFirstVisibleItemPosition() == 0) {
+                            // Beginning has been reached
+                            if (!loading && totalDistanceScrolled > threshold) {
+                                if (onLoadMoreListener != null) {
+                                    onLoadMoreListener.update();
+                                }
+                                loading = true;
+                                totalDistanceScrolled = 0;
+                            }
+                        }
+                    }
+                }
+            });
         }
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return dataList.get(position) instanceof Comment ? TYPE_ITEM : TYPE_FOOTER;
+    }
+
     @NonNull
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_recipe_comment, null, false);
-        return new ViewHolder(view);
-        //return null;
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+        if (viewType == TYPE_ITEM) {
+            View row = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_recipe_comment,
+                    viewGroup, false);
+            return new CommentViewHolder(row);
+        } else {
+            View row = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.loading_footer,
+                    viewGroup, false);
+            return new FooterViewHolder(row);
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        int pos = position;
-        User user = new BdConnection().retrieveAllUserbyUid(comments.get(position).getTokenUser());
-        String token = Utils.getUserToken();
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int position) {
+        if (viewHolder instanceof AdapterEndlessRecyclerMain.RecipeViewHolder) {
+            ((CommentViewHolder) viewHolder).bindRow((Comment) dataList.get(position));
+        } else if (viewHolder instanceof AdapterEndlessRecyclerMain.FooterViewHolder) {
+            ((FooterViewHolder) viewHolder).progressBar.setIndeterminate(true);
+        }
+    }
 
-        /*PopupMenu.OnMenuItemClickListener popupListener = new PopupMenu.OnMenuItemClickListener() {
+    public void setLoaded() {
+        loading = false;
+    }
+
+    public void setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener) {
+        this.onLoadMoreListener = onLoadMoreListener;
+    }
+
+    @Override
+    public long getItemId(int i) {
+        return dataList.get(i).hashCode();
+    }
+
+    @Override
+    public int getItemCount() {
+        return dataList.size();
+    }
+
+    class CommentViewHolder extends RecyclerView.ViewHolder {
+
+        private ImageView ivUserPicture;
+        private TextView tvAuthor;
+        private TextView tvComment, tvDateCreated, tvRating;
+        private ImageButton ibtnOptions;
+
+        public CommentViewHolder(View view) {
+            super(view);
+            // Define click listener for the DataViewHolder's View
+            ivUserPicture = view.findViewById(R.id.ivUserPicture);
+            tvAuthor = view.findViewById(R.id.tvAuthor);
+            tvComment = view.findViewById(R.id.tvComment);
+            tvDateCreated = view.findViewById(R.id.tvDateCreated);
+            tvRating = view.findViewById(R.id.tvRating);
+        }
+
+        void bindRow(@NonNull Comment comment) {
+            tvAuthor.setText(comment.getUser().getUsername());
+            tvComment.setText(comment.getComment());
+            tvDateCreated.setText(comment.getDateCreated());
+            tvRating.setText(String.valueOf(comment.getRating()));
+
+            try{
+                Picasso.with(itemView.getContext()).load(comment.getUser().getImgProfile()).into(ivUserPicture);
+            }catch(IllegalArgumentException iae){}
+
+            commentId = comment.getId();
+
+            View.OnClickListener listenerProfile = new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, ActivityProfile.class);
+                    intent.putExtra("uid", comment.getTokenUser());
+                    context.startActivity(intent);
+                }
+            };
+
+            ivUserPicture.setOnClickListener(listenerProfile);
+            tvComment.setOnClickListener(listenerProfile);
+            tvAuthor.setOnClickListener(listenerProfile);
+        }
+
+    }
+
+    class FooterViewHolder extends RecyclerView.ViewHolder {
+
+        ProgressBar progressBar;
+
+        public FooterViewHolder(@NonNull View itemView) {
+            super(itemView);
+            progressBar = itemView.findViewById(R.id.footer);
+        }
+    }
+
+    /*PopupMenu.OnMenuItemClickListener popupListener = new PopupMenu.OnMenuItemClickListener() {
 
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
@@ -122,61 +244,5 @@ public class AdapterRecyclerCommentsRecipe extends RecyclerView.Adapter<AdapterR
                 }
             });
         }*/
-
-        holder.tvAuthor.setText(user.getUsername());
-        holder.tvComment.setText(comments.get(position).getComment());
-        holder.tvDateCreated.setText(comments.get(position).getDateCreated());
-
-        Picasso.with(context).load(user.getImgProfile()).into(holder.ivUserPicture);
-        //Bitmap bitmap = Utils.decodeBase64(user.getImgProfile());
-        //holder.ivUserPicture.setImageBitmap(bitmap);
-
-        View.OnClickListener listenerProfile = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, ActivityProfile.class);
-                intent.putExtra("uid", comments.get(pos).getTokenUser());
-                context.startActivity(intent);
-            }
-        };
-
-        holder.ivUserPicture.setOnClickListener(listenerProfile);
-        holder.tvComment.setOnClickListener(listenerProfile);
-        holder.tvAuthor.setOnClickListener(listenerProfile);
-    }
-
-    @Override
-    public long getItemId(int i) {
-        return comments.get(i).hashCode();
-    }
-
-    @Override
-    public int getItemCount() {
-        return comments.size();
-    }
-
-    public void updateComments() {
-        new TaskLoadRecipeComments().execute();
-        notifyDataSetChanged();
-    }
-
-    class TaskLoadRecipeComments extends AsyncTask<ArrayList<Comment>, Void,ArrayList<Comment>> {
-        @Override
-        protected void onPreExecute() {
-
-        }
-        @Override
-        protected ArrayList<Comment> doInBackground(ArrayList<Comment>... hashMaps) {
-            return new BdConnection().getCommentsOnRecipe(recipeId);
-        }
-        @Override
-        protected void onPostExecute(ArrayList<Comment> recipeComments) {
-            //super.onPostExecute(recipes);
-            comments = new ArrayList<>(recipeComments);
-            notifyDataSetChanged();
-            shimmer.stopShimmer();
-            shimmer.setVisibility(View.GONE);
-        }
-    }
 
 }

@@ -155,45 +155,48 @@ public class ActivityEditProfile extends AppCompatActivity {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(newFilePath != null) {
-                    newFilePath = Uri.parse(uploadImage(newFilePath));
-                }
-
                 String oldPassword = etOldPassword.getText().toString();
                 String newPassword = etNewPassword.getText().toString();
                 String ConfPass = etConfirmPassword.getText().toString();
 
-                if (newPassword.length() >= 8 && newPassword.equals(ConfPass) && oldPassword.length() > 0) {
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    final String email = user.getEmail();
-                    AuthCredential credential = EmailAuthProvider.getCredential(email, oldPassword);
-                    user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
+                if (newPassword.length() >= 8 && newPassword.equals(ConfPass) && oldPassword.length() > 0 && newFilePath != null) {
+                    changePassword(oldPassword, newPassword);
+                    Toast.makeText(ActivityEditProfile.this, "Updateo password", Toast.LENGTH_SHORT).show();
+                    uploadImage(newFilePath);
+                } else if (newPassword.length() >= 8 && newPassword.equals(ConfPass) && oldPassword.length() > 0 && newFilePath == null) {
+                    saveDataUser(null);
+                } else if (oldPassword.length() == 0 && newFilePath != null) {
+                    uploadImage(newFilePath);
+                } else if (oldPassword.length() == 0 && newFilePath == null) {
+                    saveDataUser(null);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Password must match and be equal or longer than 8 characters", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void changePassword(String oldPassword, String newPassword) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final String email = user.getEmail();
+        AuthCredential credential = EmailAuthProvider.getCredential(email, oldPassword);
+        user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(Task<Void> task) {
+                if (task.isSuccessful()) {
+                    user.updatePassword(newPassword).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                user.updatePassword(newPassword).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(Task<Void> task) {
-                                        if (!task.isSuccessful()) {
-                                            Toast.makeText(ActivityEditProfile.this, "Something went wrong. Please try again later", Toast.LENGTH_SHORT).show();
-                                        } else {
-                                            saveDataUser(newFilePath);
-                                            Toast.makeText(ActivityEditProfile.this, "Data and password successfully modified", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
+                            if (!task.isSuccessful()) {
+                                Toast.makeText(ActivityEditProfile.this, "Something went wrong. Please try again later", Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(ActivityEditProfile.this, "Authentication Failed", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ActivityEditProfile.this, "Data and password successfully modified", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
-                } else if (clPassword.getVisibility() == View.INVISIBLE && oldPassword.length() == 0) {
-                    saveDataUser(newFilePath);
-                    Toast.makeText(getApplicationContext(), "Data saved successfully", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Password must match and be equal or longer than 6 characters", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityEditProfile.this, "Authentication Failed", Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
     }
@@ -206,9 +209,13 @@ public class ActivityEditProfile extends AppCompatActivity {
         etBiography.setText(user.getBiography());
         etEmail.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
 
-        Picasso.with(this)
-                .load(user.getImgProfile())
-                .into(ivProfilePhoto);
+        try {
+            Picasso.with(this)
+                    .load(user.getImgProfile())
+                    .into(ivProfilePhoto);
+        } catch (IllegalArgumentException e) {
+            Log.e("Image Error", "Error loading profile image");
+        }
 
         lastFileUrl = Uri.parse(user.getImgProfile());
         newFilePath = null;
@@ -223,7 +230,7 @@ public class ActivityEditProfile extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 101) {
             newFilePath = data.getData();
-            Utils.onActivityResult(this, requestCode, resultCode, data, newFilePath, ivProfilePhoto);
+            Utils.onActivityResult(this, requestCode, resultCode, data, ivProfilePhoto);
         }
         /*if(requestCode == 202) {
             if(data.getExtras() != null) {
@@ -260,7 +267,7 @@ public class ActivityEditProfile extends AppCompatActivity {
         startActivity(new Intent(this, ActivityLogin.class));
     }
 
-    private String uploadImage(Uri filePath) {
+    private Uri uploadImage(Uri filePath) {
         if (filePath != null) {
             final StorageReference ref = FirebaseStorage.getInstance().getReference().child("images/" + UUID.randomUUID().toString());
             UploadTask uploadTask = ref.putFile(filePath);
@@ -270,7 +277,6 @@ public class ActivityEditProfile extends AppCompatActivity {
                     if (!task.isSuccessful()) {
                         throw task.getException();
                     }
-
                     // Continue with the task to get the download URL
                     return ref.getDownloadUrl();
                 }
@@ -279,6 +285,7 @@ public class ActivityEditProfile extends AppCompatActivity {
                 public void onComplete(@NonNull Task<Uri> task) {
                     if (task.isSuccessful()) {
                         Uri downloadUri = task.getResult();
+                        saveDataUser(downloadUri);
                     } else {
                         // Handle failures
                         // ...
@@ -286,7 +293,10 @@ public class ActivityEditProfile extends AppCompatActivity {
                 }
             });
 
-            return ref.getDownloadUrl().toString();
+            if (lastFileUrl.equals("")) {
+                final StorageReference storageReference = FirebaseStorage.getInstance().getReference().getStorage().getReferenceFromUrl(user.getImgProfile());
+                storageReference.delete();
+            }
         }
         return null;
     }
@@ -317,8 +327,7 @@ public class ActivityEditProfile extends AppCompatActivity {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(ActivityEditProfile.this, "Good!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(ActivityEditProfile.this, ActivityProfile.class));
+                    //Toast.makeText(ActivityEditProfile.this, "Good!", Toast.LENGTH_SHORT).show();
                     finish();
                 } else {
                     // Handle the error

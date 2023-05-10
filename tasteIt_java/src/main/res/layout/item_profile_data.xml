@@ -154,7 +154,7 @@
                 android:enabled="false"
                 android:orientation="horizontal"
                 android:visibility="invisible"
-                app:chipSpacing="10dp"
+                app:chipSpacing="4dp"
                 
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

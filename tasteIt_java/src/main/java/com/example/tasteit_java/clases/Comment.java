@@ -8,11 +8,11 @@ public class Comment {
     private String tokenUser;
     private User user;
 
-    public Comment(String comment, String dateCreated, float rating, String tokenUser) { //comentario en receta
+    public Comment(String comment, String dateCreated, float rating, User user) { //comentario en receta
         this.comment = comment;
         this.dateCreated = dateCreated;
         this.rating = rating;
-        this.tokenUser = tokenUser;
+        this.user = user;
     }
 
     public Comment(String comment, String dateCreated) { //comentario en usuario

@@ -55,7 +55,7 @@ public class AdapterRecyclerPhotosProfile extends RecyclerView.Adapter {
                     if(recyclerView.getScrollState() == RecyclerView.SCROLL_STATE_SETTLING) {
                         totalDistanceScrolled += dy;
 
-                        if (gridLayoutManager.findFirstVisibleItemPosition() > 0 && dy > 0) {
+                        if (gridLayoutManager.findFirstVisibleItemPosition() > 0 && dy > 0 && getItemCount() > 9) {
                             totalItemCount = gridLayoutManager.getItemCount();
                             lastVisibleItem = gridLayoutManager.findLastCompletelyVisibleItemPosition();
 
@@ -155,8 +155,6 @@ public class AdapterRecyclerPhotosProfile extends RecyclerView.Adapter {
                 Picasso.with(itemView.getContext()).load(recipe.getImage()).into(ivPhoto);
             }catch(IllegalArgumentException iae){}
 
-            //Bitmap bitmap = Utils.decodeBase64(recipe.getImage());
-            //ivPhoto.setImageBitmap(bitmap);
             recipeId = recipe.getId();
             creatorToken = recipe.getCreatorToken();
         }

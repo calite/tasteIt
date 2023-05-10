@@ -1,10 +1,13 @@
 package com.example.tasteit_java;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
@@ -27,18 +30,25 @@ import com.example.tasteit_java.ApiService.ApiClient;
 import com.example.tasteit_java.ApiUtils.RecipeLoader;
 import com.example.tasteit_java.ApiUtils.UserLoader;
 import com.example.tasteit_java.adapters.AdapterEndlessRecyclerMain;
+import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.OnItemNavSelectedListener;
 import com.example.tasteit_java.clases.OnLoadMoreListener;
 import com.example.tasteit_java.clases.Recipe;
+import com.example.tasteit_java.clases.SharedPreferencesSaved;
 import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -47,13 +57,15 @@ import java.util.logging.Logger;
 public class ActivityMain extends AppCompatActivity {
     private AdapterEndlessRecyclerMain adapter;
     private int skipper;
+    private int allItemsCount;
+    private boolean allItemsLoaded;
     private FloatingActionButton bCreate;
     private ShimmerFrameLayout shimmer;
     private MenuItem profileImg;
     private RecyclerView rvRecipes;
     private String accessToken;
-    private int allItemsCount;
-    private boolean allItemsLoaded;
+    private String uid;
+    private SharedPreferencesSaved sharedPreferences;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -61,7 +73,24 @@ public class ActivityMain extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        accessToken = Utils.getUserAcessToken();
+        shimmer = findViewById(R.id.shimmer);
+        shimmer.startShimmer();
+
+        sharedPreferences = new SharedPreferencesSaved(this);
+
+        if(!sharedPreferences.getSharedPreferences().contains("accessToken")) {
+            SharedPreferences.Editor editor = sharedPreferences.getEditer();
+            editor.putString("accessToken", Utils.getUserAcessToken());
+            editor.commit();
+        }
+        accessToken = sharedPreferences.getSharedPreferences().getString("accessToken", "null");
+
+        if(!sharedPreferences.getSharedPreferences().contains("uid")) {
+            SharedPreferences.Editor editor = sharedPreferences.getEditer();
+            editor.putString("uid", Utils.getUserToken());
+            editor.commit();
+        }
+        uid = sharedPreferences.getSharedPreferences().getString("uid", "null");
 
         rvRecipes = findViewById(R.id.rvRecipes);
         bCreate = findViewById(R.id.bCreate);
@@ -115,17 +144,16 @@ public class ActivityMain extends AppCompatActivity {
                 Utils.refreshToken();
                 Logger.getGlobal().log(Level.INFO,"Attempting to refresh token");
                 accessToken = Utils.getUserAcessToken();
+                SharedPreferences.Editor editor = sharedPreferences.getEditer();
+                editor.putString("accessToken", Utils.getUserAcessToken());
+                editor.commit();
             }
         },1,1800000);
-
     }
 
     //MENU superior
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        shimmer = findViewById(R.id.shimmer);
-        shimmer.startShimmer();
-
         getMenuInflater().inflate(R.menu.main_menu, menu);
 
         profileImg = menu.getItem(0);
@@ -147,16 +175,12 @@ public class ActivityMain extends AppCompatActivity {
                 onBackPressed();
                 return true;
             case R.id.iProfile:
-                //NEO4J
                 Intent i = new Intent(ActivityMain.this, ActivityProfile.class);
                 startActivity(i);
-                //FIN NEO4J
-
                 return true;
             case R.id.iCloseSesion:
                 signOut();
                 return true;
-
             case R.id.iDarkMode:
                 if(AppCompatDelegate.getDefaultNightMode() != AppCompatDelegate.MODE_NIGHT_YES){
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -172,7 +196,13 @@ public class ActivityMain extends AppCompatActivity {
 
     private void signOut(){
         FirebaseAuth.getInstance().signOut();
-        startActivity (new Intent(this, ActivityLogin.class));
+        SharedPreferences.Editor editor = sharedPreferences.getEditer();
+        editor.remove("uid");
+        editor.remove("accessToken");
+        editor.commit();
+
+        startActivity(new Intent(this, ActivityLogin.class));
+        finish();
     }
 
     public void updateList() {
@@ -209,6 +239,14 @@ public class ActivityMain extends AppCompatActivity {
 
         if(adapter.dataList.size() != allItemsCount) {
             allItemsCount = adapter.dataList.size();
+
+            HashSet<String> idRecipes = new HashSet<>();
+            for (Recipe temp:recipes) {
+                idRecipes.add(String.valueOf(temp.getId()));
+            }
+            SharedPreferences.Editor editor = sharedPreferences.getEditer();
+            editor.putStringSet("idRecipes", idRecipes);
+            editor.commit();
         } else {
             allItemsLoaded = true;
         }
@@ -218,7 +256,7 @@ public class ActivityMain extends AppCompatActivity {
     }
 
     private void retrieveProfileImg() {
-        UserLoader userLoader = new UserLoader(ApiClient.getInstance(accessToken).getService(), this, Utils.getUserToken());
+        UserLoader userLoader = new UserLoader(ApiClient.getInstance(accessToken).getService(), this, uid);
         userLoader.getAllUser().observe(this, this::onProfileImgLoaded);
         userLoader.loadAllUser();
     }
@@ -244,5 +282,13 @@ public class ActivityMain extends AppCompatActivity {
                     public void onLoadCleared(@Nullable Drawable placeholder) {
                     }
                 });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SharedPreferences.Editor editor = sharedPreferences.getEditer();
+        editor.remove("idRecipes");
+        editor.commit();
     }
 }

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.tasteit_java.ActivityMain;
 import com.example.tasteit_java.ApiService.ApiClient;
 import com.example.tasteit_java.ApiUtils.RecipeLoader;
 import com.example.tasteit_java.R;
@@ -37,6 +38,8 @@ public class FragmentPhotos extends Fragment {
     private AdapterRecyclerPhotosProfile adapter;
     private ShimmerFrameLayout shimmer;
     private int skipper;
+    private int allItemsCount;
+    private boolean allItemsLoaded;
     private String accessToken;
 
     // TODO: Rename and change types of parameters
@@ -80,6 +83,8 @@ public class FragmentPhotos extends Fragment {
             uidParam = getArguments().getString(ARG_PARAM1);
             accessToken = Utils.getUserAcessToken();
             skipper = 0;
+            allItemsCount = 0;
+            allItemsLoaded = false;
             getArguments().clear();
         }
     }
@@ -102,8 +107,8 @@ public class FragmentPhotos extends Fragment {
         adapter.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-                if(adapter.getItemCount() > 28) { //habra que ponerle un limite (que en principio puede ser el total de recipes en la bbdd o algo fijo para no sobrecargar el terminal)
-                    Toast.makeText(getContext(), "Finiquitao con " + adapter.getItemCount() + " fotos", Toast.LENGTH_SHORT).show();
+                if(allItemsLoaded) { //habra que ponerle un limite (que en principio puede ser el total de recipes en la bbdd o algo fijo para no sobrecargar el terminal)
+                    Toast.makeText(getContext(), "Finiquitao con " + adapter.getItemCount() + " recetas", Toast.LENGTH_SHORT).show();
                 } else {
                     adapter.dataList.add(null);
                     adapter.notifyItemInserted(adapter.getItemCount() - 1);
@@ -112,19 +117,26 @@ public class FragmentPhotos extends Fragment {
                     bringRecipes();
                 }
             }
-
             @Override
             public void update() {
-                adapter.dataList.add(0, null);
-                adapter.notifyItemInserted(0);
-
-                skipper = 0;
-                adapter.dataList.clear();
-                bringRecipes();
+                updateList();
             }
         });
 
         return view;
+    }
+
+    public void updateList() {
+        skipper = 0;
+        allItemsCount = 0;
+        allItemsLoaded = false;
+        adapter.dataList.clear();
+        adapter.notifyDataSetChanged();
+
+        shimmer.setVisibility(View.VISIBLE);
+        shimmer.startShimmer();
+
+        bringRecipes();
     }
 
     private void onRecipesLoaded(List<Recipe> recipes) {
@@ -138,9 +150,16 @@ public class FragmentPhotos extends Fragment {
 
         adapter.dataList.addAll(recipes);
         adapter.setLoaded();
+        adapter.notifyDataSetChanged();
+
+        if(adapter.dataList.size() != allItemsCount) {
+            allItemsCount = adapter.dataList.size();
+        } else {
+            allItemsLoaded = true;
+        }
+
         shimmer.stopShimmer();
         shimmer.setVisibility(View.GONE);
-        adapter.notifyDataSetChanged();
     }
 
     private void bringRecipes() {

@@ -29,6 +29,10 @@ public class RecipeRequest {
     @Expose
     private int difficulty;
 
+    @SerializedName("rating")
+    @Expose
+    private float rating;
+
     @SerializedName("ingredients")
     @Expose
     private String ingredients;
@@ -41,13 +45,14 @@ public class RecipeRequest {
     @Expose
     private String tags;
 
-    public RecipeRequest(String token, String name, String description, String country, String image, int difficulty, String ingredients, String steps, String tags) {
+    public RecipeRequest(String token, String name, String description, String country, String image, int difficulty, float rating, String ingredients, String steps, String tags) {
         this.token = token;
         this.name = name;
         this.description = description;
         this.country = country;
         this.image = image;
         this.difficulty = difficulty;
+        this.rating = rating;
         this.ingredients = ingredients;
         this.steps = steps;
         this.tags = tags;
@@ -126,5 +131,13 @@ public class RecipeRequest {
 
     public void setTags(String tags) {
         this.tags = tags;
+    }
+
+    public float getRating() {
+        return rating;
+    }
+
+    public void setRating(float rating) {
+        this.rating = rating;
     }
 }

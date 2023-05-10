@@ -3,6 +3,7 @@ package com.example.tasteit_java;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
@@ -24,12 +25,14 @@ import androidx.core.content.ContextCompat;
 
 import com.example.tasteit_java.ApiService.ApiClient;
 import com.example.tasteit_java.ApiService.UserApi;
+import com.example.tasteit_java.clases.SharedPreferencesSaved;
 import com.example.tasteit_java.clases.Utils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,6 +52,7 @@ public class ActivityLogin extends AppCompatActivity {
     private ConstraintLayout lyTerms;
     private Button bShowPass;
     private Button bShowPass2;
+    private Button bLogin;
     private FirebaseAuth mAuth;
     Logger log = Logger.getLogger(ActivityMain.class.getName());
 
@@ -56,8 +60,6 @@ public class ActivityLogin extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        tryLoggin();
 
         getSupportActionBar().hide();
 
@@ -69,6 +71,7 @@ public class ActivityLogin extends AppCompatActivity {
         bShowPass = findViewById(R.id.bShowPass);
         bShowPass2 = findViewById(R.id.bShowPass2);
         bShowPass2.setVisibility(View.INVISIBLE);
+        bLogin = findViewById(R.id.bLogin);
 
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
@@ -126,14 +129,21 @@ public class ActivityLogin extends AppCompatActivity {
                 }
             }
         });
+        bLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loginUser();
+            }
+        });
 
+        if(new SharedPreferencesSaved(this).getSharedPreferences().contains("accessToken")) {
+            tryLoggin();
+        }
     }
 
 
     public void tryLoggin() {
-
         Dialog dialog = setProgressDialog();
-
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         if (currentUser != null) {
@@ -142,8 +152,9 @@ public class ActivityLogin extends AppCompatActivity {
                 public void onComplete(@NonNull Task<Void> task) {
                     if (task.isSuccessful()) {
                         log.log(Level.INFO, currentUser.getUid() + " " + currentUser.getEmail());
-                        goHome();
+                        dialog.hide();
                         dialog.dismiss();
+                        goHome();
                     } else {
                         log.log(Level.INFO, "Logged user doesn't exist anymore");
                         dialog.hide();
@@ -167,12 +178,12 @@ public class ActivityLogin extends AppCompatActivity {
     }
 
     private void manageButtonLogin() {
-        TextView bLogin = findViewById(R.id.bLogin);
+        bLogin = findViewById(R.id.bLogin);
         email = etEmail.getText().toString();
         password = etPassword.getText().toString();
         confirmPassword = etConfirmPassword.getText().toString();
         //HAY QUE COMPROBAR LA CLASE VALIDATE EMAIL CON SU METODO
-        if ( password.length() < 6 || !Utils.isEmail(email)) {
+        if ( password.length() < 8 || !Utils.isEmail(email)) {
             bLogin.setBackgroundColor(ContextCompat.getColor(this, R.color.gray));
             bLogin.setEnabled(false);
         } else {
@@ -188,7 +199,7 @@ public class ActivityLogin extends AppCompatActivity {
     private void loginUser() {
         email = etEmail.getText().toString();
         password = etPassword.getText().toString();
-        TextView bLogin = findViewById(R.id.bLogin);
+        bLogin = findViewById(R.id.bLogin);
 
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -208,7 +219,7 @@ public class ActivityLogin extends AppCompatActivity {
                                 if (cbAcept.isChecked()) {
                                     if (confirmPassword()) {
                                         bLogin.setBackgroundColor(ContextCompat.getColor(ActivityLogin.this, R.color.green));
-                                        //
+
                                         //Alert para el username
                                         AlertDialog.Builder builder = new AlertDialog.Builder(ActivityLogin.this);
                                         builder.setTitle("Choose your username");
@@ -233,7 +244,7 @@ public class ActivityLogin extends AppCompatActivity {
                                         //
                                     } else {
                                         bLogin.setBackgroundColor(ContextCompat.getColor(ActivityLogin.this, R.color.orange));
-                                        Toast.makeText(ActivityLogin.this, "passwords are not equals.", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getApplicationContext(), "Password must match and be equal or longer than 8 characters", Toast.LENGTH_SHORT).show();
                                     }
                                 } else {
                                     bLogin.setBackgroundColor(ContextCompat.getColor(ActivityLogin.this, R.color.orange));
@@ -268,16 +279,16 @@ public class ActivityLogin extends AppCompatActivity {
     private void register() {
         email = etEmail.getText().toString();
         password = etPassword.getText().toString();
-
+        SharedPreferencesSaved sharedPreferencesSaved = new SharedPreferencesSaved(this);
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    String uid = Utils.getUserToken();
-                    ApiClient apiClient = ApiClient.getInstance(Utils.getUserAcessToken());
+                    String uid = sharedPreferencesSaved.getSharedPreferences().getString("uid", "null");
+                    ApiClient apiClient = ApiClient.getInstance(sharedPreferencesSaved.getSharedPreferences().getString("accessToken", "null"));
                     UserApi user = new UserApi();
                     user.setToken(uid);
-                    user.setImgProfile("https://firebasestorage.googleapis.com/v0/b/tasteit-java.appspot.com/o/images%2Ff7926fb7-0de2-46b0-adf3-fa30b2015111?alt=media&token=7dd5b1bf-edbb-4739-bf67-ab45930125d3");
+                    user.setImgProfile("");
                     user.setBiography("");
                     user.setUsername(userName);
 
@@ -314,10 +325,8 @@ public class ActivityLogin extends AppCompatActivity {
     }
 
     public void goTerms(View view) {
-
         Intent i = new Intent(this, ActivityTerms.class);
         startActivity(i);
-
     }
 
     public void forgotPassword(View view) {
@@ -342,8 +351,7 @@ public class ActivityLogin extends AppCompatActivity {
     private boolean confirmPassword() {
         password = etPassword.getText().toString();
         confirmPassword = etConfirmPassword.getText().toString();
-
-        return password.equals(confirmPassword);
+        return password.length() >= 8 && password.equals(confirmPassword);
     }
 
     private Dialog setProgressDialog() {

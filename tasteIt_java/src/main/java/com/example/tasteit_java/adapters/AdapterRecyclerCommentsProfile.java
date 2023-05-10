@@ -58,8 +58,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AdapterRecyclerCommentsProfile extends RecyclerView.Adapter {
-
-    private Context context;
     public ArrayList<Object> dataList;
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_FOOTER = 1;
@@ -70,8 +68,7 @@ public class AdapterRecyclerCommentsProfile extends RecyclerView.Adapter {
     private Boolean myProfile;
     private ShimmerFrameLayout shimmer;
 
-    public AdapterRecyclerCommentsProfile(Context context, Boolean myProfile, RecyclerView recyclerView) {
-        this.context = context;
+    public AdapterRecyclerCommentsProfile(Boolean myProfile, RecyclerView recyclerView) {
         this.myProfile = myProfile;
         dataList = new ArrayList<>();
 

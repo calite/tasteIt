@@ -66,7 +66,7 @@ public interface ApiRequests {
     @GET("recipe/all")
     Call<List<RecipeId_Recipe_User>> getAllRecipes(); //Devuelve todas las recetas
     @GET("recipe/all/{skipper}")
-    Call<List<RecipeId_Recipe_User>> getRecipes(@Path("skipper") int skipper); //Devuelve x cantidad de recetas (skipper es el limitador)
+    Call<List<RecipeId_Recipe_User>> getRecipes(@Path("skipper") int skipper); //Devuelve x cantidad de recetas
     @GET("recipe/{id}")
     Call<List<RecipeId_Recipe_User>> getRecipeById(@Path("id") int id); //Devuelve receta por id
     @GET("recipe/byname/{name}/{skipper}")

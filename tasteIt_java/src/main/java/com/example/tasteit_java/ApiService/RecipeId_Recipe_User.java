@@ -48,6 +48,9 @@ public class RecipeId_Recipe_User {
         @SerializedName("difficulty")
         private int difficulty;
 
+        @SerializedName("rating")
+        private float rating;
+
         @SerializedName("image")
         private String image;
 
@@ -136,6 +139,14 @@ public class RecipeId_Recipe_User {
 
         public void setSteps(List<String> steps) {
             this.steps = steps;
+        }
+
+        public float getRating() {
+            return rating;
+        }
+
+        public void setRating(float rating) {
+            this.rating = rating;
         }
     }
 

@@ -1,6 +1,7 @@
 package com.example.tasteit_java;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -20,6 +21,7 @@ import com.example.tasteit_java.ApiService.ApiClient;
 import com.example.tasteit_java.ApiUtils.UserLoader;
 import com.example.tasteit_java.adapters.AdapterFragmentProfile;
 import com.example.tasteit_java.clases.OnItemNavSelectedListener;
+import com.example.tasteit_java.clases.SharedPreferencesSaved;
 import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
 import com.example.tasteit_java.request.UserFollowRequest;
@@ -210,6 +212,8 @@ public class ActivityProfile extends AppCompatActivity {
         } else {
             menu.getItem(0).setVisible(false);
         }
+
+        menu.getItem(1).setVisible(false); //Peta el signout
         return true;
     }
 
@@ -223,7 +227,7 @@ public class ActivityProfile extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(), ActivityEditProfile.class));
                 return true;
             case R.id.iCloseSesion:
-                signOut();
+                //signOut();
             case R.id.iDarkMode:
                 if (AppCompatDelegate.getDefaultNightMode() != AppCompatDelegate.MODE_NIGHT_YES) {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -235,9 +239,16 @@ public class ActivityProfile extends AppCompatActivity {
         }
     }
     //END MENU superior
-
+    public void callSignOut(View view){
+        //signOut();
+    }
     private void signOut() {
         FirebaseAuth.getInstance().signOut();
+        SharedPreferences.Editor editor = new SharedPreferencesSaved(this).getEditer();
+        editor.remove("uid");
+        editor.remove("accessToken");
+        editor.commit();
+
         startActivity(new Intent(this, ActivityLogin.class));
         finish();
     }
@@ -267,9 +278,14 @@ public class ActivityProfile extends AppCompatActivity {
 
             tvUserName.setText(userProfile.getUsername());
 
-            Picasso.with(this)
-                    .load(userProfile.getImgProfile())
-                    .into(ivUserPicture);
+            try {
+                Picasso.with(this)
+                        .load(userProfile.getImgProfile())
+                        .into(ivUserPicture);
+            } catch (IllegalArgumentException e) {
+                Log.e("Image Error", "Error loading profile image");
+            }
+
 
             String counter = String.valueOf(userInfo.get("recipes"));
             tvReciperCounter.setText(counter);
