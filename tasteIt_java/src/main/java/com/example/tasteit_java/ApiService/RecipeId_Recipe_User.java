@@ -48,9 +48,6 @@ public class RecipeId_Recipe_User {
         @SerializedName("difficulty")
         private int difficulty;
 
-        @SerializedName("rating")
-        private float rating;
-
         @SerializedName("image")
         private String image;
 
@@ -59,6 +56,9 @@ public class RecipeId_Recipe_User {
 
         @SerializedName("country")
         private String country;
+
+        @SerializedName("rating")
+        private float rating;
 
         @SerializedName("ingredients")
         private List<String> ingredients;

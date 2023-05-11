@@ -50,6 +50,8 @@ public class FragmentComments extends Fragment {
     private AdapterRecyclerCommentsProfile adapter;
     private ShimmerFrameLayout shimmer;
     private int skipper;
+    private int allItemsCount;
+    private boolean allItemsLoaded;
     private String accessToken;
     private ConstraintLayout clComment;
     private ShapeableImageView ivMyPhoto;
@@ -97,6 +99,8 @@ public class FragmentComments extends Fragment {
 
             accessToken = Utils.getUserAcessToken();
             skipper = 0;
+            allItemsCount = 0;
+            allItemsLoaded = false;
         }
     }
 
@@ -111,15 +115,14 @@ public class FragmentComments extends Fragment {
         bringComments();
 
         rvLvComments = view.findViewById(R.id.rvLvComments);
+        rvLvComments.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new AdapterRecyclerCommentsProfile(myProfile, rvLvComments);
         rvLvComments.setAdapter(adapter);
-
-        rvLvComments.setLayoutManager(new LinearLayoutManager(getContext()));
 
         adapter.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-                if(adapter.getItemCount() > 28) { //habra que ponerle un limite (que en principio puede ser el total de recipes en la bbdd o algo fijo para no sobrecargar el terminal)
+                if(allItemsLoaded) { //habra que ponerle un limite (que en principio puede ser el total de recipes en la bbdd o algo fijo para no sobrecargar el terminal)
                     Toast.makeText(getContext(), "Finiquitao con " + adapter.getItemCount() + " fotos", Toast.LENGTH_SHORT).show();
                 } else {
                     adapter.dataList.add(null);
@@ -132,9 +135,7 @@ public class FragmentComments extends Fragment {
 
             @Override
             public void update() {
-                skipper = 0;
-                adapter.dataList.clear();
-                bringComments();
+                updateList();
             }
         });
 
@@ -149,6 +150,19 @@ public class FragmentComments extends Fragment {
         return view;
     }
 
+    public void updateList() {
+        skipper = 0;
+        allItemsCount = 0;
+        allItemsLoaded = false;
+        adapter.dataList.clear();
+        adapter.notifyDataSetChanged();
+
+        shimmer.setVisibility(View.VISIBLE);
+        shimmer.startShimmer();
+
+        bringComments();
+    }
+
     //Carga de usuario asyncrona
     private void bringComments() {
         UserLoader commentsLoader = new UserLoader(ApiClient.getInstance(accessToken).getService(), getContext(), uidProfile, skipper);
@@ -157,17 +171,26 @@ public class FragmentComments extends Fragment {
     }
 
     private void onCommentsLoaded(List<Comment> comments) {
-        if(adapter.getItemViewType(adapter.getItemCount() - 1) != 0) {
-            adapter.dataList.remove(adapter.getItemCount() - 1);
-        } else if(adapter.getItemViewType(0) != 0) {
-            adapter.dataList.remove(0);
+        if(adapter.getItemCount() > 0) {
+            if(adapter.getItemViewType(adapter.getItemCount() - 1) != 0) {
+                adapter.dataList.remove(adapter.getItemCount() - 1);
+            } else if(adapter.getItemViewType(0) != 0) {
+                adapter.dataList.remove(0);
+            }
         }
 
         adapter.dataList.addAll(comments);
         adapter.setLoaded();
+        adapter.notifyDataSetChanged();
+
+        if(adapter.dataList.size() != allItemsCount) {
+            allItemsCount = adapter.dataList.size();
+        } else {
+            allItemsLoaded = true;
+        }
+
         shimmer.stopShimmer();
         shimmer.setVisibility(View.GONE);
-        adapter.notifyDataSetChanged();
     }
 
 }

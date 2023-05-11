@@ -33,6 +33,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class ActivityRandom extends AppCompatActivity {
     private Button btnShuffle;
@@ -58,6 +59,7 @@ public class ActivityRandom extends AppCompatActivity {
         getSupportActionBar().setTitle("Random");
         btnShuffle = findViewById(R.id.btnShuffle);
         vpRandom = findViewById(R.id.vpRandom);
+        vpRandom.setVisibility(View.INVISIBLE);
         shimmer = findViewById(R.id.shimmer);
         someRecipes = new ArrayList<>();
         lastIdRecipes = new ArrayList<>();
@@ -65,20 +67,21 @@ public class ActivityRandom extends AppCompatActivity {
         btnShuffle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bringRecipe();
                 btnShuffle.setVisibility(View.INVISIBLE);
                 btnShuffle.setEnabled(false);
                 findViewById(R.id.textView11).setVisibility(View.INVISIBLE);
                 shimmer.setVisibility(View.VISIBLE);
                 shimmer.startShimmer();
+
+                bringRecipes();
             }
         });
 
         vpRandom.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
-                if(position == 5) {
-                    bringRecipe();
+                if (position == 5) {
+                    bringRecipes();
                 }
             }
         });
@@ -113,31 +116,21 @@ public class ActivityRandom extends AppCompatActivity {
         }
     }
 
-    private void bringRecipe() {
-        RecipeLoader recipesLoader = new RecipeLoader(ApiClient.getInstance(accessToken).getService(), this, lastIdRecipes);
-        recipesLoader.getRandomRecipe().observe(this, this::onRecipeLoaded);
-        recipesLoader.loadRandomRecipe();
+    private void bringRecipes() {
+        RecipeLoader recipesLoader = new RecipeLoader(ApiClient.getInstance(accessToken).getService(), this, 5);
+        recipesLoader.getRandomRecipes().observe(this, this::onRecipeLoaded);
+        recipesLoader.loadRandomRecipes();
     }
 
-    private void onRecipeLoaded(Recipe recipes) {
-        if(someRecipes.size() <= 4) {
-            //A VECES SE TRAE recipes COMO NULL Y PETABA, AHORA NO PETA, SE SALTA ESA RECETA, PERO HABRIA QUE MIRAR POR QUE ES NULL A VECES XD
-            if(recipes != null){
-                someRecipes.add(recipes);
-                lastIdRecipes.add(recipes.getId());
-            }
-            bringRecipe();
+    private void onRecipeLoaded(List<Recipe> recipes) {
+        adapter = new AdapterFragmentRandom(getSupportFragmentManager(), getLifecycle(), someRecipes, vpRandom);
+        vpRandom.setAdapter(adapter);
+        shimmer.stopShimmer();
+        shimmer.setVisibility(View.GONE);
+        vpRandom.setVisibility(View.VISIBLE);
 
-        } else {
-            adapter = new AdapterFragmentRandom(getSupportFragmentManager(), getLifecycle(), someRecipes);
-            vpRandom.setAdapter(adapter);
-            shimmer.stopShimmer();
-            shimmer.setVisibility(View.GONE);
-            vpRandom.setVisibility(View.VISIBLE);
-
-            adapter.notifyDataSetChanged();
-            someRecipes.clear();
-        }
+        adapter.notifyDataSetChanged();
+        someRecipes.clear();
     }
 
     private void retrieveProfileImg() {

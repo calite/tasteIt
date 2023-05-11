@@ -1,29 +1,21 @@
 package com.example.tasteit_java.ApiUtils;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.tasteit_java.ActivityMain;
-import com.example.tasteit_java.ActivityRandom;
 import com.example.tasteit_java.ApiService.ApiRequests;
 import com.example.tasteit_java.ApiService.RecipeApiComment;
 import com.example.tasteit_java.ApiService.RecipeId_Recipe_User;
-import com.example.tasteit_java.ApiService.UserCommentApi;
 import com.example.tasteit_java.clases.Comment;
 import com.example.tasteit_java.clases.Recipe;
-import com.example.tasteit_java.clases.SharedPreferencesSaved;
 import com.example.tasteit_java.clases.User;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -45,6 +37,7 @@ public class RecipeLoader {
     private String country;
     private String ingredient;
     private String tags;
+    private int limit;
 
     public RecipeLoader(ApiRequests apiRequests, Context context, String sender_token, int data) { //Llamamos al int 'data' porque podemos poner el skipper o el IsLiked, depende del metodo a llamar (no interfiere)
         this.apiRequests = apiRequests;
@@ -68,6 +61,7 @@ public class RecipeLoader {
         this.skipper = data;
         recipeLiveData = new MutableLiveData<>();
         this.recipeId = data;
+        this.limit = data;
     }
 
     public RecipeLoader(ApiRequests apiRequests, Context context, ArrayList<Integer> lastIdRecipes) {
@@ -209,6 +203,7 @@ public class RecipeLoader {
                     // La solicitud no fue exitosa
                 }
             }
+
             @Override
             public void onFailure(Call<List<RecipeId_Recipe_User>> call, Throwable t) {
                 // Hubo un error en la solicitud
@@ -290,6 +285,7 @@ public class RecipeLoader {
                     // La solicitud no fue exitosa
                 }
             }
+
             @Override
             public void onFailure(Call<List<RecipeId_Recipe_User>> call, Throwable t) {
                 Toast.makeText(context, "Something went wrong - " + t.getMessage(), Toast.LENGTH_SHORT).show();
@@ -297,7 +293,7 @@ public class RecipeLoader {
         });
     }
 
-    public LiveData<Recipe> getRandomRecipe() {
+    /*public LiveData<Recipe> getRandomRecipe() {
         return recipeLiveData;
     }
 
@@ -313,7 +309,7 @@ public class RecipeLoader {
             do {
                 Random random = new Random();
                 recipeId = (random.nextInt(50));
-                Toast.makeText(context, "ID: " + recipeId, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "ID rand: " + recipeId, Toast.LENGTH_SHORT).show();
             } while(lastIdRecipes.contains(recipeId));
         }
         apiRequests.getRecipeById(recipeId).enqueue(new Callback<List<RecipeId_Recipe_User>>() {
@@ -346,7 +342,7 @@ public class RecipeLoader {
                 Toast.makeText(context, "Something went wrong - " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-    }
+    }*/
 
     public LiveData<Boolean> getIsLiked() {
         return likedLiveData;
@@ -384,14 +380,20 @@ public class RecipeLoader {
                     List<RecipeApiComment> commentsApi = response.body();
                     List<Comment> comments = new ArrayList<>();
 
-                    for (RecipeApiComment temp : commentsApi) {
-                        Comment comment = new Comment(
-                                temp.getComment().getComment(),
-                                temp.getComment().getDateCreated(),
-                                Float.valueOf(temp.getComment().getRating()),
-                                new User(temp.getUser().getUsername(), temp.getUser().getBiography(), temp.getUser().getImgProfile(), temp.getUser().getToken())
-                        );
-                        comments.add(comment);
+                    if (!commentsApi.isEmpty()) {
+                        for (RecipeApiComment temp : commentsApi) {
+                            try {
+                                Comment comment = new Comment(
+                                        temp.getComment().getComment(),
+                                        temp.getComment().getDateCreated(),
+                                        Float.valueOf(temp.getComment().getRating()),
+                                        new User(temp.getUser().getUsername(), temp.getUser().getBiography(), temp.getUser().getImgProfile(), temp.getUser().getToken())
+                                );
+                                comments.add(comment);
+                            } catch (NullPointerException ex) {
+                                Log.e("Error", "apiRequests.getCommentsOnRecipe error");
+                            }
+                        }
                     }
 
                     recipeCommentsLiveData.postValue(comments);
@@ -580,6 +582,47 @@ public class RecipeLoader {
             public void onFailure(Call<List<RecipeId_Recipe_User>> call, Throwable t) {
                 // Hubo un error en la solicitud
                 Toast.makeText(context, "Failed to load data", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public LiveData<List<Recipe>> getRandomRecipes() {
+        return recipesLiveData;
+    }
+
+    public void loadRandomRecipes() {
+        apiRequests.getRandomRecipes(limit).enqueue(new Callback<List<RecipeId_Recipe_User>>() {
+            @Override
+            public void onResponse(Call<List<RecipeId_Recipe_User>> call, Response<List<RecipeId_Recipe_User>> response) {
+                if (response.isSuccessful() && response.body().size() != 0) {
+                    List<RecipeId_Recipe_User> recipeApis = response.body();
+                    List<Recipe> recipes = new ArrayList<>();
+                    for (RecipeId_Recipe_User recipeApi : recipeApis) {
+                        Recipe recipe = new Recipe(
+                                recipeApi.getRecipeDetails().getName(),
+                                recipeApi.getRecipeDetails().getDescription(),
+                                (ArrayList<String>) recipeApi.getRecipeDetails().getSteps(),
+                                recipeApi.getRecipeDetails().getDateCreated(),
+                                recipeApi.getRecipeDetails().getDifficulty(),
+                                recipeApi.getUser().getUsername(),
+                                recipeApi.getRecipeDetails().getImage(),
+                                recipeApi.getRecipeDetails().getCountry(),
+                                (ArrayList<String>) recipeApi.getRecipeDetails().getTags(),
+                                (ArrayList<String>) recipeApi.getRecipeDetails().getIngredients(),
+                                recipeApi.getRecipeId(),
+                                recipeApi.getUser().getToken()
+                        );
+                        recipes.add(recipe);
+                    }
+                    recipesLiveData.postValue(recipes);
+                } else {
+                    // La solicitud no fue exitosa
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<RecipeId_Recipe_User>> call, Throwable t) {
+                Toast.makeText(context, "Something went wrong - " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

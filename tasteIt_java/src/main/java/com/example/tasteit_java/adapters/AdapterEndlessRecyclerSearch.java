@@ -31,7 +31,6 @@ import java.util.ArrayList;
 public class AdapterEndlessRecyclerSearch extends Adapter {
 
     public ArrayList<Object> dataList;
-    private String search;
     private static final int TYPE_ITEM_RECIPE = 0;
     private static final int TYPE_ITEM_USER = 1;
     private static final int TYPE_FOOTER = 2;
@@ -41,8 +40,7 @@ public class AdapterEndlessRecyclerSearch extends Adapter {
     private boolean loading;
     private OnLoadMoreListener onLoadMoreListener;
 
-    public AdapterEndlessRecyclerSearch(RecyclerView recyclerView, String search) {
-        this.search = search;
+    public AdapterEndlessRecyclerSearch(RecyclerView recyclerView) {
         dataList = new ArrayList<>();
         this.recyclerView = recyclerView;
 
@@ -52,7 +50,7 @@ public class AdapterEndlessRecyclerSearch extends Adapter {
 
             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 private int totalDistanceScrolled = 0;
-                private int threshold = 200; // umbral de distancia a recorrer en px
+                private int threshold = 15; // umbral de distancia a recorrer en px
                 @Override
                 public void onScrolled(RecyclerView recyclerView,
                                        int dx, int dy) {

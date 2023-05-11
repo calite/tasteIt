@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 
-public class Recipe implements Parcelable {
+public class Recipe implements Parcelable, Comparable<Recipe> {
     private String name;
     private String description;
     private ArrayList<String> steps;
@@ -204,5 +204,16 @@ public class Recipe implements Parcelable {
         parcel.writeStringList(ingredients);
         parcel.writeInt(id);
         parcel.writeInt(img);
+    }
+
+    @Override
+    public int compareTo(Recipe r){
+        if(r.getRating() > rating){
+            return -1;
+        }else if(r.getRating() == rating){
+            return 0;
+        }else{
+            return 1;
+        }
     }
 }

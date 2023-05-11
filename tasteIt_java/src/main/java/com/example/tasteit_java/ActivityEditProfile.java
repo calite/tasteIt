@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.example.tasteit_java.ApiService.ApiClient;
 import com.example.tasteit_java.ApiUtils.UserLoader;
+import com.example.tasteit_java.clases.SharedPreferencesSaved;
 import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
 import com.example.tasteit_java.request.UserEditRequest;
@@ -69,8 +70,8 @@ public class ActivityEditProfile extends AppCompatActivity {
         shimmer = findViewById(R.id.shimmer);
         shimmer.startShimmer();
 
-        accessToken = Utils.getUserAcessToken();
-        uid = Utils.getUserToken();
+        accessToken = new SharedPreferencesSaved(this).getSharedPreferences().getString("accessToken", "null");
+        uid = new SharedPreferencesSaved(this).getSharedPreferences().getString("uid", "null");
 
         initializeViews();
         bringUser();
@@ -124,7 +125,6 @@ public class ActivityEditProfile extends AppCompatActivity {
 
         //Cambiar foto de perfil
         PopupMenu.OnMenuItemClickListener popupListener = new PopupMenu.OnMenuItemClickListener() {
-
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
@@ -292,11 +292,6 @@ public class ActivityEditProfile extends AppCompatActivity {
                     }
                 }
             });
-
-            if (lastFileUrl.equals("")) {
-                final StorageReference storageReference = FirebaseStorage.getInstance().getReference().getStorage().getReferenceFromUrl(user.getImgProfile());
-                storageReference.delete();
-            }
         }
         return null;
     }
@@ -328,6 +323,10 @@ public class ActivityEditProfile extends AppCompatActivity {
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     //Toast.makeText(ActivityEditProfile.this, "Good!", Toast.LENGTH_SHORT).show();
+                    if (!lastFileUrl.equals("")) {
+                        final StorageReference storageReference = FirebaseStorage.getInstance().getReference().getStorage().getReferenceFromUrl(user.getImgProfile());
+                        storageReference.delete();
+                    }
                     finish();
                 } else {
                     // Handle the error

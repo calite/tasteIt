@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -30,13 +31,20 @@ import com.example.tasteit_java.ApiService.RecipeId_Recipe_User;
 import com.example.tasteit_java.ApiUtils.RecipeLoader;
 import com.example.tasteit_java.adapters.AdapterFragmentNewRecipe;
 import com.example.tasteit_java.clases.Recipe;
+import com.example.tasteit_java.clases.SharedPreferencesSaved;
 import com.example.tasteit_java.clases.Utils;
 import com.example.tasteit_java.fragments.FragmentInfoNewRecipe;
 import com.example.tasteit_java.fragments.FragmentIngredientsNewRecipe;
 import com.example.tasteit_java.fragments.FragmentStepsNewRecipe;
 import com.example.tasteit_java.request.RecipeEditRequest;
 import com.example.tasteit_java.request.RecipeRequest;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
@@ -44,6 +52,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.UUID;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -55,32 +64,24 @@ public class ActivityNewRecipe extends AppCompatActivity {
     private ImageButton ibPickPhoto;
     private TabLayout tlRecipe;
     private ViewPager2 vpPaginator;
-    private Uri filePath;
+    private Uri newFilePath;
+    private Uri lastFileUrl;
     private String token;
-
-    private EditText etRecipeName;
-
     private int recipeId;
-
     String creatorToken = "";
-
     private Recipe recipe;
-
     private boolean editing = false;
-
     private ApiClient apiClient;
-
     private String accessToken;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_recipe);
 
-        accessToken = Utils.getUserAcessToken();
-        token = Utils.getUserToken();
+        accessToken = new SharedPreferencesSaved(this).getSharedPreferences().getString("accessToken", "null");
+        token = new SharedPreferencesSaved(this).getSharedPreferences().getString("uid", "null");
+        newFilePath = null;
 
         if(getIntent().getExtras() != null) {
             editing = true;
@@ -89,11 +90,13 @@ public class ActivityNewRecipe extends AppCompatActivity {
             creatorToken = params.getString("creatorToken");
 
             bringRecipe();
+            getSupportActionBar().setTitle("Edit Recipe");
+        } else {
+            getSupportActionBar().setTitle("New Recipe");
         }
 
         //menu superior
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("New Recipe");
 
         //info, steps and ingredients Fragments
         vpPaginator = findViewById(R.id.vpPaginator);
@@ -106,16 +109,10 @@ public class ActivityNewRecipe extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 vpPaginator.setCurrentItem(tab.getPosition());
             }
-
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
+            public void onTabUnselected(TabLayout.Tab tab) {}
             @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
+            public void onTabReselected(TabLayout.Tab tab) {}
         });
 
         vpPaginator.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
@@ -124,7 +121,6 @@ public class ActivityNewRecipe extends AppCompatActivity {
                 tlRecipe.selectTab(tlRecipe.getTabAt(position));
             }
         });
-
 
         //seleccionar foto
         ibPickPhoto = findViewById(R.id.ibPickPhoto);
@@ -217,7 +213,6 @@ public class ActivityNewRecipe extends AppCompatActivity {
  */
     //comprobacion de campos
     private boolean checkFields() {
-
         boolean status = true;
 
         //check foto
@@ -274,8 +269,19 @@ public class ActivityNewRecipe extends AppCompatActivity {
                 onBackPressed();
                 return true;
             case R.id.iSaveRecipe:
-                //saveRecipe(token,app);
-                if(editing){editRecipe();}else{createRecipe();}
+                if(editing){
+                    if(newFilePath != null) {
+                        uploadImage(newFilePath);
+                    } else {
+                        editRecipe();
+                    }
+                } else{
+                    if(newFilePath != null) {
+                        uploadImage(newFilePath);
+                    } else {
+                        Toast.makeText(this, "You have to set a image", Toast.LENGTH_SHORT).show();
+                    }
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -285,13 +291,13 @@ public class ActivityNewRecipe extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 101) {
+            newFilePath = data.getData();
             Utils.onActivityResult(this, requestCode, resultCode, data, ivRecipePhoto);
         }
-        if(requestCode == 202) {
+        /*if(requestCode == 202) {
             Bitmap photo = (Bitmap) data.getExtras().get("data");
             ivRecipePhoto.setImageBitmap(photo);
-        }
-
+        }*/
     }
 
     private void bringRecipe() {
@@ -303,15 +309,14 @@ public class ActivityNewRecipe extends AppCompatActivity {
     private void onRecipeLoaded(Recipe recipes) {
         recipe = recipes;
 
-        //UNA VEZ SE HACE LA CARGA DE LA RECETA SE RELLENA LA INFORMACION Y SE HA MOVIDO EL CODIGO QUE DEPENDIESE DE LA MISMA(PAGINATOR Y EL BOTON DE LIKE)
-        //GENERAL
         try {
             Picasso.with(this).load(recipe.getImage()).into(ivRecipePhoto);
         }catch(IllegalArgumentException iae){
             Toast.makeText(this, "Image not retrieved", Toast.LENGTH_SHORT).show();
         }
-        //Bitmap bitmap = Utils.decodeBase64(recipe.getImage());
-        //ivRecipePhoto.setImageBitmap(bitmap);
+
+        lastFileUrl = Uri.parse(recipe.getImage());
+
         //INFO
         FragmentInfoNewRecipe.setRecipeName(recipe.getName());
         FragmentInfoNewRecipe.setDescriptionRecipe(recipe.getDescription());
@@ -353,20 +358,17 @@ public class ActivityNewRecipe extends AppCompatActivity {
         palabras.addAll(Arrays.asList(description.split("\\s+")));
         palabras.addAll(listIngredients);
         palabras.addAll(listSteps); //esto hay que splitearlo tb @TODO
-        listTags = Utils.searchTags(palabras, diccionario);
-        String tags = String.join(",", listTags);
-        if (checkFields()) {
 
+        if (checkFields()) {
             RecipeRequest r = new RecipeRequest();
             r.setToken(token);
             r.setName(name);
             r.setDescription(description);
             r.setCountry(country);
-            r.setImage(""); //ESTO HAY QUE TERMINARLO, PERO YA FURULA
+            r.setImage(newFilePath.toString());
             r.setDifficulty(difficulty);
             r.setIngredients(ingredients);
             r.setSteps(steps);
-            r.setTags(tags);
 
             Call<Void> call = apiClient.getService().createRecipe(r);
             call.enqueue(new Callback<Void>() {
@@ -374,12 +376,12 @@ public class ActivityNewRecipe extends AppCompatActivity {
                 public void onResponse(Call<Void> call, Response<Void> response) {
                     if (response.isSuccessful()) {
                         //AQUI DEVOLVEMOS AL MAIN!
-                        Toast.makeText(ActivityNewRecipe.this, "Good!", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(ActivityNewRecipe.this, ActivityMain.class));
+                        Toast.makeText(ActivityNewRecipe.this, "Saved!", Toast.LENGTH_SHORT).show();
+                        finish();
                     } else {
                         // Handle the error
                         Log.e("API_ERROR", "Response error: " + response.code() + " " + response.message());
-                        Toast.makeText(ActivityNewRecipe.this, "bad!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ActivityNewRecipe.this, "Something was wrong!", Toast.LENGTH_SHORT).show();
 
                     }
                 }
@@ -387,17 +389,15 @@ public class ActivityNewRecipe extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<Void> call, Throwable t) {
                     // Handle the error
-                    Toast.makeText(ActivityNewRecipe.this, "bad!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityNewRecipe.this, "Something was wrong!", Toast.LENGTH_SHORT).show();
                 }
             });
 
         }
-
-
     }
 
     public void editRecipe() {
-        Toast.makeText(this, "EDITING", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "EDITING ...", Toast.LENGTH_SHORT).show();
         apiClient = ApiClient.getInstance(accessToken);
 
         String name = FragmentInfoNewRecipe.getRecipeName().getText().toString();
@@ -425,35 +425,36 @@ public class ActivityNewRecipe extends AppCompatActivity {
         palabras.addAll(Arrays.asList(name.split("\\s+")));
         palabras.addAll(Arrays.asList(description.split("\\s+")));
         palabras.addAll(listIngredients);
-        palabras.addAll(listSteps); //esto hay que splitearlo tb @TODO
-        listTags = Utils.searchTags(palabras, diccionario);
-        String tags = String.join(",", listTags);
-        if (checkFields()) {
+        palabras.addAll(listSteps);
 
+        String urlImage = (newFilePath != null ? newFilePath.toString() : lastFileUrl.toString());
+
+        if (checkFields()) {
             RecipeEditRequest r = new RecipeEditRequest();
             r.setRecipeId(recipeId);
             r.setName(name);
             r.setDescription(description);
             r.setCountry(country);
-            r.setImage(""); //ESTO HAY QUE TERMINARLO, PERO YA FURULA
+            r.setImage(urlImage);
             r.setDifficulty(difficulty);
             r.setIngredients(ingredients);
             r.setSteps(steps);
-            r.setTags(tags);
 
             Call<Void> call = apiClient.getService().editRecipe(r);
             call.enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {
                     if (response.isSuccessful()) {
-                        //AQUI DEVOLVEMOS AL MAIN!
-                        Toast.makeText(ActivityNewRecipe.this, "Good!", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(ActivityNewRecipe.this, ActivityMain.class));
+                        if (!lastFileUrl.equals("")) {
+                            final StorageReference storageReference = FirebaseStorage.getInstance().getReference().getStorage().getReferenceFromUrl(recipe.getImage());
+                            storageReference.delete();
+                        }
+                        Toast.makeText(ActivityNewRecipe.this, "Saved!", Toast.LENGTH_SHORT).show();
+                        finish();
                     } else {
                         // Handle the error
                         Log.e("API_ERROR", "Response error: " + response.code() + " " + response.message());
                         Toast.makeText(ActivityNewRecipe.this, "bad!", Toast.LENGTH_SHORT).show();
-
                     }
                 }
 
@@ -463,12 +464,46 @@ public class ActivityNewRecipe extends AppCompatActivity {
                     Toast.makeText(ActivityNewRecipe.this, "bad!", Toast.LENGTH_SHORT).show();
                 }
             });
-
         }
-
-
     }
 
-    //////////////////
+    private void saveData(Uri downloadUri) {
+        newFilePath = downloadUri;
+        if(editing) {
+            editRecipe();
+        } else {
+            createRecipe();
+        }
+    }
+
+    private Uri uploadImage(Uri filePath) {
+        if (filePath != null) {
+            final StorageReference ref = FirebaseStorage.getInstance().getReference().child("images/" + UUID.randomUUID().toString());
+            UploadTask uploadTask = ref.putFile(filePath);
+            Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
+                    }
+                    // Continue with the task to get the download URL
+                    return ref.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()) {
+                        Uri downloadUri = task.getResult();
+                        saveData(downloadUri);
+                    } else {
+                        // Handle failures
+                        // ...
+                    }
+                }
+            });
+
+        }
+        return null;
+    }
 
 }

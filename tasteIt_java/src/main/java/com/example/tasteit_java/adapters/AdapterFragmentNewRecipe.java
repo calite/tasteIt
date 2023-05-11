@@ -20,8 +20,6 @@ public class AdapterFragmentNewRecipe extends FragmentStateAdapter {
     @Override
     public Fragment createFragment(int position) {
         switch(position) {
-            case 0:
-                return new FragmentInfoNewRecipe();
             case 1:
                 return new FragmentStepsNewRecipe();
             case 2:

@@ -79,13 +79,22 @@ public class AdapterRecyclerCommentsProfile extends RecyclerView.Adapter {
 
             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 private int totalDistanceScrolled = 0;
-                private int threshold = 200; // umbral de distancia a recorrer en px
+                private int threshold = 10; // umbral de distancia a recorrer en px
+                private boolean isScrollingUp = false;
                 @Override
                 public void onScrolled(RecyclerView recyclerView,
                                        int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
 
                     if(recyclerView.getScrollState() == RecyclerView.SCROLL_STATE_SETTLING) {
+                        if (dy < 0) {
+                            // User is scrolling up
+                            isScrollingUp = true;
+                        } else if (dy > 0) {
+                            // User is scrolling down
+                            isScrollingUp = false;
+                        }
+
                         totalDistanceScrolled += dy;
 
                         if (linearLayoutManager.findFirstVisibleItemPosition() > 0 && dy > 0) {
@@ -100,7 +109,7 @@ public class AdapterRecyclerCommentsProfile extends RecyclerView.Adapter {
                                 loading = true;
                                 totalDistanceScrolled = 0;
                             }
-                        } else if (dy < 0 && linearLayoutManager.findFirstVisibleItemPosition() == 0) {
+                        } else if (isScrollingUp && linearLayoutManager.findFirstVisibleItemPosition() == 0) {
                             // Beginning has been reached
                             if (!loading && totalDistanceScrolled > threshold) {
                                 if (onLoadMoreListener != null) {

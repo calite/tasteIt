@@ -293,6 +293,7 @@ public class ActivityRecipe extends AppCompatActivity {
 
         tvRecipeName.setText(recipe.getName());
         tvNameCreator.setText(recipe.getCreator());
+        rbRating.setRating(recipe.getRating());
 
         if(recipe.getCreatorToken() != null && recipe.getCreatorToken() != "") {
             creatorToken = recipe.getCreatorToken();

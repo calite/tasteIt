@@ -100,9 +100,9 @@ public class FragmentPhotos extends Fragment {
         bringRecipes();
 
         rvGridPhotos = view.findViewById(R.id.rvGridPhotos);
+        rvGridPhotos.setLayoutManager(new GridLayoutManager(getContext(), 3));
         adapter = new AdapterRecyclerPhotosProfile(getContext(), rvGridPhotos);
         rvGridPhotos.setAdapter(adapter);
-        rvGridPhotos.setLayoutManager(new GridLayoutManager(getContext(), 3));
 
         adapter.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override

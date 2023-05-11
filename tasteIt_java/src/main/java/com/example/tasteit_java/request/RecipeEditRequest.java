@@ -5,6 +5,10 @@ import com.google.gson.annotations.SerializedName;
 
 public class RecipeEditRequest {
 
+    @SerializedName("rid")
+    @Expose
+    private int rid;
+
     @SerializedName("name")
     @Expose
     private String name;
@@ -33,15 +37,11 @@ public class RecipeEditRequest {
     @Expose
     private String steps;
 
-    @SerializedName("tags")
+    /*@SerializedName("tags")
     @Expose
-    private String tags;
+    private String tags;*/
 
-    @SerializedName("rid")
-    @Expose
-    private int rid;
-
-    public RecipeEditRequest(int rid, String name, String description, String country, String image, int difficulty, String ingredients, String steps, String tags) {
+    public RecipeEditRequest(int rid, String name, String description, String country, String image, int difficulty, String ingredients, String steps) {
         this.rid = rid;
         this.name = name;
         this.description = description;
@@ -50,7 +50,7 @@ public class RecipeEditRequest {
         this.difficulty = difficulty;
         this.ingredients = ingredients;
         this.steps = steps;
-        this.tags = tags;
+        //this.tags = tags;
     }
 
     public RecipeEditRequest() {
@@ -118,13 +118,5 @@ public class RecipeEditRequest {
 
     public void setSteps(String steps) {
         this.steps = steps;
-    }
-
-    public String getTags() {
-        return tags;
-    }
-
-    public void setTags(String tags) {
-        this.tags = tags;
     }
 }

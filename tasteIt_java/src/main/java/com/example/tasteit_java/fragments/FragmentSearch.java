@@ -1,6 +1,7 @@
 package com.example.tasteit_java.fragments;
 
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -38,6 +39,7 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import retrofit2.Call;
@@ -106,6 +108,7 @@ public class FragmentSearch extends Fragment {
         if (getArguments() != null) {
             search = getArguments().getString(ARG_PARAM1);
             dataView = Integer.parseInt(getArguments().getString(ARG_PARAM2));
+            getArguments().clear();
         }
     }
 
@@ -119,16 +122,16 @@ public class FragmentSearch extends Fragment {
         shimmer.startShimmer();
 
         if(search.length() == 0) {
-            bringRecipes();
+            getFirstItems();
         } else {
-
+            getSearchItems();
         }
 
         rvSearchItems = view.findViewById(R.id.rvSearchItems);
         rvSearchItems.setHasFixedSize(true);
         rvSearchItems.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
-        adapter = new AdapterEndlessRecyclerSearch(rvSearchItems, search);
+        adapter = new AdapterEndlessRecyclerSearch(rvSearchItems);
         rvSearchItems.setAdapter(adapter);
 
         adapter.setOnLoadMoreListener(new OnLoadMoreListener() {
@@ -141,7 +144,11 @@ public class FragmentSearch extends Fragment {
                     adapter.notifyItemInserted(adapter.getItemCount() - 1);
 
                     skipper += 10;
-                    bringRecipes();
+                    if(search.length() == 0) {
+                        getFirstItems();
+                    } else {
+                        getSearchItems();
+                    }
                 }
             }
             @Override
@@ -163,10 +170,20 @@ public class FragmentSearch extends Fragment {
         shimmer.setVisibility(View.VISIBLE);
         shimmer.startShimmer();
 
-        bringRecipes();
+        if(search.length() == 0) {
+            getFirstItems();
+        } else {
+            getSearchItems();
+        }
     }
 
     public void changeDataType(int position) {
+        if(dataListAux.size() != allItemsCount) {
+            allItemsCount = adapter.dataList.size();
+        } else {
+            allItemsLoaded = true;
+        }
+
         switch (position) {
             case 0: {
                 adapter.dataList.clear();
@@ -205,6 +222,22 @@ public class FragmentSearch extends Fragment {
             }
         }
         adapter.notifyDataSetChanged();
+        adapter.setLoaded();
+        shimmer.stopShimmer();
+        shimmer.setVisibility(View.GONE);
+    }
+
+    private void getSearchItems() {
+        bringRecipesByName();
+        bringRecipesByCountry();
+        bringRecipesByIngredients();
+        bringRecipesByTags();
+        bringUserByName();
+    }
+
+    private void getFirstItems() {
+        bringRecipes();
+        bringUserFollowing();
     }
 
     private void bringRecipes() {
@@ -214,13 +247,47 @@ public class FragmentSearch extends Fragment {
         recipesLoader.loadAllRecipesWSkipper();
     }
 
+    private void bringRecipesByName() {
+        String accessToken = new SharedPreferencesSaved(getContext()).getSharedPreferences().getString("accessToken", "null");
+        RecipeLoader recipesLoader = new RecipeLoader(ApiClient.getInstance(accessToken).getService(), getContext(), search, skipper);
+        recipesLoader.getRecipesByName().observe(getViewLifecycleOwner(), this::onRecipesLoaded);
+        recipesLoader.loadRecipesByName();
+    }
+
+    private void bringRecipesByCountry() {
+        String accessToken = new SharedPreferencesSaved(getContext()).getSharedPreferences().getString("accessToken", "null");
+        RecipeLoader recipesLoader = new RecipeLoader(ApiClient.getInstance(accessToken).getService(), getContext(), search, skipper);
+        recipesLoader.getRecipesByCountry().observe(getViewLifecycleOwner(), this::onRecipesLoaded);
+        recipesLoader.loadRecipesByCountry();
+    }
+
+    private void bringRecipesByIngredients() {
+        String accessToken = new SharedPreferencesSaved(getContext()).getSharedPreferences().getString("accessToken", "null");
+        RecipeLoader recipesLoader = new RecipeLoader(ApiClient.getInstance(accessToken).getService(), getContext(), search, skipper);
+        recipesLoader.getRecipesByIngredient().observe(getViewLifecycleOwner(), this::onRecipesLoaded);
+        recipesLoader.loadRecipesByIngredient();
+    }
+
+    private void bringRecipesByTags() {
+        String accessToken = new SharedPreferencesSaved(getContext()).getSharedPreferences().getString("accessToken", "null");
+        RecipeLoader recipesLoader = new RecipeLoader(ApiClient.getInstance(accessToken).getService(), getContext(), search, skipper);
+        recipesLoader.getRecipesByTags().observe(getViewLifecycleOwner(), this::onRecipesLoaded);
+        recipesLoader.loadRecipesByTags();
+    }
+
     private void bringUserFollowing() {
         String accessToken = new SharedPreferencesSaved(getContext()).getSharedPreferences().getString("accessToken", "null");
         String uidProfile = new SharedPreferencesSaved(getContext()).getSharedPreferences().getString("uid", "null");
-
         UserLoader userLoader = new UserLoader(ApiClient.getInstance(accessToken).getService(), getContext(), uidProfile, 0);
         userLoader.getFollowingByUser().observe(getViewLifecycleOwner(), this::onUsersLoaded);
         userLoader.loadFollowingByUser();
+    }
+
+    private void bringUserByName() {
+        String accessToken = new SharedPreferencesSaved(getContext()).getSharedPreferences().getString("accessToken", "null");
+        UserLoader userLoader = new UserLoader(ApiClient.getInstance(accessToken).getService(), getContext(), search, skipper);
+        userLoader.getUserByName().observe(getViewLifecycleOwner(), this::onUsersLoaded);
+        userLoader.loadUserByName();
     }
 
     private void onRecipesLoaded(List<Recipe> recipes) {
@@ -232,8 +299,9 @@ public class FragmentSearch extends Fragment {
             }
         }
 
+        Collections.sort(recipes);
         dataListAux.addAll(recipes);
-        bringUserFollowing();
+        changeDataType(dataView);
     }
 
     private void onUsersLoaded(List<User> users) {
@@ -248,15 +316,5 @@ public class FragmentSearch extends Fragment {
         dataListAux.addAll(users);
         Collections.shuffle(dataListAux);
         changeDataType(dataView);
-        adapter.setLoaded();
-
-        if(adapter.dataList.size() != allItemsCount) {
-            allItemsCount = adapter.dataList.size();
-        } else {
-            allItemsLoaded = true;
-        }
-
-        shimmer.stopShimmer();
-        shimmer.setVisibility(View.GONE);
     }
 }

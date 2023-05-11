@@ -184,13 +184,16 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.google.android.material.imageview.ShapeableImageView
+        <ImageButton
+            android:id="@+id/btnNext"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:src="@drawable/siguientebtn"
-            android:tint="@color/maroon"
+            app:tint="@color/maroon"
+            android:scaleType="centerCrop"
+            android:background="#00FFFFFF"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

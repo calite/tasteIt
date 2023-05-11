@@ -31,6 +31,7 @@ public class UserLoader {
     private Context context;
     private String sender_token;
     private String receiver_token;
+    private String name;
     private int  skipper;
 
     public UserLoader(ApiRequests apiRequests, Context context, String sender_token) {
@@ -38,6 +39,7 @@ public class UserLoader {
         this.context = context;
         this.sender_token = sender_token;
         userProfileLiveData = new MutableLiveData<>();
+        userLiveData = new MutableLiveData<>();
     }
 
     public UserLoader(ApiRequests apiRequests, Context context, String sender_token, String receiver_token) {
@@ -55,6 +57,8 @@ public class UserLoader {
         this.skipper = skipper;
         userCommentsLiveData = new MutableLiveData<>();
         usersLiveData = new MutableLiveData<>();
+
+        this.name = sender_token;
     }
 
     public LiveData<HashMap<String, Object>> getAllUser() {
@@ -292,4 +296,71 @@ public class UserLoader {
             }
         });
     }
+
+    public LiveData<List<User>> getUserByName() {
+        return usersLiveData;
+    }
+
+    public void loadUserByName(){
+        apiRequests.getUserByName(name, skipper).enqueue(new Callback<List<UserApi>>() {
+            @Override
+            public void onResponse(Call<List<UserApi>> call, Response<List<UserApi>> response) {
+                if (response.isSuccessful()) {
+                    List<UserApi> usersApi = response.body();
+                    List<User> users = new ArrayList<>();
+
+                    //tratamos los datos
+                    for (UserApi userApi : usersApi) {
+                        User user = new User(
+                                userApi.getUsername(),
+                                userApi.getBiography(),
+                                userApi.getImgProfile(),
+                                userApi.getToken()
+                        );
+                        users.add(user);
+                    }
+                    usersLiveData.postValue(users);
+                } else {
+                    // La solicitud no fue exitosa
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<UserApi>> call, Throwable t) {
+                // Hubo un error en la solicitud
+                Toast.makeText(context, "Failed to load data: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public LiveData<User> getUserByToken() {
+        return userLiveData;
+    }
+
+    public void loadUserByToken(){
+        apiRequests.getUserByToken(sender_token).enqueue(new Callback<UserApi>() {
+            @Override
+            public void onResponse(Call<UserApi> call, Response<UserApi> response) {
+                if (response.isSuccessful()) {
+                    UserApi userApi = response.body();
+                    User user = new User(
+                            userApi.getUsername(),
+                            userApi.getBiography(),
+                            userApi.getImgProfile(),
+                            userApi.getToken()
+                    );
+                    userLiveData.postValue(user);
+                } else {
+                    // La solicitud no fue exitosa
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserApi> call, Throwable t) {
+                // Hubo un error en la solicitud
+                Toast.makeText(context, "Failed to load data: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 }

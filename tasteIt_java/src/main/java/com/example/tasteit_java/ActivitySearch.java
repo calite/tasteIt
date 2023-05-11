@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -98,6 +99,7 @@ public class ActivitySearch extends AppCompatActivity {
             public void onClick(View view) {
                 stringSearch = tvSearch.getText().toString();
                 if (stringSearch.length() > 0) { //Aqui sacariamos los resultados de la búsqueda y creariamos el adapter de nuevo
+                    Toast.makeText(ActivitySearch.this, "Searching ...", Toast.LENGTH_SHORT).show();
                     vpPaginator.setVisibility(View.GONE);
                     adapter = new AdapterFragmentSearch(getSupportFragmentManager(), getLifecycle(), stringSearch);
                     vpPaginator.setAdapter(adapter);

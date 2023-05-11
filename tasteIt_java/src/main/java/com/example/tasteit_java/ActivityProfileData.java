@@ -81,18 +81,24 @@ public class ActivityProfileData extends AppCompatActivity {
 
             @Override
             public void update() {
-                adapter.dataList.add(0, null);
-                adapter.notifyItemInserted(0);
-
-                skipper = 0;
-                allItemsCount = 0;
-                allItemsLoaded = false;
-                adapter.dataList.clear();
-                retrieveData();
+                updateList();
             }
         });
 
         adapter.notifyDataSetChanged();
+    }
+
+    public void updateList() {
+        skipper = 0;
+        allItemsCount = 0;
+        allItemsLoaded = false;
+        adapter.dataList.clear();
+        adapter.notifyDataSetChanged();
+
+        shimmer.setVisibility(View.VISIBLE);
+        shimmer.startShimmer();
+
+        retrieveData();
     }
 
     @Override
@@ -135,11 +141,7 @@ public class ActivityProfileData extends AppCompatActivity {
 
     @Override
     protected void onRestart() {
-        skipper = 0;
-        allItemsCount = 0;
-        allItemsLoaded = false;
-        adapter.dataList.clear();
-        retrieveData();
+        updateList();
         super.onRestart();
     }
 

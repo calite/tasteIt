@@ -67,7 +67,7 @@ public class AdapterRecyclerProfileData extends RecyclerView.Adapter {
 
             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 private int totalDistanceScrolled = 0;
-                private int threshold = 100; // umbral de distancia a recorrer en px
+                private int threshold = 10; // umbral de distancia a recorrer en px
                 private boolean isScrollingUp = false;
                 @Override
                 public void onScrolled(RecyclerView recyclerView,
@@ -99,7 +99,7 @@ public class AdapterRecyclerProfileData extends RecyclerView.Adapter {
                                 loading = true;
                                 totalDistanceScrolled = 0;
                             }
-                        } /*else if (isScrollingUp && linearLayoutManager.findFirstVisibleItemPosition() == 0) {
+                        } else if (isScrollingUp && linearLayoutManager.findFirstVisibleItemPosition() == 0) {
                             // Beginning has been reached
                             if (!loading && totalDistanceScrolled > threshold) {
                                 if (onLoadMoreListener != null) {
@@ -108,7 +108,7 @@ public class AdapterRecyclerProfileData extends RecyclerView.Adapter {
                                 loading = true;
                                 totalDistanceScrolled = 0;
                             }
-                        }*/
+                        }
                     }
                 }
             });
@@ -249,9 +249,8 @@ public class AdapterRecyclerProfileData extends RecyclerView.Adapter {
 
                     ivAuthor.setShapeAppearanceModel(ShapeAppearanceModel.builder(context, R.style.cornerRoundImageView, R.style.cornerRoundImageView).build());
                     try{
-                        //Picasso.with(itemView.getContext()).load(temp.getImage()).into(ivAuthor);
+                        Picasso.with(itemView.getContext()).load(temp.getImage()).into(ivAuthor);
                     }catch(IllegalArgumentException iae){}
-                    //ivAuthor.setImageBitmap(Utils.decodeBase64(temp.getImage()));
                     break;
                 }
                 case 2:
@@ -265,7 +264,6 @@ public class AdapterRecyclerProfileData extends RecyclerView.Adapter {
                     try{
                         Picasso.with(itemView.getContext()).load(temp.getImgProfile()).into(ivAuthor);
                     }catch(IllegalArgumentException iae){}
-                    //ivAuthor.setImageBitmap(Utils.decodeBase64(temp.getImgProfile()));
 
                     if (isFollow) {
                         btnFollow.setText("UNFOLLOW");
