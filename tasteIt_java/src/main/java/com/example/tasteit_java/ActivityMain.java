@@ -78,18 +78,20 @@ public class ActivityMain extends AppCompatActivity {
 
         sharedPreferences = new SharedPreferencesSaved(this);
 
-        if(!sharedPreferences.getSharedPreferences().contains("accessToken")) {
+        if(!sharedPreferences.getSharedPreferences().contains("accessToken") || !sharedPreferences.getSharedPreferences().getString("accessToken", "null").equals(Utils.getUserAcessToken())) {
             SharedPreferences.Editor editor = sharedPreferences.getEditer();
             editor.putString("accessToken", Utils.getUserAcessToken());
             editor.commit();
         }
+
         accessToken = sharedPreferences.getSharedPreferences().getString("accessToken", "null");
 
-        if(!sharedPreferences.getSharedPreferences().contains("uid")) {
+        if(!sharedPreferences.getSharedPreferences().contains("uid") || !sharedPreferences.getSharedPreferences().getString("uid", "null").equals(Utils.getUserToken())) {
             SharedPreferences.Editor editor = sharedPreferences.getEditer();
             editor.putString("uid", Utils.getUserToken());
             editor.commit();
         }
+
         uid = sharedPreferences.getSharedPreferences().getString("uid", "null");
 
         rvRecipes = findViewById(R.id.rvRecipes);

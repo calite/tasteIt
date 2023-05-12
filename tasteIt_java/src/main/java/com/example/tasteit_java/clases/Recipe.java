@@ -64,12 +64,13 @@ public class Recipe implements Parcelable, Comparable<Recipe> {
     }
 
     //constructor de new recipe para neo
-    public Recipe(String name, String description, ArrayList<String> steps, String dateCreated, int difficulty, String creator, String image, String country, ArrayList<String> tags, ArrayList<String> ingredients, int id, String creatorToken) {
+    public Recipe(String name, String description, ArrayList<String> steps, String dateCreated, int difficulty, float rating, String creator, String image, String country, ArrayList<String> tags, ArrayList<String> ingredients, int id, String creatorToken) {
         this.name = name;
         this.description = description;
         this.steps = steps;
         this.dateCreated = dateCreated;
         this.difficulty = difficulty;
+        this.rating = rating;
         this.creator = creator;
         this.image = image;
         this.country = country;
