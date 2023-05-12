@@ -3,6 +3,8 @@ package com.example.tasteit_java.request;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+
 public class RecipeRequest {
 
     @SerializedName("token")
@@ -35,17 +37,17 @@ public class RecipeRequest {
 
     @SerializedName("ingredients")
     @Expose
-    private String ingredients;
+    private ArrayList<String> ingredients;
 
     @SerializedName("steps")
     @Expose
-    private String steps;
+    private ArrayList<String> steps;
 
     /*@SerializedName("tags")
     @Expose
     private String tags;*/
 
-    public RecipeRequest(String token, String name, String description, String country, String image, int difficulty, String ingredients, String steps) {
+    public RecipeRequest(String token, String name, String description, String country, String image, int difficulty, ArrayList<String> ingredients, ArrayList<String> steps) {
         this.token = token;
         this.name = name;
         this.description = description;
@@ -109,19 +111,19 @@ public class RecipeRequest {
         this.difficulty = difficulty;
     }
 
-    public String getIngredients() {
+    public ArrayList<String> getIngredients() {
         return ingredients;
     }
 
-    public void setIngredients(String ingredients) {
+    public void setIngredients(ArrayList<String> ingredients) {
         this.ingredients = ingredients;
     }
 
-    public String getSteps() {
+    public ArrayList<String> getSteps() {
         return steps;
     }
 
-    public void setSteps(String steps) {
+    public void setSteps(ArrayList<String> steps) {
         this.steps = steps;
     }
 }

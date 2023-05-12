@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:fillViewport="true"
+    android:scrollbars="vertical"
     tools:context=".fragments.FragmentIngredientsNewRecipe">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="25dp"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:fitsSystemWindows="true"
+        android:fillViewport="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -32,10 +37,14 @@
 
         <EditText
             android:id="@+id/etIngredientName"
-            android:layout_width="285dp"
-            android:maxWidth="285dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
+            android:layout_marginHorizontal="10dp"
+            android:ems="10"
+            android:inputType="textMultiLine"
+            android:maxLength="255"
+            android:maxLines="4"
+            android:scrollbars="vertical"
             app:backgroundTint="@color/maroon"
             app:layout_constraintStart_toEndOf="@+id/bAddIngredient"
             app:layout_constraintTop_toBottomOf="@+id/textView16"
@@ -56,4 +65,4 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

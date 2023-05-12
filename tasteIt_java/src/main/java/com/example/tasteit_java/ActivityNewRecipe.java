@@ -273,7 +273,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
                     if(newFilePath != null) {
                         uploadImage(newFilePath);
                     } else {
-                        editRecipe();
+                        editRecipe(null);
                     }
                 } else{
                     if(newFilePath != null) {
@@ -329,7 +329,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
         FragmentIngredientsNewRecipe.setIngredients(recipe.getIngredients());
     }
 
-    public void createRecipe() {
+    public void createRecipe(Uri imgUrl) {
         apiClient = ApiClient.getInstance(accessToken);
 
         String name = FragmentInfoNewRecipe.getRecipeName().getText().toString();
@@ -338,11 +338,13 @@ public class ActivityNewRecipe extends AppCompatActivity {
         int difficulty = FragmentInfoNewRecipe.getDificulty();
         //recogemos datos de fragment pasos
         ArrayList<String> listSteps = FragmentStepsNewRecipe.getSteps();
-        String steps = String.join(",", listSteps);
+        //String steps = String.join(",", listSteps);
+
         //recogemos datos del fragment ingredientes
         ArrayList<String> listIngredients = FragmentIngredientsNewRecipe.getIngredients();
-        String ingredients = String.join(",", listIngredients);
-        //generacion automatica de tags
+
+        //String ingredients = String.join(",", listIngredients);
+        /*generacion automatica de tags
         ArrayList<String> listTags = new ArrayList<>();
         ArrayList<String> diccionario = new ArrayList<>();
         //traemos el diccionario
@@ -357,7 +359,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
         palabras.addAll(Arrays.asList(name.split("\\s+")));
         palabras.addAll(Arrays.asList(description.split("\\s+")));
         palabras.addAll(listIngredients);
-        palabras.addAll(listSteps); //esto hay que splitearlo tb @TODO
+        palabras.addAll(listSteps); //esto hay que splitearlo tb @TODO*/
 
         if (checkFields()) {
             RecipeRequest r = new RecipeRequest();
@@ -367,8 +369,8 @@ public class ActivityNewRecipe extends AppCompatActivity {
             r.setCountry(country);
             r.setImage(newFilePath.toString());
             r.setDifficulty(difficulty);
-            r.setIngredients(ingredients);
-            r.setSteps(steps);
+            r.setIngredients(listIngredients);
+            r.setSteps(listSteps);
 
             Call<Void> call = apiClient.getService().createRecipe(r);
             call.enqueue(new Callback<Void>() {
@@ -396,7 +398,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
         }
     }
 
-    public void editRecipe() {
+    public void editRecipe(Uri imgUrl) {
         Toast.makeText(this, "EDITING ...", Toast.LENGTH_SHORT).show();
         apiClient = ApiClient.getInstance(accessToken);
 
@@ -406,11 +408,13 @@ public class ActivityNewRecipe extends AppCompatActivity {
         int difficulty = FragmentInfoNewRecipe.getDificulty();
         //recogemos datos de fragment pasos
         ArrayList<String> listSteps = FragmentStepsNewRecipe.getSteps();
-        String steps = String.join(",", listSteps);
+        //String steps = String.join(",", listSteps);
+
         //recogemos datos del fragment ingredientes
         ArrayList<String> listIngredients = FragmentIngredientsNewRecipe.getIngredients();
-        String ingredients = String.join(",", listIngredients);
-        //generacion automatica de tags
+        //String ingredients = String.join(",", listIngredients);
+
+        /*generacion automatica de tags
         ArrayList<String> listTags = new ArrayList<>();
         ArrayList<String> diccionario = new ArrayList<>();
         //traemos el diccionario
@@ -425,9 +429,9 @@ public class ActivityNewRecipe extends AppCompatActivity {
         palabras.addAll(Arrays.asList(name.split("\\s+")));
         palabras.addAll(Arrays.asList(description.split("\\s+")));
         palabras.addAll(listIngredients);
-        palabras.addAll(listSteps);
+        palabras.addAll(listSteps);*/
 
-        String urlImage = (newFilePath != null ? newFilePath.toString() : lastFileUrl.toString());
+        String urlImage = (imgUrl != null ? imgUrl.toString() : lastFileUrl.toString());
 
         if (checkFields()) {
             RecipeEditRequest r = new RecipeEditRequest();
@@ -437,8 +441,8 @@ public class ActivityNewRecipe extends AppCompatActivity {
             r.setCountry(country);
             r.setImage(urlImage);
             r.setDifficulty(difficulty);
-            r.setIngredients(ingredients);
-            r.setSteps(steps);
+            r.setIngredients(listIngredients);
+            r.setSteps(listSteps);
 
             Call<Void> call = apiClient.getService().editRecipe(r);
             call.enqueue(new Callback<Void>() {
@@ -468,11 +472,10 @@ public class ActivityNewRecipe extends AppCompatActivity {
     }
 
     private void saveData(Uri downloadUri) {
-        newFilePath = downloadUri;
         if(editing) {
-            editRecipe();
+            editRecipe(downloadUri);
         } else {
-            createRecipe();
+            createRecipe(downloadUri);
         }
     }
 

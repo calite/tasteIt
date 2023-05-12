@@ -43,7 +43,7 @@ public class AdapterListViewNewRecipe extends BaseAdapter {
     public View getView(int i, View view, ViewGroup viewGroup) {
         LayoutInflater inflater = LayoutInflater.from(context);
 
-        view = inflater.inflate(R.layout.item_recipe_listview, null);
+        view = inflater.inflate(R.layout.item_recipe_stepslist, null);
 
         TextView tvTitle = view.findViewById(R.id.tvTitle);
         EditText etText = view.findViewById(R.id.etText);

@@ -291,4 +291,10 @@ public class ActivityMain extends AppCompatActivity {
         editor.remove("idRecipes");
         editor.commit();
     }
+
+    @Override
+    protected void onRestart() {
+        updateList();
+        super.onRestart();
+    }
 }
