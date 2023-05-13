@@ -284,8 +284,12 @@ public class ActivityLogin extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    String uid = sharedPreferencesSaved.getSharedPreferences().getString("uid", "null");
-                    ApiClient apiClient = ApiClient.getInstance(sharedPreferencesSaved.getSharedPreferences().getString("accessToken", "null"));
+                    FirebaseUser userF = mAuth.getCurrentUser();
+                    //String uid = sharedPreferencesSaved.getSharedPreferences().getString("uid", "null");
+                    String uid = userF.getUid();
+
+                    ApiClient apiClient = ApiClient.getInstance(userF.getIdToken(false).getResult().getToken());
+
                     UserApi user = new UserApi();
                     user.setToken(uid);
                     user.setImgProfile("");
