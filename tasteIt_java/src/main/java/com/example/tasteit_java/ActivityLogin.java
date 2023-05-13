@@ -4,6 +4,11 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
@@ -14,6 +19,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,13 +33,21 @@ import com.example.tasteit_java.ApiService.ApiClient;
 import com.example.tasteit_java.ApiService.UserApi;
 import com.example.tasteit_java.clases.SharedPreferencesSaved;
 import com.example.tasteit_java.clases.Utils;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -54,6 +68,8 @@ public class ActivityLogin extends AppCompatActivity {
     private Button bShowPass2;
     private Button bLogin;
     private FirebaseAuth mAuth;
+
+    private Uri downloadUri;
     Logger log = Logger.getLogger(ActivityMain.class.getName());
 
     @Override
@@ -292,7 +308,30 @@ public class ActivityLogin extends AppCompatActivity {
 
                     UserApi user = new UserApi();
                     user.setToken(uid);
-                    user.setImgProfile("");
+                    //TODO
+                    //UPLOAD DEFAULT IMAGE NOT WORKING, NO IDEA WHY IT KEEPS RETURNING A NULL URI SMH
+                    Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.defaultpp);
+                    File f = new File(getCacheDir(), "defaultpp");
+                    try {
+                        if(f.exists())f.delete();
+                        f.createNewFile();
+                    }catch(Exception e){
+                        Toast.makeText(ActivityLogin.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    bm.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
+                    byte[] bitmapdata = bos.toByteArray();
+                    try{
+                        FileOutputStream fos = new FileOutputStream(f);
+                        fos.write(bitmapdata);
+                        fos.flush();
+                        fos.close();
+                    }catch(Exception e){
+                        Toast.makeText(ActivityLogin.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                    uploadImage(Uri.fromFile(f));
+                    Toast.makeText(ActivityLogin.this, downloadUri.toString(), Toast.LENGTH_SHORT).show();
+                    user.setImgProfile(downloadUri.toString());
                     user.setBiography("");
                     user.setUsername(userName);
 
@@ -419,5 +458,34 @@ public class ActivityLogin extends AppCompatActivity {
         Toast.makeText(this, "Error with the connection to $provider", Toast.LENGTH_SHORT).show();
     }
     */
+
+    private Uri uploadImage(Uri filePath) {
+        if (filePath != null) {
+            final StorageReference ref = FirebaseStorage.getInstance().getReference().child("images/" + UUID.randomUUID().toString());
+            UploadTask uploadTask = ref.putFile(filePath);
+            Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
+                    }
+                    // Continue with the task to get the download URL
+                    return ref.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()) {
+                        downloadUri = task.getResult();
+                    } else {
+                        // Handle failures
+                        // ...
+                    }
+                }
+            });
+
+        }
+        return null;
+    }
 
 }

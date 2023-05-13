@@ -41,12 +41,16 @@ import com.example.tasteit_java.request.RecipeRequest;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,6 +77,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
     private boolean editing = false;
     private ApiClient apiClient;
     private String accessToken;
+    private FloatingActionButton bCreate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,6 +157,26 @@ public class ActivityNewRecipe extends AppCompatActivity {
                 menuInflater.inflate(R.menu.change_image_from, popupMenu.getMenu());
                 popupMenu.setOnMenuItemClickListener(popupListener);
                 popupMenu.show();
+            }
+        });
+
+        bCreate = findViewById(R.id.bCreate);
+        bCreate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(editing){
+                    if(newFilePath != null) {
+                        uploadImage(newFilePath);
+                    } else {
+                        editRecipe(null);
+                    }
+                } else{
+                    if(newFilePath != null) {
+                        uploadImage(newFilePath);
+                    } else {
+                        Toast.makeText(ActivityNewRecipe.this, "You have to set a image", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         });
     }
@@ -268,21 +293,6 @@ public class ActivityNewRecipe extends AppCompatActivity {
             case android.R.id.home:
                 onBackPressed();
                 return true;
-            case R.id.iSaveRecipe:
-                if(editing){
-                    if(newFilePath != null) {
-                        uploadImage(newFilePath);
-                    } else {
-                        editRecipe(null);
-                    }
-                } else{
-                    if(newFilePath != null) {
-                        uploadImage(newFilePath);
-                    } else {
-                        Toast.makeText(this, "You have to set a image", Toast.LENGTH_SHORT).show();
-                    }
-                }
-                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -294,10 +304,33 @@ public class ActivityNewRecipe extends AppCompatActivity {
             newFilePath = data.getData();
             Utils.onActivityResult(this, requestCode, resultCode, data, ivRecipePhoto);
         }
-        /*if(requestCode == 202) {
+        if(requestCode == 202) {
             Bitmap photo = (Bitmap) data.getExtras().get("data");
             ivRecipePhoto.setImageBitmap(photo);
-        }*/
+            File f = new File(getCacheDir(), UUID.randomUUID().toString());
+            try {
+                f.createNewFile();
+            }catch(Exception e){
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+            //Convert bitmap to byte array
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            photo.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
+            byte[] bitmapdata = bos.toByteArray();
+
+//write the bytes in file
+            try{
+                FileOutputStream fos = new FileOutputStream(f);
+                fos.write(bitmapdata);
+                fos.flush();
+                fos.close();
+            }catch(Exception e){
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+            newFilePath = Uri.fromFile(f);
+
+
+        }
     }
 
     private void bringRecipe() {

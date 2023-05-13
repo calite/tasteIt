@@ -51,6 +51,8 @@ public class ActivityRecipe extends AppCompatActivity {
     private ViewPager2 vpPaginator;
     private ShimmerFrameLayout shimmer;
     private FloatingActionButton bLike;
+
+    private FloatingActionButton bComment;
     private int recipeId;
     private String token;
     private Recipe recipe;
@@ -111,12 +113,19 @@ public class ActivityRecipe extends AppCompatActivity {
         tlRecipe.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                if(tab.getPosition() != vpPaginator.getCurrentItem()){
+                    if(tab.getPosition() == 2 && vpPaginator.getCurrentItem() != 2){
+                        bLike.setVisibility(View.GONE);
+                        bComment.setVisibility(View.VISIBLE);
+                    }else if(tab.getPosition() != 2 && vpPaginator.getCurrentItem() == 2){
+                        bComment.setVisibility(View.GONE);
+                        bLike.setVisibility(View.VISIBLE);
+                    }}
                 vpPaginator.setCurrentItem(tab.getPosition());
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-
             }
 
             @Override
@@ -135,6 +144,7 @@ public class ActivityRecipe extends AppCompatActivity {
 
         //boton de me gusta
         bLike = findViewById(R.id.bLike);
+        bComment = findViewById(R.id.bComment);
         bLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -161,39 +171,9 @@ public class ActivityRecipe extends AppCompatActivity {
             }
         });
 
-        tvNameCreator.setOnClickListener(new View.OnClickListener() {
+        bComment.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                if(creatorToken != null && creatorToken != "")  {
-                    Intent i = new Intent(getApplicationContext(), ActivityProfile.class);
-                    i.putExtra("uid", creatorToken);
-                    startActivity(i);
-                }
-            }
-        });
-    }
-
-    //MENU superior
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.recipe_menu, menu);
-        if (seeEdit) {
-            menu.findItem(R.id.iEditRecipe).setVisible(true);
-        } else {
-            menu.findItem(R.id.iEditRecipe).setVisible(false);
-        }
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                //ojo que puede petar
-                //NavUtils.navigateUpFromSameTask(this);
-                onBackPressed();
-                return true;
-            case R.id.iRate:
+            public void onClick(View view) {
                 View rate = View.inflate(ActivityRecipe.this, R.layout.item_rate, null);
                 RatingBar rbRating = rate.findViewById(R.id.rbRating);
                 EditText etComment = rate.findViewById(R.id.etCommentRate);
@@ -231,6 +211,40 @@ public class ActivityRecipe extends AppCompatActivity {
 
                 builderRate.setNegativeButton("Cancel", null);
                 builderRate.create().show();
+            }
+        });
+
+        tvNameCreator.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(creatorToken != null && creatorToken != "")  {
+                    Intent i = new Intent(getApplicationContext(), ActivityProfile.class);
+                    i.putExtra("uid", creatorToken);
+                    startActivity(i);
+                }
+            }
+        });
+    }
+
+    //MENU superior
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.recipe_menu, menu);
+        if (seeEdit) {
+            menu.findItem(R.id.iEditRecipe).setVisible(true);
+        } else {
+            menu.findItem(R.id.iEditRecipe).setVisible(false);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                //ojo que puede petar
+                //NavUtils.navigateUpFromSameTask(this);
+                onBackPressed();
                 return true;
             case R.id.iReport:
                 View report = View.inflate(ActivityRecipe.this, R.layout.item_report, null);
@@ -326,5 +340,4 @@ public class ActivityRecipe extends AppCompatActivity {
             bLike.setRotationX(0);
         }
     }
-
 }

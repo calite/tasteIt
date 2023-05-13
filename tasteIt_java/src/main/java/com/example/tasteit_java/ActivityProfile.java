@@ -1,5 +1,7 @@
 package com.example.tasteit_java;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -8,7 +10,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,9 +28,12 @@ import com.example.tasteit_java.clases.OnItemNavSelectedListener;
 import com.example.tasteit_java.clases.SharedPreferencesSaved;
 import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
+import com.example.tasteit_java.request.RecipeCommentRequest;
+import com.example.tasteit_java.request.UserCommentRequest;
 import com.example.tasteit_java.request.UserFollowRequest;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
@@ -50,6 +57,8 @@ public class ActivityProfile extends AppCompatActivity {
     private ConstraintLayout tagRecipe, tagFollowers, tagFollowing, tagLikes;
     private String uid;
     private Boolean myProfile;
+
+    private FloatingActionButton bComment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +90,56 @@ public class ActivityProfile extends AppCompatActivity {
         //menu superior
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Profile");
+
+        bComment = findViewById(R.id.bComment);
+        bComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                /////////
+                View rate = View.inflate(ActivityProfile.this, R.layout.item_rate, null);
+                RatingBar rbRating = rate.findViewById(R.id.rbRating);
+                rbRating.setVisibility(View.GONE);
+                EditText etComment = rate.findViewById(R.id.etCommentRate);
+
+                AlertDialog.Builder builderRate = new AlertDialog.Builder(ActivityProfile.this);
+                builderRate.setView(rate);
+
+                builderRate.setPositiveButton("Send!", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if(!String.valueOf(etComment.getText()).trim().equals("")) {
+                            UserCommentRequest userCommentRequest = new UserCommentRequest(Utils.getUserToken(), uid, String.valueOf(etComment.getText()));
+                            ApiClient apiClient = ApiClient.getInstance(accessToken);
+                            Call<Void> call = apiClient.getService().commentUser(userCommentRequest);
+                            call.enqueue(new Callback<Void>() {
+                                @Override
+                                public void onResponse(Call<Void> call, Response<Void> response) {
+                                    if (response.isSuccessful()) {
+
+                                    } else {
+                                        // Handle the error
+                                        Log.e("API_ERROR", "Response error: " + response.code() + " " + response.message());
+                                        Toast.makeText(ActivityProfile.this, "bad!", Toast.LENGTH_SHORT).show();
+
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<Void> call, Throwable t) {
+                                    // Handle the error
+                                    Toast.makeText(ActivityProfile.this, "bad!", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }
+                });
+
+                builderRate.setNegativeButton("Cancel", null);
+                builderRate.create().show();
+                /////////
+
+            }
+        });
     }
 
     //Metodo para instanciar los elementos de la UI
@@ -112,6 +171,12 @@ public class ActivityProfile extends AppCompatActivity {
         tlUser.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                if(tab.getPosition() != vpPaginator.getCurrentItem()){
+                    if(tab.getPosition() == 2 && vpPaginator.getCurrentItem() != 2){
+                        bComment.setVisibility(View.VISIBLE);
+                    }else if(tab.getPosition() != 2 && vpPaginator.getCurrentItem() == 2){
+                        bComment.setVisibility(View.GONE);
+                    }}
                 vpPaginator.setCurrentItem(tab.getPosition());
             }
 
