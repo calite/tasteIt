@@ -164,6 +164,7 @@ public class ActivityEditProfile extends AppCompatActivity {
                     Toast.makeText(ActivityEditProfile.this, "Updateo password", Toast.LENGTH_SHORT).show();
                     uploadImage(newFilePath);
                 } else if (newPassword.length() >= 8 && newPassword.equals(ConfPass) && oldPassword.length() > 0 && newFilePath == null) {
+                    changePassword(oldPassword, newPassword);
                     saveDataUser(null);
                 } else if (oldPassword.length() == 0 && newFilePath != null) {
                     uploadImage(newFilePath);
@@ -322,8 +323,8 @@ public class ActivityEditProfile extends AppCompatActivity {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    //Toast.makeText(ActivityEditProfile.this, "Good!", Toast.LENGTH_SHORT).show();
-                    if (!lastFileUrl.equals("")) {
+                    Toast.makeText(ActivityEditProfile.this, "All saved!", Toast.LENGTH_SHORT).show();
+                    if (newFilePath != null && lastFileUrl != null) {
                         final StorageReference storageReference = FirebaseStorage.getInstance().getReference().getStorage().getReferenceFromUrl(user.getImgProfile());
                         storageReference.delete();
                     }

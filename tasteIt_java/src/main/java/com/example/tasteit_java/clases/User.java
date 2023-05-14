@@ -1,10 +1,12 @@
 package com.example.tasteit_java.clases;
 
+import androidx.annotation.Nullable;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class User implements Serializable  {
+public class User implements Serializable, Comparable<User>  {
 
     private String username;
     private String biography;
@@ -81,5 +83,27 @@ public class User implements Serializable  {
 
     public void setUserComments(ArrayList<Comment> userComments) {
         this.userComments = userComments;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj instanceof User) {
+            return getUid() == ((User) obj).getUid();
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public int compareTo(User r){
+        if(r.getUsername().equals(this.username)){
+            return 0;
+        }else {
+            return 1;
+        }
     }
 }

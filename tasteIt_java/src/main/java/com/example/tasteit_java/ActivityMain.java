@@ -65,6 +65,7 @@ public class ActivityMain extends AppCompatActivity {
     private RecyclerView rvRecipes;
     private String accessToken;
     private String uid;
+    private HashSet<String> idRecipes;
     private SharedPreferencesSaved sharedPreferences;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -77,21 +78,7 @@ public class ActivityMain extends AppCompatActivity {
         shimmer.startShimmer();
 
         sharedPreferences = new SharedPreferencesSaved(this);
-
-        if(!sharedPreferences.getSharedPreferences().contains("accessToken") || !sharedPreferences.getSharedPreferences().getString("accessToken", "null").equals(Utils.getUserAcessToken())) {
-            SharedPreferences.Editor editor = sharedPreferences.getEditer();
-            editor.putString("accessToken", Utils.getUserAcessToken());
-            editor.commit();
-        }
-
         accessToken = sharedPreferences.getSharedPreferences().getString("accessToken", "null");
-
-        if(!sharedPreferences.getSharedPreferences().contains("uid") || !sharedPreferences.getSharedPreferences().getString("uid", "null").equals(Utils.getUserToken())) {
-            SharedPreferences.Editor editor = sharedPreferences.getEditer();
-            editor.putString("uid", Utils.getUserToken());
-            editor.commit();
-        }
-
         uid = sharedPreferences.getSharedPreferences().getString("uid", "null");
 
         rvRecipes = findViewById(R.id.rvRecipes);
@@ -99,6 +86,7 @@ public class ActivityMain extends AppCompatActivity {
         skipper = 0;
         allItemsCount = 0;
         allItemsLoaded = false;
+        idRecipes = new HashSet<>();
 
         rvRecipes.setHasFixedSize(true);
         bringRecipes();
@@ -242,13 +230,13 @@ public class ActivityMain extends AppCompatActivity {
         if(adapter.dataList.size() != allItemsCount) {
             allItemsCount = adapter.dataList.size();
 
-            HashSet<String> idRecipes = new HashSet<>();
             for (Recipe temp:recipes) {
                 idRecipes.add(String.valueOf(temp.getId()));
             }
             SharedPreferences.Editor editor = sharedPreferences.getEditer();
             editor.putStringSet("idRecipes", idRecipes);
             editor.commit();
+
         } else {
             allItemsLoaded = true;
         }

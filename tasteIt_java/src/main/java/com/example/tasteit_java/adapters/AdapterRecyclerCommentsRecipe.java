@@ -9,6 +9,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -48,7 +49,7 @@ public class AdapterRecyclerCommentsRecipe extends RecyclerView.Adapter {
 
             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 private int totalDistanceScrolled = 0;
-                private int threshold = 10; // umbral de distancia a recorrer en px
+                private int threshold = 100; // umbral de distancia a recorrer en px
                 private boolean isScrollingUp = false;
                 @Override
                 public void onScrolled(RecyclerView recyclerView,
@@ -98,7 +99,11 @@ public class AdapterRecyclerCommentsRecipe extends RecyclerView.Adapter {
 
     @Override
     public int getItemViewType(int position) {
-        return dataList.get(position) instanceof Comment ? TYPE_ITEM : TYPE_FOOTER;
+        if (!dataList.isEmpty()) {
+            return dataList.get(position) instanceof Comment ? TYPE_ITEM : TYPE_FOOTER;
+        } else {
+            return TYPE_ITEM;
+        }
     }
 
     @NonNull
@@ -116,9 +121,9 @@ public class AdapterRecyclerCommentsRecipe extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int position) {
-        if (viewHolder instanceof AdapterEndlessRecyclerMain.RecipeViewHolder) {
+        if (viewHolder instanceof CommentViewHolder) {
             ((CommentViewHolder) viewHolder).bindRow((Comment) dataList.get(position));
-        } else if (viewHolder instanceof AdapterEndlessRecyclerMain.FooterViewHolder) {
+        } else if (viewHolder instanceof FooterViewHolder) {
             ((FooterViewHolder) viewHolder).progressBar.setIndeterminate(true);
         }
     }
@@ -187,7 +192,6 @@ public class AdapterRecyclerCommentsRecipe extends RecyclerView.Adapter {
     }
 
     class FooterViewHolder extends RecyclerView.ViewHolder {
-
         ProgressBar progressBar;
 
         public FooterViewHolder(@NonNull View itemView) {

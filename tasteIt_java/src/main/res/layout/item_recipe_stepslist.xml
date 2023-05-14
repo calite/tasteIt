@@ -3,24 +3,44 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_margin="15dp">
 
-    <TextView
-        android:id="@+id/tvTitle"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="step one"/>
+        android:orientation="horizontal">
 
-    <EditText
-        android:id="@+id/etText"
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:textStyle="italic"
+            android:text="Step one"/>
+
+        <ImageButton
+            android:id="@+id/btnDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_close"
+            app:tint="@color/maroon"
+            android:scaleType="centerCrop"
+            android:background="#F3C2C2"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:backgroundTint="@color/maroon"
-        android:ems="10"
+        android:textColor="@color/black"
         android:inputType="textMultiLine"
+        android:textSize="16sp"
+        android:text="Step oneeeeeeee"
         android:maxLength="255"
         android:maxLines="4"
-        android:scrollbars="vertical"
-        android:text="ey"/>
+        android:scrollbars="vertical"/>
 
 </LinearLayout>

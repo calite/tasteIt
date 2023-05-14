@@ -12,10 +12,14 @@ import com.example.tasteit_java.ApiService.RecipeApiComment;
 import com.example.tasteit_java.ApiService.RecipeId_Recipe_User;
 import com.example.tasteit_java.clases.Comment;
 import com.example.tasteit_java.clases.Recipe;
+import com.example.tasteit_java.clases.SharedPreferencesSaved;
 import com.example.tasteit_java.clases.User;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -32,6 +36,7 @@ public class RecipeLoader {
     private int skipper;
     private int recipeId;
     private ArrayList<Integer> lastIdRecipes;
+    private ArrayList<String> idsRecipesShared;
     private String sender_token;
     private String name;
     private String country;
@@ -64,11 +69,12 @@ public class RecipeLoader {
         this.limit = data;
     }
 
-    public RecipeLoader(ApiRequests apiRequests, Context context, ArrayList<Integer> lastIdRecipes) {
+    public RecipeLoader(ApiRequests apiRequests, Context context, ArrayList<Integer> lastIdRecipes, ArrayList<String> idsRecipesShared) {
         this.apiRequests = apiRequests;
         this.context = context;
         recipeLiveData = new MutableLiveData<>();
         this.lastIdRecipes = lastIdRecipes;
+        this.idsRecipesShared = idsRecipesShared;
         recipeId = 0;
     }
 
@@ -303,18 +309,16 @@ public class RecipeLoader {
     }
 
     public void loadRandomRecipe() {
-        List<String> list = new ArrayList<String>(new SharedPreferencesSaved(context).getSharedPreferences().getStringSet("idRecipes", new HashSet<>()));
-        if (!list.isEmpty()) {
+        if (!idsRecipesShared.isEmpty()) {
             do {
-                Collections.shuffle(list);
-                recipeId = Integer.parseInt(list.get(0));
-                //Toast.makeText(context, "ID: " + list.get(0), Toast.LENGTH_SHORT).show();
-            } while(lastIdRecipes.contains(recipeId));
+                Collections.shuffle(idsRecipesShared);
+                recipeId = Integer.parseInt(idsRecipesShared.get(0));
+                idsRecipesShared.remove(0);
+            } while(lastIdRecipes.contains(recipeId) || !idsRecipesShared.isEmpty());
         } else {
             do {
                 Random random = new Random();
                 recipeId = (random.nextInt(50));
-                Toast.makeText(context, "ID rand: " + recipeId, Toast.LENGTH_SHORT).show();
             } while(lastIdRecipes.contains(recipeId));
         }
         apiRequests.getRecipeById(recipeId).enqueue(new Callback<List<RecipeId_Recipe_User>>() {
@@ -328,6 +332,7 @@ public class RecipeLoader {
                             (ArrayList<String>) recipeApi.getRecipeDetails().getSteps(),
                             recipeApi.getRecipeDetails().getDateCreated(),
                             recipeApi.getRecipeDetails().getDifficulty(),
+                            recipeApi.getRecipeDetails().getRating(),
                             recipeApi.getUser().getUsername(),
                             recipeApi.getRecipeDetails().getImage(),
                             recipeApi.getRecipeDetails().getCountry(),
@@ -338,15 +343,16 @@ public class RecipeLoader {
                     );
                     recipeLiveData.postValue(recipe);
                 } else {
-                    // La solicitud no fue exitosa
                     loadRandomRecipe();
                 }
             }
+
             @Override
             public void onFailure(Call<List<RecipeId_Recipe_User>> call, Throwable t) {
                 Toast.makeText(context, "Something went wrong - " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+
     }*/
 
     public LiveData<Boolean> getIsLiked() {
@@ -390,17 +396,16 @@ public class RecipeLoader {
                             try {
                                 Comment comment = new Comment(
                                         temp.getComment().getComment(),
-                                        temp.getComment().getDateCreated(),
+                                        String.valueOf(temp.getComment().getDateCreated()),
                                         Float.valueOf(temp.getComment().getRating()),
                                         new User(temp.getUser().getUsername(), temp.getUser().getBiography(), temp.getUser().getImgProfile(), temp.getUser().getToken())
                                 );
                                 comments.add(comment);
                             } catch (NullPointerException ex) {
-                                Log.e("Error", "apiRequests.getCommentsOnRecipe error");
+                                Log.e("Error", "apiRequests.getCommentsOnRecipe error - " + ex.getMessage());
                             }
                         }
                     }
-
                     recipeCommentsLiveData.postValue(comments);
                 } else {
                     // La solicitud no fue exitosa

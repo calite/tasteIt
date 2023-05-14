@@ -26,6 +26,7 @@ import com.example.tasteit_java.ApiUtils.UserLoader;
 import com.example.tasteit_java.adapters.AdapterFragmentRandom;
 import com.example.tasteit_java.clases.OnItemNavSelectedListener;
 import com.example.tasteit_java.clases.Recipe;
+import com.example.tasteit_java.clases.SharedPreferencesSaved;
 import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -33,6 +34,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public class ActivityRandom extends AppCompatActivity {
@@ -41,6 +43,7 @@ public class ActivityRandom extends AppCompatActivity {
     private MenuItem profileImg;
     private ArrayList<Recipe> someRecipes;
     private ArrayList<Integer> lastIdRecipes;
+    private ArrayList<String> idRecipes;
     private AdapterFragmentRandom adapter;
     private ViewPager2 vpRandom;
     private String accessToken;
@@ -63,6 +66,8 @@ public class ActivityRandom extends AppCompatActivity {
         shimmer = findViewById(R.id.shimmer);
         someRecipes = new ArrayList<>();
         lastIdRecipes = new ArrayList<>();
+        idRecipes = new ArrayList<>(new SharedPreferencesSaved(this).getSharedPreferences().getStringSet("idRecipes", new HashSet<>()));
+
 
         btnShuffle.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,6 +128,14 @@ public class ActivityRandom extends AppCompatActivity {
     }
 
     private void onRecipeLoaded(List<Recipe> recipes) {
+        /*if(someRecipes.size() <= 4) {
+            if(recipe != null){
+                someRecipes.add(recipe);
+                lastIdRecipes.add(recipe.getId());
+            }
+            bringRecipes();
+        } else {*/
+        someRecipes.addAll(recipes);
         adapter = new AdapterFragmentRandom(getSupportFragmentManager(), getLifecycle(), someRecipes, vpRandom);
         vpRandom.setAdapter(adapter);
         shimmer.stopShimmer();

@@ -3,6 +3,8 @@ package com.example.tasteit_java.clases;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.Nullable;
+
 import java.util.ArrayList;
 
 public class Recipe implements Parcelable, Comparable<Recipe> {
@@ -216,5 +218,18 @@ public class Recipe implements Parcelable, Comparable<Recipe> {
         }else{
             return 1;
         }
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj instanceof Recipe) {
+            return getId() == ((Recipe) obj).getId();
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }

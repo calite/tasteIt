@@ -10,6 +10,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -250,7 +251,8 @@ public class ActivityLogin extends AppCompatActivity {
                                                 if (!userName.equals("")) {
                                                     dialog.dismiss();
                                                     waitingForConection();
-                                                    register();
+                                                    String path = "android.resource://"+  getPackageName() + "/" + R.drawable.defaultpp;
+                                                    uploadImage(Uri.parse(path));
                                                 } else {
                                                     Toast.makeText(ActivityLogin.this, "You must choose a valid username", Toast.LENGTH_SHORT).show();
                                                 }
@@ -284,9 +286,18 @@ public class ActivityLogin extends AppCompatActivity {
     private void goHome() {
         Intent i = new Intent(this, ActivityMain.class);
 
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        String uid = firebaseUser.getUid();
-        log.log(Level.INFO, uid + " " + firebaseUser.getEmail());
+        SharedPreferencesSaved sharedPreferences = new SharedPreferencesSaved(this);
+
+        if(!sharedPreferences.getSharedPreferences().contains("accessToken") || !sharedPreferences.getSharedPreferences().getString("accessToken", "null").equals(Utils.getUserAcessToken())) {
+            SharedPreferences.Editor editor = sharedPreferences.getEditer();
+            editor.putString("accessToken", Utils.getUserAcessToken());
+            editor.commit();
+        }
+        if(!sharedPreferences.getSharedPreferences().contains("uid") || !sharedPreferences.getSharedPreferences().getString("uid", "null").equals(Utils.getUserToken())) {
+            SharedPreferences.Editor editor = sharedPreferences.getEditer();
+            editor.putString("uid", Utils.getUserToken());
+            editor.commit();
+        }
 
         startActivity(i);
         finish();
@@ -295,7 +306,6 @@ public class ActivityLogin extends AppCompatActivity {
     private void register() {
         email = etEmail.getText().toString();
         password = etPassword.getText().toString();
-        SharedPreferencesSaved sharedPreferencesSaved = new SharedPreferencesSaved(this);
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -303,34 +313,9 @@ public class ActivityLogin extends AppCompatActivity {
                     FirebaseUser userF = mAuth.getCurrentUser();
                     //String uid = sharedPreferencesSaved.getSharedPreferences().getString("uid", "null");
                     String uid = userF.getUid();
-
                     ApiClient apiClient = ApiClient.getInstance(userF.getIdToken(false).getResult().getToken());
-
                     UserApi user = new UserApi();
                     user.setToken(uid);
-                    //TODO
-                    //UPLOAD DEFAULT IMAGE NOT WORKING, NO IDEA WHY IT KEEPS RETURNING A NULL URI SMH
-                    Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.defaultpp);
-                    File f = new File(getCacheDir(), "defaultpp");
-                    try {
-                        if(f.exists())f.delete();
-                        f.createNewFile();
-                    }catch(Exception e){
-                        Toast.makeText(ActivityLogin.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                    bm.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
-                    byte[] bitmapdata = bos.toByteArray();
-                    try{
-                        FileOutputStream fos = new FileOutputStream(f);
-                        fos.write(bitmapdata);
-                        fos.flush();
-                        fos.close();
-                    }catch(Exception e){
-                        Toast.makeText(ActivityLogin.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                    uploadImage(Uri.fromFile(f));
-                    Toast.makeText(ActivityLogin.this, downloadUri.toString(), Toast.LENGTH_SHORT).show();
                     user.setImgProfile(downloadUri.toString());
                     user.setBiography("");
                     user.setUsername(userName);
@@ -477,6 +462,7 @@ public class ActivityLogin extends AppCompatActivity {
                 public void onComplete(@NonNull Task<Uri> task) {
                     if (task.isSuccessful()) {
                         downloadUri = task.getResult();
+                        register();
                     } else {
                         // Handle failures
                         // ...

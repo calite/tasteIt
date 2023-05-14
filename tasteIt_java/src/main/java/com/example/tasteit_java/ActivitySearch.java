@@ -69,9 +69,9 @@ public class ActivitySearch extends AppCompatActivity {
         tlSearch.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                tvSearch.setText("");
+                //tvSearch.setText("");
                 vpPaginator.setCurrentItem(tab.getPosition());
-                switch (tab.getPosition()){
+                /*switch (tab.getPosition()){
                     case 0: tvSearch.setHint("Type something...");
                         break;
                     case 1: tvSearch.setHint("Profiles...");
@@ -80,7 +80,7 @@ public class ActivitySearch extends AppCompatActivity {
                         break;
                     case 3: tvSearch.setHint("Ingredients...");
                         break;
-                }
+                }*/
             }
 
             @Override
@@ -99,8 +99,6 @@ public class ActivitySearch extends AppCompatActivity {
             public void onClick(View view) {
                 stringSearch = tvSearch.getText().toString();
                 if (stringSearch.length() > 0) { //Aqui sacariamos los resultados de la búsqueda y creariamos el adapter de nuevo
-                    Toast.makeText(ActivitySearch.this, "Searching ...", Toast.LENGTH_SHORT).show();
-                    vpPaginator.setVisibility(View.GONE);
                     adapter = new AdapterFragmentSearch(getSupportFragmentManager(), getLifecycle(), stringSearch);
                     vpPaginator.setAdapter(adapter);
                 }

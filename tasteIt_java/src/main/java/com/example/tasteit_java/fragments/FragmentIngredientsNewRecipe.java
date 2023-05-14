@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
@@ -54,22 +55,27 @@ public class FragmentIngredientsNewRecipe extends Fragment {
         bAddIngredient.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Chip chip = new Chip(getContext());
-                chip.setText(etIngredientName.getText().toString());
-                chip.setCloseIconResource(R.drawable.ic_close);
-                chip.setCloseIconVisible(true);
-                chip.setChipBackgroundColor(ColorStateList.valueOf(getResources().getColor(R.color.maroon)));
-                chip.setTextColor(Color.WHITE);
-                chip.setOnCloseIconClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        ingredients.remove(etIngredientName.getText().toString());
-                        cgIngredients.removeView(chip);
-                    }
-                });
-                cgIngredients.addView(chip);
-                ingredients.add(etIngredientName.getText().toString());
-                etIngredientName.setText("");
+                if(etIngredientName.getText().length() > 0) {
+                    Chip chip = new Chip(getContext());
+                    chip.setText(etIngredientName.getText().toString());
+                    chip.setCloseIconResource(R.drawable.ic_close);
+                    chip.setCloseIconVisible(true);
+                    chip.setChipBackgroundColor(ColorStateList.valueOf(getResources().getColor(R.color.maroon)));
+                    chip.setTextColor(Color.WHITE);
+
+                    chip.setOnCloseIconClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ingredients.remove(etIngredientName.getText().toString());
+                            cgIngredients.removeView(chip);
+                        }
+                    });
+                    cgIngredients.addView(chip);
+                    ingredients.add(etIngredientName.getText().toString());
+                    etIngredientName.setText("");
+                } else {
+                    Toast.makeText(getContext(), "You must specify an ingredient", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

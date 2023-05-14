@@ -79,7 +79,7 @@ public class AdapterRecyclerCommentsProfile extends RecyclerView.Adapter {
 
             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 private int totalDistanceScrolled = 0;
-                private int threshold = 10; // umbral de distancia a recorrer en px
+                private int threshold = 100; // umbral de distancia a recorrer en px
                 private boolean isScrollingUp = false;
                 @Override
                 public void onScrolled(RecyclerView recyclerView,
@@ -146,7 +146,6 @@ public class AdapterRecyclerCommentsProfile extends RecyclerView.Adapter {
                     viewGroup, false);
             return new FooterViewHolder(row);
         }
-        //return null;
     }
 
     @Override

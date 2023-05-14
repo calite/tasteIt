@@ -1,6 +1,7 @@
 package com.example.tasteit_java;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -63,7 +64,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ActivityNewRecipe extends AppCompatActivity {
-
     private ImageView ivRecipePhoto;
     private ImageButton ibPickPhoto;
     private TabLayout tlRecipe;
@@ -291,6 +291,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                finish();
                 onBackPressed();
                 return true;
         }
@@ -540,6 +541,14 @@ public class ActivityNewRecipe extends AppCompatActivity {
 
         }
         return null;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        FragmentStepsNewRecipe.getSteps().clear();
+        FragmentIngredientsNewRecipe.getIngredients().clear();
+        FragmentInfoNewRecipe.getTags().clear();
     }
 
 }

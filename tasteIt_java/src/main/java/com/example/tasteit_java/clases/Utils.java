@@ -150,8 +150,8 @@ public class Utils {
     //Metodo para pasarle un bitmap y que lo devuelva redondeado
     public static Bitmap getRoundBitmapWithImage(Bitmap originalBitmap) {
         //Cambiamos el tamaño a la imagen original para que siempre sea igual
-        int desiredWidth = 1000;
-        int desiredHeight = 1000;
+        int desiredWidth = 1500;
+        int desiredHeight = 1500;
         float scaleWidth = ((float) desiredWidth) / originalBitmap.getWidth();
         float scaleHeight = ((float) desiredHeight) / originalBitmap.getHeight();
         float scaleFactor = Math.min(scaleWidth, scaleHeight);
@@ -185,20 +185,5 @@ public class Utils {
 
         // Devuelve el Bitmap resultante
         return output;
-    }
-
-    public static Bitmap uriToBitmap(Context context, String selectedFileUri) {
-        try {
-            URL url = new URL(selectedFileUri);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            return myBitmap;
-        } catch (IOException e) {
-            // Log exception
-            return null;
-        }
     }
 }

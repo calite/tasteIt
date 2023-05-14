@@ -50,7 +50,7 @@ public class AdapterEndlessRecyclerSearch extends Adapter {
 
             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 private int totalDistanceScrolled = 0;
-                private int threshold = 15; // umbral de distancia a recorrer en px
+                private int threshold = 50; // umbral de distancia a recorrer en px
                 @Override
                 public void onScrolled(RecyclerView recyclerView,
                                        int dx, int dy) {

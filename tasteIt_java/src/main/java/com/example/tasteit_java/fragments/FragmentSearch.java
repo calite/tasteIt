@@ -40,7 +40,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.TreeSet;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -165,6 +169,7 @@ public class FragmentSearch extends Fragment {
         allItemsCount = 0;
         allItemsLoaded = false;
         adapter.dataList.clear();
+        dataListAux.clear();
         adapter.notifyDataSetChanged();
 
         shimmer.setVisibility(View.VISIBLE);
@@ -212,15 +217,23 @@ public class FragmentSearch extends Fragment {
                 adapter.dataList.clear();
                 for (Object obj : dataListAux) {
                     if(obj instanceof Recipe) {
-                        Recipe temp = (Recipe) obj;
-                        if(temp.getIngredients().contains(search)) {
-                            adapter.dataList.add(obj);
+                        Recipe recipe = (Recipe) obj;
+                        for (String ingredient : recipe.getIngredients()) {
+                            if(ingredient.toLowerCase().contains(search.toLowerCase())) {
+                                adapter.dataList.add(obj);
+                            }
                         }
+
                     }
                 }
                 break;
             }
         }
+
+        Set temp = new HashSet(adapter.dataList);
+        adapter.dataList.clear();
+        adapter.dataList.addAll(temp);
+
         adapter.notifyDataSetChanged();
         adapter.setLoaded();
         shimmer.stopShimmer();
@@ -242,7 +255,7 @@ public class FragmentSearch extends Fragment {
 
     private void bringRecipes() {
         String accessToken = new SharedPreferencesSaved(getContext()).getSharedPreferences().getString("accessToken", "null");
-        RecipeLoader recipesLoader = new RecipeLoader(ApiClient.getInstance(accessToken).getService(), getContext(), 0);
+        RecipeLoader recipesLoader = new RecipeLoader(ApiClient.getInstance(accessToken).getService(), getContext(), skipper);
         recipesLoader.getAllRecipesWSkipper().observe(getViewLifecycleOwner(), this::onRecipesLoaded);
         recipesLoader.loadAllRecipesWSkipper();
     }
@@ -278,7 +291,7 @@ public class FragmentSearch extends Fragment {
     private void bringUserFollowing() {
         String accessToken = new SharedPreferencesSaved(getContext()).getSharedPreferences().getString("accessToken", "null");
         String uidProfile = new SharedPreferencesSaved(getContext()).getSharedPreferences().getString("uid", "null");
-        UserLoader userLoader = new UserLoader(ApiClient.getInstance(accessToken).getService(), getContext(), uidProfile, 0);
+        UserLoader userLoader = new UserLoader(ApiClient.getInstance(accessToken).getService(), getContext(), uidProfile, skipper);
         userLoader.getFollowingByUser().observe(getViewLifecycleOwner(), this::onUsersLoaded);
         userLoader.loadFollowingByUser();
     }
@@ -300,7 +313,11 @@ public class FragmentSearch extends Fragment {
         }
 
         Collections.sort(recipes);
-        dataListAux.addAll(recipes);
+        for (Recipe rec : recipes) {
+            if(!dataListAux.contains(rec)) {
+                dataListAux.add(rec);
+            }
+        }
         changeDataType(dataView);
     }
 

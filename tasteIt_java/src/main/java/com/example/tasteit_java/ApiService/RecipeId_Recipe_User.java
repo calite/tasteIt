@@ -12,7 +12,7 @@ public class RecipeId_Recipe_User {
     private RecipeDetails recipeDetails;
 
     @SerializedName("user")
-    private User user;
+    private UserApi user;
 
     public int getRecipeId() {
         return recipeId;
@@ -30,11 +30,11 @@ public class RecipeId_Recipe_User {
         this.recipeDetails = recipeDetails;
     }
 
-    public User getUser() {
+    public UserApi getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserApi user) {
         this.user = user;
     }
 
@@ -147,52 +147,6 @@ public class RecipeId_Recipe_User {
 
         public void setRating(float rating) {
             this.rating = rating;
-        }
-    }
-
-    public class User {
-        @SerializedName("token")
-        private String token;
-
-        @SerializedName("username")
-        private String username;
-
-        @SerializedName("imgProfile")
-        private String imgProfile;
-
-        @SerializedName("biography")
-        private String biography;
-
-        public String getToken() {
-            return token;
-        }
-
-        public void setToken(String token) {
-            this.token = token;
-        }
-
-        public String getUsername() {
-            return username;
-        }
-
-        public void setUsername(String username) {
-            this.username = username;
-        }
-
-        public String getImgProfile() {
-            return imgProfile;
-        }
-
-        public void setImgProfile(String imgProfile) {
-            this.imgProfile = imgProfile;
-        }
-
-        public String getBiography() {
-            return biography;
-        }
-
-        public void setBiography(String biography) {
-            this.biography = biography;
         }
     }
 }
