@@ -7,13 +7,13 @@
     tools:context=".ActivityLogin"
     android:orientation="vertical">
 
-
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
-        android:layout_height="230dp"
+        android:layout_height="200dp"
         android:layout_marginTop="35dp"
-        android:src="@drawable/ic_tasteit"
+        android:padding="40dp"
+        android:src="@drawable/logo4alphadarkpeque"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

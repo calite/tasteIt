@@ -272,7 +272,7 @@
                 app:menu="@menu/nav_main_menu" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:visibility="gone"
+                android:visibility="invisible"
                 android:id="@+id/bComment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

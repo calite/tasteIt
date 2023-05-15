@@ -1,27 +1,44 @@
 package com.example.tasteit_java.adapters;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.animation.Animation;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.example.tasteit_java.ActivityRecipe;
+import com.example.tasteit_java.ApiService.ApiClient;
 import com.example.tasteit_java.R;
+import com.example.tasteit_java.request.RecipeCommentRequest;
 
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.TreeMap;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AdapterListViewNewRecipe extends BaseAdapter {
 
@@ -89,41 +106,86 @@ public class AdapterListViewNewRecipe extends BaseAdapter {
     }
 
     private void modifyStepAlertDialog(int pos) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("Modify Step: ");
-        EditText etStep = new EditText(context);
-        builder.setView(etStep);
+        View rate = View.inflate(context, R.layout.alert_dialog_modifysteps, null);
+        EditText etStep = rate.findViewById(R.id.etStep);
+        Button btnAccept = rate.findViewById(R.id.btnAccept);
+        Button btnCancel = rate.findViewById(R.id.btnCancel);
+
         etStep.setText(arrayListSteps.get(pos));
-        builder.setPositiveButton("Done!", new DialogInterface.OnClickListener() {
+
+        Dialog dialog = new Dialog(context);
+        dialog.setContentView(rate);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        Window window = dialog.getWindow();
+        WindowManager.LayoutParams lp = window.getAttributes();
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.gravity = Gravity.CENTER;
+        window.setAttributes(lp);
+        window.setWindowAnimations(Animation.INFINITE);
+
+        btnAccept.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+            public void onClick(View view) {
                 String step = etStep.getText().toString();
                 if(!step.trim().equals("")) {
                     arrayListSteps.set(pos, step);
                     notifyDataSetChanged();
                     Toast.makeText(context, "Step successfully modified", Toast.LENGTH_SHORT).show();
+                    dialog.cancel();
                 } else {
                     Toast.makeText(context, "You must indicate a step", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-        builder.setNegativeButton("Cancel", null);
-        builder.show();
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.cancel();
+            }
+        });
+
+        dialog.show();
     }
 
     private void deleteStepAlertDialog(int pos) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("Remove step?");
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        View rate = View.inflate(context, R.layout.alert_dialog_deletesteps, null);
+        TextView tvStep = rate.findViewById(R.id.tvStep);
+        Button btnAccept = rate.findViewById(R.id.btnAccept);
+        Button btnCancel = rate.findViewById(R.id.btnCancel);
+
+        tvStep.setText(arrayListSteps.get(pos));
+
+        Dialog dialog = new Dialog(context);
+        dialog.setContentView(rate);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        Window window = dialog.getWindow();
+        WindowManager.LayoutParams lp = window.getAttributes();
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.gravity = Gravity.CENTER;
+        window.setAttributes(lp);
+        window.setWindowAnimations(Animation.INFINITE);
+
+        btnAccept.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+            public void onClick(View view) {
                 arrayListSteps.remove(pos);
                 notifyDataSetChanged();
                 Toast.makeText(context, "Step removed", Toast.LENGTH_SHORT).show();
+                dialog.cancel();
             }
         });
-        builder.setNegativeButton("No", null);
-        builder.show();
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.cancel();
+            }
+        });
+
+        dialog.show();
     }
 
 }

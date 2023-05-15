@@ -24,6 +24,7 @@ import com.example.tasteit_java.ApiService.ApiClient;
 import com.example.tasteit_java.ApiUtils.UserLoader;
 import com.example.tasteit_java.adapters.AdapterFragmentMyBook;
 import com.example.tasteit_java.clases.OnItemNavSelectedListener;
+import com.example.tasteit_java.clases.SharedPreferencesSaved;
 import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -106,8 +107,28 @@ public class ActivityMyBook extends AppCompatActivity {
         menu.getItem(1).setVisible(false);
         menu.getItem(2).setVisible(false);
 
+        String imgUrl = new SharedPreferencesSaved(this).getSharedPreferences().getString("urlImgProfile", "null");
         profileImg = menu.getItem(0);
-        retrieveProfileImg();
+        Glide.with(this)
+                .load(imgUrl)
+                .into(new CustomTarget<Drawable>() {
+                    @Override
+                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                        Bitmap bitmap = Bitmap.createBitmap(resource.getIntrinsicWidth(),
+                                resource.getIntrinsicHeight(),
+                                Bitmap.Config.ARGB_8888);
+                        Canvas canvas = new Canvas(bitmap);
+                        resource.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+                        resource.draw(canvas);
+
+                        Drawable roundedDrawable = new BitmapDrawable(getResources(), Utils.getRoundBitmapWithImage(bitmap));
+                        profileImg.setIcon(roundedDrawable);
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                    }
+                });
 
         BottomNavigationView fcMainMenu = findViewById(R.id.fcMainMenu);
         fcMainMenu.setSelectedItemId(R.id.bMyBook);
@@ -147,35 +168,5 @@ public class ActivityMyBook extends AppCompatActivity {
     private void signOut(){
         FirebaseAuth.getInstance().signOut();
         startActivity (new Intent(this, ActivityLogin.class));
-    }
-
-    private void retrieveProfileImg() {
-        UserLoader userLoader = new UserLoader(ApiClient.getInstance(Utils.getUserAcessToken()).getService(), this, Utils.getUserToken());
-        userLoader.getAllUser().observe(this, this::onProfileImgLoaded);
-        userLoader.loadAllUser();
-    }
-
-    private void onProfileImgLoaded(HashMap<String, Object> temp) {
-        User user = (User) temp.get("user");
-        Glide.with(this)
-                .load(user.getImgProfile())
-                .into(new CustomTarget<Drawable>() {
-                    @Override
-                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                        Bitmap bitmap = Bitmap.createBitmap(resource.getIntrinsicWidth(),
-                                resource.getIntrinsicHeight(),
-                                Bitmap.Config.ARGB_8888);
-                        Canvas canvas = new Canvas(bitmap);
-                        resource.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-                        resource.draw(canvas);
-
-                        Drawable roundedDrawable = new BitmapDrawable(getResources(), Utils.getRoundBitmapWithImage(bitmap));
-                        profileImg.setIcon(roundedDrawable);
-                    }
-
-                    @Override
-                    public void onLoadCleared(@Nullable Drawable placeholder) {
-                    }
-                });
     }
 }

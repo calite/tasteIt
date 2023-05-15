@@ -1,5 +1,6 @@
 package com.example.tasteit_java.fragments;
 
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.tasteit_java.ActivityRecipe;
 import com.example.tasteit_java.R;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.Utils;
@@ -27,7 +29,7 @@ import com.squareup.picasso.Picasso;
 public class FragmentRandom extends Fragment {
     private Recipe recipe;
     private ShimmerFrameLayout shimmer;
-    private ImageButton btnNext;
+    private ImageButton btnNext, btnView;
     private ViewPager2 vpRandom;
 
     public FragmentRandom() {
@@ -70,6 +72,7 @@ public class FragmentRandom extends Fragment {
             view = inflater.inflate(R.layout.fragment_random, container, false);
 
             btnNext = view.findViewById(R.id.btnNext);
+            btnView = view.findViewById(R.id.btnView);
             ImageView ivPhoto = view.findViewById(R.id.ivRecipePhoto);
             TextView tvRecipeName = view.findViewById(R.id.tvRecipeName);
             TextView tvNameCreator = view.findViewById(R.id.tvNameCreator);
@@ -102,6 +105,16 @@ public class FragmentRandom extends Fragment {
                 @Override
                 public void onClick(View view) {
                     vpRandom.setCurrentItem(vpRandom.getCurrentItem() + 1, true);
+                }
+            });
+
+            btnView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getContext(), ActivityRecipe.class);
+                    intent.putExtra("creatorToken", recipe.getCreatorToken());
+                    intent.putExtra("recipeId", recipe.getId());
+                    getContext().startActivity(intent);
                 }
             });
 

@@ -74,6 +74,9 @@ public class ActivityMain extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
+        getSupportActionBar().setLogo(R.drawable.logo4alphadarkpeque);
+
         shimmer = findViewById(R.id.shimmer);
         shimmer.startShimmer();
 
@@ -272,6 +275,12 @@ public class ActivityMain extends AppCompatActivity {
                     public void onLoadCleared(@Nullable Drawable placeholder) {
                     }
                 });
+
+        if(!sharedPreferences.getSharedPreferences().contains("urlImgProfile") || !sharedPreferences.getSharedPreferences().getString("urlImgProfile", "null").equals(user.getImgProfile())) {
+            SharedPreferences.Editor editor = sharedPreferences.getEditer();
+            editor.putString("urlImgProfile", user.getImgProfile());
+            editor.commit();
+        }
     }
 
     @Override

@@ -1,14 +1,21 @@
 package com.example.tasteit_java;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -34,9 +41,12 @@ import com.example.tasteit_java.request.UserFollowRequest;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
+
+import org.w3c.dom.Text;
 
 import java.util.HashMap;
 
@@ -90,56 +100,6 @@ public class ActivityProfile extends AppCompatActivity {
         //menu superior
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Profile");
-
-        bComment = findViewById(R.id.bComment);
-        bComment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                /////////
-                View rate = View.inflate(ActivityProfile.this, R.layout.item_rate, null);
-                RatingBar rbRating = rate.findViewById(R.id.rbRating);
-                rbRating.setVisibility(View.GONE);
-                EditText etComment = rate.findViewById(R.id.etCommentRate);
-
-                AlertDialog.Builder builderRate = new AlertDialog.Builder(ActivityProfile.this);
-                builderRate.setView(rate);
-
-                builderRate.setPositiveButton("Send!", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if(!String.valueOf(etComment.getText()).trim().equals("")) {
-                            UserCommentRequest userCommentRequest = new UserCommentRequest(Utils.getUserToken(), uid, String.valueOf(etComment.getText()));
-                            ApiClient apiClient = ApiClient.getInstance(accessToken);
-                            Call<Void> call = apiClient.getService().commentUser(userCommentRequest);
-                            call.enqueue(new Callback<Void>() {
-                                @Override
-                                public void onResponse(Call<Void> call, Response<Void> response) {
-                                    if (response.isSuccessful()) {
-
-                                    } else {
-                                        // Handle the error
-                                        Log.e("API_ERROR", "Response error: " + response.code() + " " + response.message());
-                                        Toast.makeText(ActivityProfile.this, "bad!", Toast.LENGTH_SHORT).show();
-
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(Call<Void> call, Throwable t) {
-                                    // Handle the error
-                                    Toast.makeText(ActivityProfile.this, "bad!", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        }
-                    }
-                });
-
-                builderRate.setNegativeButton("Cancel", null);
-                builderRate.create().show();
-                /////////
-
-            }
-        });
     }
 
     //Metodo para instanciar los elementos de la UI
@@ -153,6 +113,7 @@ public class ActivityProfile extends AppCompatActivity {
         ivUserPicture = findViewById(R.id.ivUserPicture);
 
         btnFollow = findViewById(R.id.btnFollow);
+        bComment = findViewById(R.id.bComment);
         if (myProfile) {
             btnFollow.setVisibility(View.INVISIBLE);
             btnFollow.setEnabled(false);
@@ -171,12 +132,19 @@ public class ActivityProfile extends AppCompatActivity {
         tlUser.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                if(tab.getPosition() != vpPaginator.getCurrentItem()){
-                    if(tab.getPosition() == 2 && vpPaginator.getCurrentItem() != 2){
-                        bComment.setVisibility(View.VISIBLE);
-                    }else if(tab.getPosition() != 2 && vpPaginator.getCurrentItem() == 2){
+                if (tab.getPosition() != vpPaginator.getCurrentItem()) {
+                    if (tab.getPosition() == 2 && vpPaginator.getCurrentItem() != 2) {
+                        if (myProfile) {
+                            bComment.setVisibility(View.GONE);
+                            bComment.setEnabled(false);
+                        } else {
+                            bComment.setVisibility(View.VISIBLE);
+                            bComment.setEnabled(true);
+                        }
+                    } else if (tab.getPosition() != 2 && vpPaginator.getCurrentItem() == 2) {
                         bComment.setVisibility(View.GONE);
-                    }}
+                    }
+                }
                 vpPaginator.setCurrentItem(tab.getPosition());
             }
 
@@ -223,6 +191,75 @@ public class ActivityProfile extends AppCompatActivity {
                         Toast.makeText(ActivityProfile.this, "bad!", Toast.LENGTH_SHORT).show();
                     }
                 });
+            }
+        });
+        bComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                View rate = View.inflate(ActivityProfile.this, R.layout.alert_dialog_comment_rate, null);
+                RatingBar rbRating = rate.findViewById(R.id.rbRating);
+                TextView textView12 = rate.findViewById(R.id.textView12);
+                EditText etComment = rate.findViewById(R.id.etCommentRate);
+                Button btnSend = rate.findViewById(R.id.btnSend);
+                Button btnCancel = rate.findViewById(R.id.btnCancel);
+
+                rbRating.setVisibility(View.GONE);
+                rbRating.setEnabled(false);
+                textView12.setVisibility(View.GONE);
+                textView12.setEnabled(false);
+
+                Dialog dialog = new Dialog(ActivityProfile.this);
+                dialog.setContentView(rate);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                Window window = dialog.getWindow();
+                WindowManager.LayoutParams lp = window.getAttributes();
+                lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                lp.gravity = Gravity.CENTER;
+                window.setAttributes(lp);
+                window.setWindowAnimations(Animation.INFINITE);
+
+                btnSend.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (!String.valueOf(etComment.getText()).trim().equals("")) {
+                            UserCommentRequest userCommentRequest = new UserCommentRequest(Utils.getUserToken(), uid, String.valueOf(etComment.getText()));
+                            ApiClient apiClient = ApiClient.getInstance(accessToken);
+                            Call<Void> call = apiClient.getService().commentUser(userCommentRequest);
+                            call.enqueue(new Callback<Void>() {
+                                @Override
+                                public void onResponse(Call<Void> call, Response<Void> response) {
+                                    if (response.isSuccessful()) {
+                                        getIsFollowing(Utils.getUserToken(), uid);
+                                        dialog.cancel();
+                                    } else {
+                                        // Handle the error
+                                        Log.e("API_ERROR", "Response error: " + response.code() + " " + response.message());
+                                        Toast.makeText(ActivityProfile.this, "bad!", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<Void> call, Throwable t) {
+                                    // Handle the error
+                                    Toast.makeText(ActivityProfile.this, "bad!", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        } else {
+                            Toast.makeText(ActivityProfile.this, "You must write a comment to continue!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+                btnCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.cancel();
+                    }
+                });
+
+                dialog.show();
             }
         });
         tagRecipe.setOnClickListener(new View.OnClickListener() {
@@ -304,10 +341,12 @@ public class ActivityProfile extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
     //END MENU superior
-    public void callSignOut(View view){
+    public void callSignOut(View view) {
         //signOut();
     }
+
     private void signOut() {
         FirebaseAuth.getInstance().signOut();
         SharedPreferences.Editor editor = new SharedPreferencesSaved(this).getEditer();
@@ -322,7 +361,7 @@ public class ActivityProfile extends AppCompatActivity {
     //Cuando se cambia a otra actividad y se vuelve a esta (ya creada) actualizamos los datos
     @Override
     protected void onRestart() {
-        if(myProfile) {
+        if (myProfile) {
             initializeViews();
             bringUser();
         } else {
@@ -339,7 +378,7 @@ public class ActivityProfile extends AppCompatActivity {
     }
 
     private void onUserLoaded(HashMap<String, Object> userInfo) {
-        if(userInfo.size() == 5) {
+        if (userInfo.size() == 5) {
             userProfile = (User) userInfo.get("user");
 
             tvUserName.setText(userProfile.getUsername());
@@ -351,7 +390,6 @@ public class ActivityProfile extends AppCompatActivity {
             } catch (IllegalArgumentException e) {
                 Log.e("Image Error", "Error loading profile image");
             }
-
 
             String counter = String.valueOf(userInfo.get("recipes"));
             tvReciperCounter.setText(counter);
@@ -365,7 +403,7 @@ public class ActivityProfile extends AppCompatActivity {
             counter = String.valueOf(userInfo.get("liked"));
             tvLikesCounter.setText(counter);
 
-            if(adapter == null) {
+            if (adapter == null) {
                 adapter = new AdapterFragmentProfile(getSupportFragmentManager(), getLifecycle(), uid, myProfile);
                 vpPaginator.setAdapter(adapter);
                 shimmer.stopShimmer();

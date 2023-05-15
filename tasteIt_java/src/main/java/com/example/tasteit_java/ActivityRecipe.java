@@ -1,18 +1,23 @@
 package com.example.tasteit_java;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.os.AsyncTask;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,10 +27,10 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.tasteit_java.ApiService.ApiClient;
 import com.example.tasteit_java.ApiUtils.RecipeLoader;
-import com.example.tasteit_java.adapters.AdapterFragmentProfile;
 import com.example.tasteit_java.adapters.AdapterFragmentRecipe;
 import com.example.tasteit_java.clases.OnItemNavSelectedListener;
 import com.example.tasteit_java.clases.Recipe;
+import com.example.tasteit_java.clases.SharedPreferencesSaved;
 import com.example.tasteit_java.clases.Utils;
 import com.example.tasteit_java.request.RecipeCommentRequest;
 import com.example.tasteit_java.request.RecipeLikeRequest;
@@ -33,10 +38,9 @@ import com.example.tasteit_java.request.RecipeReportRequest;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.tabs.TabLayout;
 import com.squareup.picasso.Picasso;
-
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -170,20 +174,30 @@ public class ActivityRecipe extends AppCompatActivity {
                 });
             }
         });
-
         bComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                View rate = View.inflate(ActivityRecipe.this, R.layout.item_rate, null);
+                View rate = View.inflate(ActivityRecipe.this, R.layout.alert_dialog_comment_rate, null);
                 RatingBar rbRating = rate.findViewById(R.id.rbRating);
                 EditText etComment = rate.findViewById(R.id.etCommentRate);
+                Button btnSend = rate.findViewById(R.id.btnSend);
+                Button btnCancel = rate.findViewById(R.id.btnCancel);
 
-                AlertDialog.Builder builderRate = new AlertDialog.Builder(ActivityRecipe.this);
-                builderRate.setView(rate);
+                Dialog dialog = new Dialog(ActivityRecipe.this);
+                dialog.setContentView(rate);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-                builderRate.setPositiveButton("Send!", new DialogInterface.OnClickListener() {
+                Window window = dialog.getWindow();
+                WindowManager.LayoutParams lp = window.getAttributes();
+                lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                lp.gravity = Gravity.CENTER;
+                window.setAttributes(lp);
+                window.setWindowAnimations(Animation.INFINITE);
+
+                btnSend.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+                    public void onClick(View view) {
                         //comentario en receta segun ID
                         RecipeCommentRequest recipeCommentRequest = new RecipeCommentRequest(String.valueOf(recipeId), token, String.valueOf(etComment.getText()), String.valueOf(rbRating.getRating()));
                         ApiClient apiClient = ApiClient.getInstance(accessToken);
@@ -193,6 +207,7 @@ public class ActivityRecipe extends AppCompatActivity {
                             public void onResponse(Call<Void> call, Response<Void> response) {
                                 if (response.isSuccessful()) {
                                     getIsLiked();
+                                    dialog.cancel();
                                 } else {
                                     // Handle the error
                                     Log.e("API_ERROR", "Response error: " + response.code() + " " + response.message());
@@ -209,8 +224,14 @@ public class ActivityRecipe extends AppCompatActivity {
                     }
                 });
 
-                builderRate.setNegativeButton("Cancel", null);
-                builderRate.create().show();
+                btnCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.cancel();
+                    }
+                });
+
+                dialog.show();
             }
         });
 

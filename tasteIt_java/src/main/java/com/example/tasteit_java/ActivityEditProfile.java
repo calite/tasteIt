@@ -6,6 +6,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -51,7 +52,7 @@ public class ActivityEditProfile extends AppCompatActivity {
     private ImageView ivProfilePhoto;
     private TextView tvUsername, tvConfirmPassword, optChangePass;
     private EditText etUsername, etEmail, etNewPassword, etConfirmPassword, etBiography, etOldPassword;
-    private Button btnSave;
+    private Button btnSave, btnDeleteAcc;
     private String accessToken;
     private String uid;
     private User user;
@@ -95,6 +96,7 @@ public class ActivityEditProfile extends AppCompatActivity {
         tvConfirmPassword = findViewById(R.id.tvConfirmPassword);
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
         btnSave = findViewById(R.id.btnSave);
+        btnDeleteAcc = findViewById(R.id.btnDeleteAcc);
         optChangePass = findViewById(R.id.optChangePass);
         clPassword = findViewById(R.id.clPassword);
 
@@ -173,6 +175,13 @@ public class ActivityEditProfile extends AppCompatActivity {
                 } else {
                     Toast.makeText(getApplicationContext(), "Password must match and be equal or longer than 8 characters", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        btnDeleteAcc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(ActivityEditProfile.this, "Soon ...", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -317,6 +326,7 @@ public class ActivityEditProfile extends AppCompatActivity {
         String bio = etBiography.getText().toString();
 
         UserEditRequest editer = new UserEditRequest(Utils.getUserToken(), username, urlImage, bio);
+        SharedPreferencesSaved sharedPreferences = new SharedPreferencesSaved(this);
 
         Call<Void> call = apiClient.getService().editUser(editer);
         call.enqueue(new Callback<Void>() {
@@ -327,6 +337,12 @@ public class ActivityEditProfile extends AppCompatActivity {
                     if (newFilePath != null && lastFileUrl != null) {
                         final StorageReference storageReference = FirebaseStorage.getInstance().getReference().getStorage().getReferenceFromUrl(user.getImgProfile());
                         storageReference.delete();
+
+                        if(!sharedPreferences.getSharedPreferences().contains("urlImgProfile") || !sharedPreferences.getSharedPreferences().getString("urlImgProfile", "null").equals(urlImage)) {
+                            SharedPreferences.Editor editor = sharedPreferences.getEditer();
+                            editor.putString("urlImgProfile", String.valueOf(urlImage));
+                            editor.commit();
+                        }
                     }
                     finish();
                 } else {

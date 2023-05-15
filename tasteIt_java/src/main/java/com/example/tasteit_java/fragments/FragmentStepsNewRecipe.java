@@ -60,7 +60,6 @@ public class FragmentStepsNewRecipe extends Fragment {
             @Override
             public void onClick(View view) {
                 if(etStep.getText().toString().length() > 0) {
-                    Toast.makeText(getContext(), "Saving: " + listSteps.size() + " - " + etStep.getText().toString(), Toast.LENGTH_SHORT).show();
                     listSteps.add(etStep.getText().toString());
                     adapter.notifyDataSetChanged();
                     etStep.setText("");

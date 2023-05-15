@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,11 +18,16 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +41,7 @@ import com.example.tasteit_java.ApiService.ApiClient;
 import com.example.tasteit_java.ApiService.UserApi;
 import com.example.tasteit_java.clases.SharedPreferencesSaved;
 import com.example.tasteit_java.clases.Utils;
+import com.example.tasteit_java.request.RecipeCommentRequest;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -237,29 +245,38 @@ public class ActivityLogin extends AppCompatActivity {
                                     if (confirmPassword()) {
                                         bLogin.setBackgroundColor(ContextCompat.getColor(ActivityLogin.this, R.color.green));
 
-                                        //Alert para el username
-                                        AlertDialog.Builder builder = new AlertDialog.Builder(ActivityLogin.this);
-                                        builder.setTitle("Choose your username");
-                                        final EditText etUsername = new EditText(ActivityLogin.this);
-                                        etUsername.setInputType(InputType.TYPE_CLASS_TEXT);
-                                        builder.setView(etUsername);
-                                        builder.setCancelable(false);
-                                        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                                        View rate = View.inflate(ActivityLogin.this, R.layout.alert_dialog_username_login, null);
+                                        EditText etUsername = rate.findViewById(R.id.etUsername);
+                                        Button btnSend = rate.findViewById(R.id.btnSend);
+
+                                        Dialog dialog = new Dialog(ActivityLogin.this);
+                                        dialog.setContentView(rate);
+                                        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                                        Window window = dialog.getWindow();
+                                        WindowManager.LayoutParams lp = window.getAttributes();
+                                        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                                        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                                        lp.gravity = Gravity.CENTER;
+                                        window.setAttributes(lp);
+                                        window.setWindowAnimations(Animation.INFINITE);
+
+                                        btnSend.setOnClickListener(new View.OnClickListener() {
                                             @Override
-                                            public void onClick(DialogInterface dialog, int which) {
+                                            public void onClick(View view) {
                                                 userName = etUsername.getText().toString();
                                                 if (!userName.equals("")) {
-                                                    dialog.dismiss();
+                                                    dialog.cancel();
                                                     waitingForConection();
-                                                    String path = "android.resource://"+  getPackageName() + "/" + R.drawable.defaultpp;
-                                                    uploadImage(Uri.parse(path));
+                                                    String pathImg = "android.resource://"+  getPackageName() + "/" + R.drawable.defaultpp;
+                                                    uploadImage(Uri.parse(pathImg));
                                                 } else {
                                                     Toast.makeText(ActivityLogin.this, "You must choose a valid username", Toast.LENGTH_SHORT).show();
                                                 }
                                             }
                                         });
-                                        builder.show();
-                                        //
+
+                                        dialog.show();
                                     } else {
                                         bLogin.setBackgroundColor(ContextCompat.getColor(ActivityLogin.this, R.color.orange));
                                         Toast.makeText(getApplicationContext(), "Password must match and be equal or longer than 8 characters", Toast.LENGTH_SHORT).show();

@@ -40,6 +40,7 @@ public class AdapterRecyclerCommentsRecipe extends RecyclerView.Adapter {
 
     public AdapterRecyclerCommentsRecipe(RecyclerView recyclerView, ShimmerFrameLayout shimmer) {
         dataList = new ArrayList<>();
+        context = recyclerView.getContext();
         this.shimmer = shimmer;
 
         if (recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
@@ -179,7 +180,7 @@ public class AdapterRecyclerCommentsRecipe extends RecyclerView.Adapter {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(context, ActivityProfile.class);
-                    intent.putExtra("uid", comment.getTokenUser());
+                    intent.putExtra("uid", comment.getUser().getUid());
                     context.startActivity(intent);
                 }
             };
