@@ -7,17 +7,11 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.tasteit_java.ActivityMain;
 import com.example.tasteit_java.ApiService.ApiClient;
-import com.example.tasteit_java.ApiService.ApiRequests;
-import com.example.tasteit_java.ApiService.RecipeId_Recipe;
-import com.example.tasteit_java.ApiService.RecipeId_Recipe_User;
-import com.example.tasteit_java.ApiUtils.RecipeLoader;
+import com.example.tasteit_java.ApiGetters.RecipeLoader;
 import com.example.tasteit_java.R;
 import com.example.tasteit_java.adapters.AdapterEndlessRecyclerMain;
 import com.example.tasteit_java.clases.OnLoadMoreListener;
@@ -25,12 +19,7 @@ import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.Utils;
 import com.facebook.shimmer.ShimmerFrameLayout;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class FragmentMyBook extends Fragment {
     private int dataView;

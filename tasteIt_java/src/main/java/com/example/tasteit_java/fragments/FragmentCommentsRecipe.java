@@ -1,39 +1,24 @@
 package com.example.tasteit_java.fragments;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
-import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.tasteit_java.ActivityMain;
 import com.example.tasteit_java.ApiService.ApiClient;
-import com.example.tasteit_java.ApiUtils.RecipeLoader;
+import com.example.tasteit_java.ApiGetters.RecipeLoader;
 import com.example.tasteit_java.R;
-import com.example.tasteit_java.adapters.AdapterRecyclerCommentsProfile;
 import com.example.tasteit_java.adapters.AdapterRecyclerCommentsRecipe;
-import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.Comment;
 import com.example.tasteit_java.clases.OnLoadMoreListener;
-import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.SharedPreferencesSaved;
-import com.example.tasteit_java.clases.User;
-import com.example.tasteit_java.clases.Utils;
 import com.facebook.shimmer.ShimmerFrameLayout;
-import com.google.android.material.chip.Chip;
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
 

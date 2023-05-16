@@ -1,54 +1,32 @@
 package com.example.tasteit_java.fragments;
 
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.example.tasteit_java.ActivityMain;
-import com.example.tasteit_java.ActivityProfile;
-import com.example.tasteit_java.ActivitySearch;
 import com.example.tasteit_java.ApiService.ApiClient;
-import com.example.tasteit_java.ApiService.ApiRequests;
-import com.example.tasteit_java.ApiService.RecipeId_Recipe_User;
-import com.example.tasteit_java.ApiUtils.RecipeLoader;
-import com.example.tasteit_java.ApiUtils.UserLoader;
+import com.example.tasteit_java.ApiGetters.RecipeLoader;
+import com.example.tasteit_java.ApiGetters.UserLoader;
 import com.example.tasteit_java.R;
 import com.example.tasteit_java.adapters.AdapterEndlessRecyclerSearch;
-import com.example.tasteit_java.adapters.AdapterFragmentProfile;
-import com.example.tasteit_java.adapters.AdapterFragmentSearch;
-import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.OnLoadMoreListener;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.SharedPreferencesSaved;
 import com.example.tasteit_java.clases.User;
-import com.example.tasteit_java.clases.Utils;
 import com.facebook.shimmer.ShimmerFrameLayout;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
-import java.util.TreeSet;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.

@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.tasteit_java.ApiService.ApiClient;
-import com.example.tasteit_java.ApiUtils.UserLoader;
+import com.example.tasteit_java.ApiGetters.UserLoader;
 import com.example.tasteit_java.R;
 import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;

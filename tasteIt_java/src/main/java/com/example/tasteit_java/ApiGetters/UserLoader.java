@@ -1,17 +1,14 @@
-package com.example.tasteit_java.ApiUtils;
+package com.example.tasteit_java.ApiGetters;
 
 import android.content.Context;
 import android.widget.Toast;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.example.tasteit_java.ApiService.ApiRequests;
-import com.example.tasteit_java.ApiService.RecipeId_Recipe_User;
 import com.example.tasteit_java.ApiService.UserApi;
 import com.example.tasteit_java.ApiService.UserCommentApi;
 import com.example.tasteit_java.clases.Comment;
-import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.User;
-import com.example.tasteit_java.fragments.FragmentSearch;
 
 import java.util.ArrayList;
 import java.util.HashMap;

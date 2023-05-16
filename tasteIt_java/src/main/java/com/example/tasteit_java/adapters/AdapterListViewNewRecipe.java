@@ -2,14 +2,9 @@ package com.example.tasteit_java.adapters;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,25 +15,12 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
-
-import com.example.tasteit_java.ActivityRecipe;
-import com.example.tasteit_java.ApiService.ApiClient;
 import com.example.tasteit_java.R;
-import com.example.tasteit_java.request.RecipeCommentRequest;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
-import java.util.TreeMap;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class AdapterListViewNewRecipe extends BaseAdapter {
 

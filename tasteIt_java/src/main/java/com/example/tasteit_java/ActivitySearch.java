@@ -5,14 +5,12 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,24 +21,13 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.example.tasteit_java.ApiService.ApiClient;
-import com.example.tasteit_java.ApiUtils.RecipeLoader;
-import com.example.tasteit_java.ApiUtils.UserLoader;
 import com.example.tasteit_java.adapters.AdapterFragmentSearch;
-import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.OnItemNavSelectedListener;
-import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.SharedPreferencesSaved;
-import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class ActivitySearch extends AppCompatActivity {
     private TabLayout tlSearch;

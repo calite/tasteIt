@@ -15,7 +15,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.tasteit_java.ApiService.ApiClient;
-import com.example.tasteit_java.ApiUtils.UserLoader;
+import com.example.tasteit_java.ApiGetters.UserLoader;
 import com.example.tasteit_java.R;
 import com.example.tasteit_java.adapters.AdapterRecyclerCommentsProfile;
 import com.example.tasteit_java.clases.Comment;

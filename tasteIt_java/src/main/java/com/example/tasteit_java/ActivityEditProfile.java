@@ -7,6 +7,7 @@ import androidx.constraintlayout.widget.ConstraintSet;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,12 +22,13 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.tasteit_java.ApiRequest.UserDeleteRequest;
 import com.example.tasteit_java.ApiService.ApiClient;
-import com.example.tasteit_java.ApiUtils.UserLoader;
+import com.example.tasteit_java.ApiGetters.UserLoader;
 import com.example.tasteit_java.clases.SharedPreferencesSaved;
 import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
-import com.example.tasteit_java.request.UserEditRequest;
+import com.example.tasteit_java.ApiRequest.UserEditRequest;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -105,22 +107,8 @@ public class ActivityEditProfile extends AppCompatActivity {
             public void onClick(View view) {
                 if (clPassword.getVisibility() != View.VISIBLE) {
                     clPassword.setVisibility(View.VISIBLE);
-
-                    constraintLayout = findViewById(R.id.mainLayout);
-                    constraintSet = new ConstraintSet();
-                    constraintSet.clone(constraintLayout);
-
-                    constraintSet.connect(btnSave.getId(), ConstraintSet.TOP, clPassword.getId(), ConstraintSet.BOTTOM, 30);
-                    constraintSet.applyTo(constraintLayout);
                 } else {
-                    clPassword.setVisibility(View.INVISIBLE);
-
-                    constraintLayout = findViewById(R.id.mainLayout);
-                    constraintSet = new ConstraintSet();
-                    constraintSet.clone(constraintLayout);
-
-                    constraintSet.connect(btnSave.getId(), ConstraintSet.TOP, optChangePass.getId(), ConstraintSet.BOTTOM, 30);
-                    constraintSet.applyTo(constraintLayout);
+                    clPassword.setVisibility(View.GONE);
                 }
             }
         });
@@ -181,7 +169,42 @@ public class ActivityEditProfile extends AppCompatActivity {
         btnDeleteAcc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(ActivityEditProfile.this, "Soon ...", Toast.LENGTH_SHORT).show();
+                UserDeleteRequest editer = new UserDeleteRequest(uid);
+                String urlImage = new SharedPreferencesSaved(getApplicationContext()).getSharedPreferences().getString("urlImgProfile", "null");
+
+                ApiClient apiClient = ApiClient.getInstance(accessToken);
+                Call<Void> call = apiClient.getService().deleteUser(editer);
+                call.enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        if (response.isSuccessful()) {
+                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                            user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if(task.isSuccessful()) {
+                                        final StorageReference storageReference = FirebaseStorage.getInstance().getReference().getStorage().getReferenceFromUrl(urlImage);
+                                        storageReference.delete();
+                                    }
+                                }
+                            });
+                            Toast.makeText(ActivityEditProfile.this, R.string.info_deleted, Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Handle the error
+                            Log.e("API_ERROR", "Response error: " + response.code() + " " + response.message());
+                            Toast.makeText(ActivityEditProfile.this, R.string.something_wrong, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        // Handle the error
+                        Toast.makeText(ActivityEditProfile.this, R.string.something_wrong, Toast.LENGTH_SHORT).show();
+                    }
+                });
+                new SharedPreferencesSaved(getApplicationContext()).getEditer().clear().commit();
+                startActivity(new Intent(getApplicationContext(), ActivityLogin.class));
+                finish();
             }
         });
     }
@@ -242,17 +265,14 @@ public class ActivityEditProfile extends AppCompatActivity {
             newFilePath = data.getData();
             Utils.onActivityResult(this, requestCode, resultCode, data, ivProfilePhoto);
         }
-        /*if(requestCode == 202) {
+        if(requestCode == 202) {
             if(data.getExtras() != null) {
                 Uri uri = data.getData();
-                Toast.makeText(this, "ahora esta?", Toast.LENGTH_SHORT).show();
-
                 newFilePath = uri;
-
                 Bitmap photo = (Bitmap) data.getExtras().get("data");
                 ivProfilePhoto.setImageBitmap(photo);
             }
-        }*/
+        }
     }
     //END PHOTO PICKER
 

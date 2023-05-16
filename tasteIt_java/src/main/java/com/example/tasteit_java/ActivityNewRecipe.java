@@ -1,12 +1,7 @@
 package com.example.tasteit_java;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,14 +17,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.tasteit_java.ApiService.ApiClient;
-import com.example.tasteit_java.ApiService.ApiRequests;
-import com.example.tasteit_java.ApiService.RecipeId_Recipe_User;
-import com.example.tasteit_java.ApiUtils.RecipeLoader;
+import com.example.tasteit_java.ApiGetters.RecipeLoader;
 import com.example.tasteit_java.adapters.AdapterFragmentNewRecipe;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.SharedPreferencesSaved;
@@ -37,8 +28,8 @@ import com.example.tasteit_java.clases.Utils;
 import com.example.tasteit_java.fragments.FragmentInfoNewRecipe;
 import com.example.tasteit_java.fragments.FragmentIngredientsNewRecipe;
 import com.example.tasteit_java.fragments.FragmentStepsNewRecipe;
-import com.example.tasteit_java.request.RecipeEditRequest;
-import com.example.tasteit_java.request.RecipeRequest;
+import com.example.tasteit_java.ApiRequest.RecipeEditRequest;
+import com.example.tasteit_java.ApiRequest.RecipeRequest;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -52,11 +43,7 @@ import com.squareup.picasso.Picasso;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.List;
 import java.util.UUID;
 
 import retrofit2.Call;
@@ -306,7 +293,13 @@ public class ActivityNewRecipe extends AppCompatActivity {
             Utils.onActivityResult(this, requestCode, resultCode, data, ivRecipePhoto);
         }
         if(requestCode == 202) {
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
+            if(data.getExtras() != null) {
+                Uri uri = data.getData();
+                newFilePath = uri;
+                Bitmap photo = (Bitmap) data.getExtras().get("data");
+                ivRecipePhoto.setImageBitmap(photo);
+            }
+            /*Bitmap photo = (Bitmap) data.getExtras().get("data");
             ivRecipePhoto.setImageBitmap(photo);
             File f = new File(getCacheDir(), UUID.randomUUID().toString());
             try {
@@ -316,10 +309,10 @@ public class ActivityNewRecipe extends AppCompatActivity {
             }
             //Convert bitmap to byte array
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            photo.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
+            photo.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*//*, bos);
             byte[] bitmapdata = bos.toByteArray();
 
-//write the bytes in file
+            //write the bytes in file
             try{
                 FileOutputStream fos = new FileOutputStream(f);
                 fos.write(bitmapdata);
@@ -328,9 +321,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
             }catch(Exception e){
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
-            newFilePath = Uri.fromFile(f);
-
-
+            newFilePath = Uri.fromFile(f);*/
         }
     }
 
@@ -401,7 +392,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
             r.setName(name);
             r.setDescription(description);
             r.setCountry(country);
-            r.setImage(newFilePath.toString());
+            r.setImage(imgUrl.toString());
             r.setDifficulty(difficulty);
             r.setIngredients(listIngredients);
             r.setSteps(listSteps);
@@ -538,7 +529,6 @@ public class ActivityNewRecipe extends AppCompatActivity {
                     }
                 }
             });
-
         }
         return null;
     }

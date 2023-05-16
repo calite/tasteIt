@@ -6,19 +6,16 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
 import com.example.tasteit_java.ApiService.ApiClient;
-import com.example.tasteit_java.ApiUtils.RecipeLoader;
+import com.example.tasteit_java.ApiGetters.RecipeLoader;
 import com.example.tasteit_java.R;
-import com.example.tasteit_java.adapters.AdapterFragmentRecipe;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.Utils;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
-import com.squareup.picasso.Picasso;
 
 
 public class FragmentStepsRecipe extends Fragment {

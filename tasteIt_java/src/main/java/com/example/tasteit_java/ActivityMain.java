@@ -1,13 +1,11 @@
 package com.example.tasteit_java;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
@@ -27,10 +25,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.tasteit_java.ApiService.ApiClient;
-import com.example.tasteit_java.ApiUtils.RecipeLoader;
-import com.example.tasteit_java.ApiUtils.UserLoader;
+import com.example.tasteit_java.ApiGetters.RecipeLoader;
+import com.example.tasteit_java.ApiGetters.UserLoader;
 import com.example.tasteit_java.adapters.AdapterEndlessRecyclerMain;
-import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.OnItemNavSelectedListener;
 import com.example.tasteit_java.clases.OnLoadMoreListener;
 import com.example.tasteit_java.clases.Recipe;
@@ -40,15 +37,11 @@ import com.example.tasteit_java.clases.Utils;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -155,6 +148,8 @@ public class ActivityMain extends AppCompatActivity {
         BottomNavigationView fcMainMenu = findViewById(R.id.fcMainMenu);
         fcMainMenu.setSelectedItemId(R.id.bHome);
         fcMainMenu.setOnItemSelectedListener(new OnItemNavSelectedListener(this));
+
+        menu.getItem(1).setVisible(false);
 
         return true;
     }

@@ -10,14 +10,13 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.tasteit_java.ApiService.ApiClient;
-import com.example.tasteit_java.ApiUtils.RecipeLoader;
-import com.example.tasteit_java.ApiUtils.UserLoader;
+import com.example.tasteit_java.ApiGetters.RecipeLoader;
+import com.example.tasteit_java.ApiGetters.UserLoader;
 import com.example.tasteit_java.adapters.AdapterRecyclerProfileData;
 import com.example.tasteit_java.clases.OnLoadMoreListener;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
-import com.example.tasteit_java.fragments.FragmentMyBook;
 import com.facebook.shimmer.ShimmerFrameLayout;
 
 import java.util.List;

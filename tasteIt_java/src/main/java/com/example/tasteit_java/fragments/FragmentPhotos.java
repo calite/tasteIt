@@ -11,9 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.tasteit_java.ActivityMain;
 import com.example.tasteit_java.ApiService.ApiClient;
-import com.example.tasteit_java.ApiUtils.RecipeLoader;
+import com.example.tasteit_java.ApiGetters.RecipeLoader;
 import com.example.tasteit_java.R;
 import com.example.tasteit_java.adapters.AdapterRecyclerPhotosProfile;
 import com.example.tasteit_java.clases.OnLoadMoreListener;

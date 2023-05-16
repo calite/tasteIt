@@ -25,20 +25,21 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.tasteit_java.ApiRequest.RecipeDeleteRequest;
+import com.example.tasteit_java.ApiRequest.UserDeleteRequest;
 import com.example.tasteit_java.ApiService.ApiClient;
-import com.example.tasteit_java.ApiUtils.RecipeLoader;
+import com.example.tasteit_java.ApiGetters.RecipeLoader;
 import com.example.tasteit_java.adapters.AdapterFragmentRecipe;
 import com.example.tasteit_java.clases.OnItemNavSelectedListener;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.SharedPreferencesSaved;
 import com.example.tasteit_java.clases.Utils;
-import com.example.tasteit_java.request.RecipeCommentRequest;
-import com.example.tasteit_java.request.RecipeLikeRequest;
-import com.example.tasteit_java.request.RecipeReportRequest;
+import com.example.tasteit_java.ApiRequest.RecipeCommentRequest;
+import com.example.tasteit_java.ApiRequest.RecipeLikeRequest;
+import com.example.tasteit_java.ApiRequest.RecipeReportRequest;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.tabs.TabLayout;
 import com.squareup.picasso.Picasso;
 
@@ -83,6 +84,10 @@ public class ActivityRecipe extends AppCompatActivity {
             if (params.size() == 2) {
                 recipeId = params.getInt("recipeId");
                 creatorToken = params.getString("creatorToken");
+
+                if (creatorToken.equals(token)) {
+                    seeEdit = true;
+                }
             } else {
                 recipeId = params.getInt("recipeId");
             }
@@ -107,12 +112,6 @@ public class ActivityRecipe extends AppCompatActivity {
 
         shimmer = findViewById(R.id.shimmer);
         shimmer.startShimmer();
-
-        if (creatorToken.equals(token)) {
-            seeEdit = true;
-        } else {
-            seeEdit = false;
-        }
 
         tlRecipe.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -211,7 +210,7 @@ public class ActivityRecipe extends AppCompatActivity {
                                 } else {
                                     // Handle the error
                                     Log.e("API_ERROR", "Response error: " + response.code() + " " + response.message());
-                                    Toast.makeText(ActivityRecipe.this, "bad!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ActivityRecipe.this, "@string/something_wrong", Toast.LENGTH_SHORT).show();
 
                                 }
                             }
@@ -253,8 +252,10 @@ public class ActivityRecipe extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.recipe_menu, menu);
         if (seeEdit) {
             menu.findItem(R.id.iEditRecipe).setVisible(true);
+            menu.findItem(R.id.iDeleteRecipe).setVisible(true);
         } else {
             menu.findItem(R.id.iEditRecipe).setVisible(false);
+            menu.findItem(R.id.iDeleteRecipe).setVisible(false);
         }
         return true;
     }
@@ -306,6 +307,27 @@ public class ActivityRecipe extends AppCompatActivity {
                 i.putExtra("recipeId", recipeId);
                 i.putExtra("creatorToken", creatorToken);
                 startActivity(i);
+                return true;
+            case R.id.iDeleteRecipe:
+                RecipeDeleteRequest editer = new RecipeDeleteRequest(recipeId);
+                ApiClient apiClient = ApiClient.getInstance(accessToken);
+                Call<Void> call = apiClient.getService().deleteRecipe(editer);
+                call.enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        if (response.isSuccessful()) {
+                            Toast.makeText(ActivityRecipe.this, "@strings/info_deleted", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.e("API_ERROR", "Response error: " + response.code() + " " + response.message());
+                            Toast.makeText(ActivityRecipe.this, "@strings/something_wrong", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        Toast.makeText(ActivityRecipe.this, "@strings/something_wrong", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                finish();
                 return true;
         }
         return super.onOptionsItemSelected(item);

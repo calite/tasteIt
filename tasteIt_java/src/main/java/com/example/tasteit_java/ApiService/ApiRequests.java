@@ -1,13 +1,15 @@
 package com.example.tasteit_java.ApiService;
 
-import com.example.tasteit_java.request.RecipeEditRequest;
-import com.example.tasteit_java.request.RecipeCommentRequest;
-import com.example.tasteit_java.request.RecipeLikeRequest;
-import com.example.tasteit_java.request.RecipeReportRequest;
-import com.example.tasteit_java.request.RecipeRequest;
-import com.example.tasteit_java.request.UserCommentRequest;
-import com.example.tasteit_java.request.UserEditRequest;
-import com.example.tasteit_java.request.UserFollowRequest;
+import com.example.tasteit_java.ApiRequest.RecipeDeleteRequest;
+import com.example.tasteit_java.ApiRequest.RecipeEditRequest;
+import com.example.tasteit_java.ApiRequest.RecipeCommentRequest;
+import com.example.tasteit_java.ApiRequest.RecipeLikeRequest;
+import com.example.tasteit_java.ApiRequest.RecipeReportRequest;
+import com.example.tasteit_java.ApiRequest.RecipeRequest;
+import com.example.tasteit_java.ApiRequest.UserCommentRequest;
+import com.example.tasteit_java.ApiRequest.UserDeleteRequest;
+import com.example.tasteit_java.ApiRequest.UserEditRequest;
+import com.example.tasteit_java.ApiRequest.UserFollowRequest;
 
 import java.util.List;
 
@@ -61,6 +63,9 @@ public interface ApiRequests {
     @Headers("Content-Type: application/json")
     @POST("user/comment_user")
     Call<Void> commentUser(@Body UserCommentRequest userCommentRequest);
+    @Headers("Content-Type: application/json")
+    @POST("/user/delete")
+    Call<Void> deleteUser(@Body UserDeleteRequest userDeleteRequest);
 
     //RECETAS
     @GET("recipe/all")
@@ -90,20 +95,23 @@ public interface ApiRequests {
 
     //POST RECETAS
     @Headers("Content-Type: application/json")
-    @POST("/recipe/create")
+    @POST("recipe/create")
     Call<Void> createRecipe(@Body RecipeRequest recipeRequest);
     @Headers("Content-Type: application/json")
-    @POST("/recipe/edit")
+    @POST("recipe/edit")
     Call<Void> editRecipe(@Body RecipeEditRequest recipeEditRequest);
     @Headers("Content-Type: application/json")
-    @POST("/recipe/comment_recipe")
+    @POST("recipe/comment_recipe")
     Call<Void> commentRecipe(@Body RecipeCommentRequest recipeCommentRequest);
     @Headers("Content-Type: application/json")
-    @POST("/recipe/report_recipe")
+    @POST("recipe/report_recipe")
     Call<Void> reportRecipe(@Body RecipeReportRequest recipeReportRequest);
     @Headers("Content-Type: application/json")
-    @POST("/recipe/like")
+    @POST("recipe/like")
     Call<Void> likeOnRecipe(@Body RecipeLikeRequest recipeLikeRequest);
+    @Headers("Content-Type: application/json")
+    @POST("recipe/delete")
+    Call<Void> deleteRecipe(@Body RecipeDeleteRequest recipeDeleteRequest);
 
     //COMPROBACIONES
     @GET("recipe/isliked/{rid}_{token}")

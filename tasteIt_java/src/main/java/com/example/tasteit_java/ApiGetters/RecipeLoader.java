@@ -1,4 +1,4 @@
-package com.example.tasteit_java.ApiUtils;
+package com.example.tasteit_java.ApiGetters;
 
 import android.content.Context;
 import android.util.Log;
@@ -12,14 +12,10 @@ import com.example.tasteit_java.ApiService.RecipeApiComment;
 import com.example.tasteit_java.ApiService.RecipeId_Recipe_User;
 import com.example.tasteit_java.clases.Comment;
 import com.example.tasteit_java.clases.Recipe;
-import com.example.tasteit_java.clases.SharedPreferencesSaved;
 import com.example.tasteit_java.clases.User;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 
 import retrofit2.Call;
 import retrofit2.Callback;
