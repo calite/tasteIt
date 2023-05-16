@@ -293,13 +293,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
             Utils.onActivityResult(this, requestCode, resultCode, data, ivRecipePhoto);
         }
         if(requestCode == 202) {
-            if(data.getExtras() != null) {
-                Uri uri = data.getData();
-                newFilePath = uri;
-                Bitmap photo = (Bitmap) data.getExtras().get("data");
-                ivRecipePhoto.setImageBitmap(photo);
-            }
-            /*Bitmap photo = (Bitmap) data.getExtras().get("data");
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
             ivRecipePhoto.setImageBitmap(photo);
             File f = new File(getCacheDir(), UUID.randomUUID().toString());
             try {
@@ -307,9 +301,10 @@ public class ActivityNewRecipe extends AppCompatActivity {
             }catch(Exception e){
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
+
             //Convert bitmap to byte array
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            photo.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*//*, bos);
+            photo.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
             byte[] bitmapdata = bos.toByteArray();
 
             //write the bytes in file
@@ -321,7 +316,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
             }catch(Exception e){
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
-            newFilePath = Uri.fromFile(f);*/
+            newFilePath = Uri.fromFile(f);
         }
     }
 

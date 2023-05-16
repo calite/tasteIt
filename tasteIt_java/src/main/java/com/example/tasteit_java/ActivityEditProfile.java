@@ -42,6 +42,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -266,12 +269,30 @@ public class ActivityEditProfile extends AppCompatActivity {
             Utils.onActivityResult(this, requestCode, resultCode, data, ivProfilePhoto);
         }
         if(requestCode == 202) {
-            if(data.getExtras() != null) {
-                Uri uri = data.getData();
-                newFilePath = uri;
-                Bitmap photo = (Bitmap) data.getExtras().get("data");
-                ivProfilePhoto.setImageBitmap(photo);
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
+            ivProfilePhoto.setImageBitmap(photo);
+            File f = new File(getCacheDir(), UUID.randomUUID().toString());
+            try {
+                f.createNewFile();
+            }catch(Exception e){
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
+
+            //Convert bitmap to byte array
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            photo.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
+            byte[] bitmapdata = bos.toByteArray();
+
+            //write the bytes in file
+            try{
+                FileOutputStream fos = new FileOutputStream(f);
+                fos.write(bitmapdata);
+                fos.flush();
+                fos.close();
+            }catch(Exception e){
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+            newFilePath = Uri.fromFile(f);
         }
     }
     //END PHOTO PICKER
