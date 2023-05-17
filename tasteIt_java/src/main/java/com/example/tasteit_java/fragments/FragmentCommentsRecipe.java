@@ -1,6 +1,5 @@
 package com.example.tasteit_java.fragments;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,23 +8,28 @@ import android.widget.Button;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.tasteit_java.ApiService.ApiClient;
+import com.example.tasteit_java.ApiGetters.RecipeLoader;
 import com.example.tasteit_java.R;
 import com.example.tasteit_java.adapters.AdapterRecyclerCommentsRecipe;
-import com.example.tasteit_java.bdConnection.BdConnection;
-import com.example.tasteit_java.clases.User;
-import com.example.tasteit_java.clases.Utils;
+import com.example.tasteit_java.clases.Comment;
+import com.example.tasteit_java.clases.OnLoadMoreListener;
+import com.example.tasteit_java.clases.SharedPreferencesSaved;
 import com.facebook.shimmer.ShimmerFrameLayout;
-import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.List;
 
 public class FragmentCommentsRecipe extends Fragment {
 
     private int recipeId;
     private RecyclerView rvLvComments;
     private AdapterRecyclerCommentsRecipe adapter;
+    private int skipper;
+    private int allItemsCount;
+    private boolean allItemsLoaded;
     private ShimmerFrameLayout shimmer;
     private ConstraintLayout clComment;
     private static Button btnAddComment, btnEditComment;
@@ -54,23 +58,87 @@ public class FragmentCommentsRecipe extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_comments, container, false);
 
         shimmer = view.findViewById(R.id.shimmer);
         shimmer.startShimmer();
 
-        adapter = new AdapterRecyclerCommentsRecipe(getContext(), recipeId, shimmer);
+        skipper = 0;
+        allItemsCount = 0;
+        allItemsLoaded = false;
         rvLvComments = view.findViewById(R.id.rvLvComments);
-        rvLvComments.setAdapter(adapter);
+
+        bringComments();
 
         rvLvComments.setLayoutManager(new LinearLayoutManager(getContext()));
+        adapter = new AdapterRecyclerCommentsRecipe(rvLvComments, shimmer);
+        rvLvComments.setAdapter(adapter);
 
-        clComment = view.findViewById(R.id.clComment);
-        clComment.setVisibility(View.INVISIBLE);
-        clComment.setClickable(false);
+        adapter.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                if(!allItemsLoaded) { //habra que ponerle un limite (que en principio puede ser el total de recipes en la bbdd o algo fijo para no sobrecargar el terminal)
+                    adapter.dataList.add(null);
+                    adapter.notifyItemInserted(adapter.getItemCount() - 1);
+
+                    skipper += 10;
+                    bringComments();
+                }
+            }
+            @Override
+            public void update() {
+                updateList();
+            }
+        });
+
+        //clComment = view.findViewById(R.id.clComment);
+        //clComment.setVisibility(View.INVISIBLE);
+        //clComment.setClickable(false);
 
         return view;
+    }
+
+    public void updateList() {
+        skipper = 0;
+        allItemsCount = 0;
+        allItemsLoaded = false;
+        adapter.dataList.clear();
+        adapter.notifyDataSetChanged();
+
+        shimmer.setVisibility(View.VISIBLE);
+        shimmer.startShimmer();
+
+        bringComments();
+    }
+
+    private void bringComments() {
+        String accessToken = new SharedPreferencesSaved(getContext()).getSharedPreferences().getString("accessToken", "null");
+        RecipeLoader recipesLoader = new RecipeLoader(ApiClient.getInstance(accessToken).getService(), getContext(), recipeId, skipper);
+        recipesLoader.getRecipeComments().observe(getViewLifecycleOwner(), this::onCommentsLoaded);
+        recipesLoader.loadRecipeComments();
+    }
+
+    private void onCommentsLoaded(List<Comment> comments) {
+        if(adapter.getItemCount() > 0) {
+            if(adapter.getItemViewType(adapter.getItemCount() - 1) != 0) {
+                adapter.dataList.remove(adapter.getItemCount() - 1);
+            } else if(adapter.getItemViewType(0) != 0) {
+                adapter.dataList.remove(0);
+            }
+        }
+
+        adapter.dataList.addAll(comments);
+        adapter.setLoaded();
+        adapter.notifyDataSetChanged();
+
+        if(adapter.dataList.size() != allItemsCount) {
+            allItemsCount = adapter.dataList.size();
+        } else {
+            allItemsLoaded = true;
+        }
+
+        shimmer.stopShimmer();
+        shimmer.setVisibility(View.GONE);
     }
 
     /*public void hideAddComment(Boolean visibility) {

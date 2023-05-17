@@ -31,7 +31,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
                 android:layout_marginTop="15dp"
-                android:layout_marginRight="30dp"
+                android:layout_marginRight="15dp"
                 android:background="@drawable/btn_follow"
                 android:enabled="false"
                 android:text="Follow"
@@ -154,7 +154,9 @@
                 android:enabled="false"
                 android:orientation="horizontal"
                 android:visibility="invisible"
-
+                app:chipSpacing="4dp"
+                android:maxHeight="75dp"
+                
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"

@@ -13,11 +13,11 @@ import com.example.tasteit_java.clases.Recipe;
 
 public class AdapterFragmentRecipe extends FragmentStateAdapter {
 
-    private Recipe recipe;
+    private int idRecipe;
 
-    public AdapterFragmentRecipe(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, Recipe recipe) {
+    public AdapterFragmentRecipe(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, int idRecipe) {
         super(fragmentManager, lifecycle);
-        this.recipe = recipe;
+        this.idRecipe = idRecipe;
     }
 
     @NonNull
@@ -25,11 +25,11 @@ public class AdapterFragmentRecipe extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch(position) {
             case 1:
-                return FragmentStepsRecipe.newInstance(recipe);
+                return FragmentStepsRecipe.newInstance(idRecipe);
             case 2:
-                return FragmentCommentsRecipe.newInstance(recipe.getId());
+                return FragmentCommentsRecipe.newInstance(idRecipe);
             default:
-                return FragmentInfoRecipe.newInstance(recipe);
+                return FragmentInfoRecipe.newInstance(idRecipe);
         }
 
     }

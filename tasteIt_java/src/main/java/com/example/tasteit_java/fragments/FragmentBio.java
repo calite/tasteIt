@@ -1,22 +1,20 @@
 package com.example.tasteit_java.fragments;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.example.tasteit_java.ApiService.ApiClient;
+import com.example.tasteit_java.ApiGetters.UserLoader;
 import com.example.tasteit_java.R;
-import com.example.tasteit_java.bdConnection.BdConnection;
-import com.example.tasteit_java.clases.Comment;
 import com.example.tasteit_java.clases.User;
+import com.example.tasteit_java.clases.Utils;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,6 +32,7 @@ public class FragmentBio extends Fragment {
 
     // TODO: Rename and change types of parameters
     private String biography;
+    private String accessToken;
 
     private String uidProfile;
     private String mParam2;
@@ -73,7 +72,7 @@ public class FragmentBio extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             uidProfile = getArguments().getString(ARG_PARAM1);
-            new TaskLoadUserBio().execute();
+            accessToken = Utils.getUserAcessToken();
             //mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
@@ -84,31 +83,20 @@ public class FragmentBio extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_bio, container, false);
         tvBiography = view.findViewById(R.id.tvBiography);
-        tvBiography.setText(biography);
+        bringUser();
         return view;
     }
 
-    public void updateBio(String biography) {
-        this.biography = "";
-        if(!this.biography.equals(biography)) {
-                this.biography = biography;
-                tvBiography.setText(biography);
-        }
+    //Carga de usuario asyncrona
+    private void bringUser() {
+        UserLoader userLoader = new UserLoader(ApiClient.getInstance(accessToken).getService(), getContext(), uidProfile);
+        userLoader.getAllUser().observe(getViewLifecycleOwner(), this::onUserLoaded);
+        userLoader.loadAllUser();
     }
 
-    class TaskLoadUserBio extends AsyncTask<User, Void,User> {
-        @Override
-        protected void onPreExecute() {
-
-        }
-        @Override
-        protected User doInBackground(User... hashMaps) {
-            return new BdConnection().retrieveAllUserbyUid(uidProfile);
-        }
-        @Override
-        protected void onPostExecute(User userBio) {
-            //super.onPostExecute(recipes);
-            updateBio(userBio.getBiography());
-        }
+    private void onUserLoaded(HashMap<String, Object> userInfo) {
+        User temp = (User) userInfo.get("user");
+        biography = temp.getBiography();
+        tvBiography.setText(biography);
     }
 }

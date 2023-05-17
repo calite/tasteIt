@@ -19,16 +19,30 @@ import android.util.Base64;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -75,7 +89,7 @@ public class Utils {
         startActivityForResult(activity, camera_intent, TAKE_PICTURE, null);
     }
 
-    public static void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data, Uri filePath, ImageView ivRecipePhoto) {
+    public static void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data, ImageView ivRecipePhoto) {
         if (requestCode == SELECT_PICTURE) {
             if (resultCode == Activity.RESULT_OK) {
                 if (data != null) {
@@ -110,20 +124,34 @@ public class Utils {
     }
 
     public static String getUserToken() {
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        return firebaseUser.getUid();
+        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+            FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+            return firebaseUser.getUid();
+        }
+        return null;
     }
 
     public static String getUserAcessToken() {
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        return firebaseUser.getIdToken(false).getResult().getToken();
+        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+            FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+            return firebaseUser.getIdToken(false).getResult().getToken();
+        }
+        return null;
     }
+
+    public static void refreshToken() {
+        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+            FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+            firebaseUser.getIdToken(true);
+        }
+    }
+
 
     //Metodo para pasarle un bitmap y que lo devuelva redondeado
     public static Bitmap getRoundBitmapWithImage(Bitmap originalBitmap) {
         //Cambiamos el tamaño a la imagen original para que siempre sea igual
-        int desiredWidth = 1000;
-        int desiredHeight = 1000;
+        int desiredWidth = 1500;
+        int desiredHeight = 1500;
         float scaleWidth = ((float) desiredWidth) / originalBitmap.getWidth();
         float scaleHeight = ((float) desiredHeight) / originalBitmap.getHeight();
         float scaleFactor = Math.min(scaleWidth, scaleHeight);
@@ -157,20 +185,5 @@ public class Utils {
 
         // Devuelve el Bitmap resultante
         return output;
-    }
-
-    public static Bitmap uriToBitmap(Context context, String selectedFileUri) {
-        try {
-            URL url = new URL(selectedFileUri);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            return myBitmap;
-        } catch (IOException e) {
-            // Log exception
-            return null;
-        }
     }
 }

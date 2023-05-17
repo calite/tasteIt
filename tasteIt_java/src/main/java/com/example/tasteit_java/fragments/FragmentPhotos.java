@@ -3,8 +3,6 @@ package com.example.tasteit_java.fragments;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,20 +12,15 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.tasteit_java.ApiService.ApiClient;
-import com.example.tasteit_java.ApiService.ApiRequests;
-import com.example.tasteit_java.ApiService.RecipeId_Recipe_User;
+import com.example.tasteit_java.ApiGetters.RecipeLoader;
 import com.example.tasteit_java.R;
 import com.example.tasteit_java.adapters.AdapterRecyclerPhotosProfile;
+import com.example.tasteit_java.clases.OnLoadMoreListener;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.Utils;
 import com.facebook.shimmer.ShimmerFrameLayout;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -43,10 +36,12 @@ public class FragmentPhotos extends Fragment {
     private RecyclerView rvGridPhotos;
     private AdapterRecyclerPhotosProfile adapter;
     private ShimmerFrameLayout shimmer;
+    private int skipper;
+    private int allItemsCount;
+    private boolean allItemsLoaded;
     private String accessToken;
 
     // TODO: Rename and change types of parameters
-    //private ArrayList<Recipe> recipes;
     private String uidParam;
     private String mParam2;
 
@@ -85,9 +80,11 @@ public class FragmentPhotos extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             uidParam = getArguments().getString(ARG_PARAM1);
-            //mParam2 = getArguments().getString(ARG_PARAM2);
-
             accessToken = Utils.getUserAcessToken();
+            skipper = 0;
+            allItemsCount = 0;
+            allItemsLoaded = false;
+            getArguments().clear();
         }
     }
 
@@ -101,82 +98,72 @@ public class FragmentPhotos extends Fragment {
 
         bringRecipes();
 
-        adapter = new AdapterRecyclerPhotosProfile(getContext());
         rvGridPhotos = view.findViewById(R.id.rvGridPhotos);
+        rvGridPhotos.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        adapter = new AdapterRecyclerPhotosProfile(getContext(), rvGridPhotos);
         rvGridPhotos.setAdapter(adapter);
 
-        rvGridPhotos.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        adapter.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                if(allItemsLoaded) { //habra que ponerle un limite (que en principio puede ser el total de recipes en la bbdd o algo fijo para no sobrecargar el terminal)
+                    Toast.makeText(getContext(), "Finiquitao con " + adapter.getItemCount() + " recetas", Toast.LENGTH_SHORT).show();
+                } else {
+                    adapter.dataList.add(null);
+                    adapter.notifyItemInserted(adapter.getItemCount() - 1);
+
+                    skipper += 10;
+                    bringRecipes();
+                }
+            }
+            @Override
+            public void update() {
+                updateList();
+            }
+        });
 
         return view;
     }
 
-    private class RecipesLoader {
-        private final ApiRequests apiRequests;
-        private final MutableLiveData<List<Recipe>> recipeLiveData;
-        public RecipesLoader(ApiRequests apiRequests) {
-            this.apiRequests = apiRequests;
-            recipeLiveData = new MutableLiveData<>();
-        }
+    public void updateList() {
+        skipper = 0;
+        allItemsCount = 0;
+        allItemsLoaded = false;
+        adapter.dataList.clear();
+        adapter.notifyDataSetChanged();
 
-        public LiveData<List<Recipe>> getRecipes() {
-            return recipeLiveData;
-        }
+        shimmer.setVisibility(View.VISIBLE);
+        shimmer.startShimmer();
 
-        public void loadRecipes() {
-            apiRequests.getRecipesByUser(uidParam, 0).enqueue(new Callback<List<RecipeId_Recipe_User>>() {
-                @Override
-                public void onResponse(Call<List<RecipeId_Recipe_User>> call, Response<List<RecipeId_Recipe_User>> response) {
-                    if (response.isSuccessful()) {
-                        List<RecipeId_Recipe_User> recipeApis = response.body();
-                        List<Recipe> recipes = new ArrayList<>();
-
-                        //tratamos los datos
-                        for (RecipeId_Recipe_User recipeApi : recipeApis) {
-                            Recipe recipe = new Recipe(
-                                    recipeApi.getRecipeDetails().getName(),
-                                    recipeApi.getRecipeDetails().getDescription(),
-                                    (ArrayList<String>) recipeApi.getRecipeDetails().getSteps(),
-                                    recipeApi.getRecipeDetails().getDateCreated(),
-                                    recipeApi.getRecipeDetails().getDifficulty(),
-                                    recipeApi.getUser().getUsername(),
-                                    recipeApi.getRecipeDetails().getImage(),
-                                    recipeApi.getRecipeDetails().getCountry(),
-                                    (ArrayList<String>) recipeApi.getRecipeDetails().getTags(),
-                                    (ArrayList<String>) recipeApi.getRecipeDetails().getIngredients(),
-                                    recipeApi.getRecipeId(),
-                                    recipeApi.getUser().getToken()
-                            );
-                            recipes.add(recipe);
-                        }
-                        recipeLiveData.postValue(recipes);
-                    } else {
-                        // La solicitud no fue exitosa
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<List<RecipeId_Recipe_User>> call, Throwable t) {
-                    // Hubo un error en la solicitud
-                    Toast.makeText(getContext(), "Failed to load data", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
+        bringRecipes();
     }
 
     private void onRecipesLoaded(List<Recipe> recipes) {
-        /*if(adapter.getItemCount() > 0) {
-            adapter.arrayListPhotos.remove(adapter.getItemCount() - 1);
-        }*/
+        if(adapter.getItemCount() > 0) {
+            if(adapter.getItemViewType(adapter.getItemCount() - 1) != 0) {
+                adapter.dataList.remove(adapter.getItemCount() - 1);
+            } else if(adapter.getItemViewType(0) != 0) {
+                adapter.dataList.remove(0);
+            }
+        }
 
-        adapter.arrayListPhotos.addAll(recipes);
+        adapter.dataList.addAll(recipes);
+        adapter.setLoaded();
+        adapter.notifyDataSetChanged();
+
+        if(adapter.dataList.size() != allItemsCount) {
+            allItemsCount = adapter.dataList.size();
+        } else {
+            allItemsLoaded = true;
+        }
+
         shimmer.stopShimmer();
         shimmer.setVisibility(View.GONE);
-        adapter.notifyDataSetChanged();
     }
 
     private void bringRecipes() {
-        RecipesLoader recipesLoader = new RecipesLoader(ApiClient.getInstance(accessToken).getService());
-        recipesLoader.getRecipes().observe(getViewLifecycleOwner(), this::onRecipesLoaded);
-        recipesLoader.loadRecipes();
+        RecipeLoader recipesLoader = new RecipeLoader(ApiClient.getInstance(accessToken).getService(), getContext(), uidParam, skipper);
+        recipesLoader.getRecipesByUser().observe(getViewLifecycleOwner(), this::onRecipesLoaded);
+        recipesLoader.loadRecipesByUser();
     }
 }

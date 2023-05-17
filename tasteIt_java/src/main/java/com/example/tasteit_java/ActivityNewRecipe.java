@@ -1,11 +1,7 @@
 package com.example.tasteit_java;
 
 import android.content.Intent;
-import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,75 +15,80 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.tasteit_java.ApiService.ApiClient;
-import com.example.tasteit_java.ApiService.ApiRequests;
-import com.example.tasteit_java.ApiService.RecipeId_Recipe_User;
+import com.example.tasteit_java.ApiGetters.RecipeLoader;
 import com.example.tasteit_java.adapters.AdapterFragmentNewRecipe;
-import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.Recipe;
+import com.example.tasteit_java.clases.SharedPreferencesSaved;
 import com.example.tasteit_java.clases.Utils;
 import com.example.tasteit_java.fragments.FragmentInfoNewRecipe;
 import com.example.tasteit_java.fragments.FragmentIngredientsNewRecipe;
 import com.example.tasteit_java.fragments.FragmentStepsNewRecipe;
-import com.example.tasteit_java.request.RecipeEditRequest;
-import com.example.tasteit_java.request.RecipeRequest;
+import com.example.tasteit_java.ApiRequest.RecipeEditRequest;
+import com.example.tasteit_java.ApiRequest.RecipeRequest;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
-import java.text.SimpleDateFormat;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.List;
+import java.util.UUID;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ActivityNewRecipe extends AppCompatActivity {
-
     private ImageView ivRecipePhoto;
     private ImageButton ibPickPhoto;
     private TabLayout tlRecipe;
     private ViewPager2 vpPaginator;
-    private Uri filePath;
-    private BdConnection app;
+    private Uri newFilePath;
+    private Uri lastFileUrl;
     private String token;
-
-    private EditText etRecipeName;
-
     private int recipeId;
-
     String creatorToken = "";
-
     private Recipe recipe;
-
     private boolean editing = false;
-
     private ApiClient apiClient;
-
     private String accessToken;
-
-
+    private FloatingActionButton bCreate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_recipe);
 
-        accessToken = Utils.getUserAcessToken();
+        accessToken = new SharedPreferencesSaved(this).getSharedPreferences().getString("accessToken", "null");
+        token = new SharedPreferencesSaved(this).getSharedPreferences().getString("uid", "null");
+        newFilePath = null;
 
-        app = new BdConnection();  //Instanciamos la conexion
+        if(getIntent().getExtras() != null) {
+            editing = true;
+            Bundle params = getIntent().getExtras();
+            recipeId = params.getInt("recipeId");
+            creatorToken = params.getString("creatorToken");
 
-        token = Utils.getUserToken();
+            bringRecipe();
+            getSupportActionBar().setTitle("Edit Recipe");
+        } else {
+            getSupportActionBar().setTitle("New Recipe");
+        }
 
         //menu superior
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("New Recipe");
 
         //info, steps and ingredients Fragments
         vpPaginator = findViewById(R.id.vpPaginator);
@@ -100,16 +101,10 @@ public class ActivityNewRecipe extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 vpPaginator.setCurrentItem(tab.getPosition());
             }
-
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
+            public void onTabUnselected(TabLayout.Tab tab) {}
             @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
+            public void onTabReselected(TabLayout.Tab tab) {}
         });
 
         vpPaginator.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
@@ -119,12 +114,11 @@ public class ActivityNewRecipe extends AppCompatActivity {
             }
         });
 
-
         //seleccionar foto
         ibPickPhoto = findViewById(R.id.ibPickPhoto);
         ivRecipePhoto = findViewById(R.id.ivRecipePhoto);
 
-        //Cambiar foto de perfil
+        //Cambiar foto de la receta
         PopupMenu.OnMenuItemClickListener popupListener = new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
@@ -153,18 +147,27 @@ public class ActivityNewRecipe extends AppCompatActivity {
             }
         });
 
-        if(getIntent().getExtras() != null) {
-            editing = true;
-            Bundle params = getIntent().getExtras();
-            recipeId = params.getInt("recipeId");
-            creatorToken = params.getString("creatorToken");
-
-            bringRecipe();
-        }
-
-
+        bCreate = findViewById(R.id.bCreate);
+        bCreate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(editing){
+                    if(newFilePath != null) {
+                        uploadImage(newFilePath);
+                    } else {
+                        editRecipe(null);
+                    }
+                } else{
+                    if(newFilePath != null) {
+                        uploadImage(newFilePath);
+                    } else {
+                        Toast.makeText(ActivityNewRecipe.this, "You have to set a image", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
     }
-
+/*
     private void saveRecipe(String token, BdConnection app){
         //fecha
         Calendar c = Calendar.getInstance();
@@ -219,10 +222,9 @@ public class ActivityNewRecipe extends AppCompatActivity {
             Toast.makeText(ActivityNewRecipe.this, "Fill the required Fields", Toast.LENGTH_SHORT).show();
         }
     }
-
+ */
     //comprobacion de campos
     private boolean checkFields() {
-
         boolean status = true;
 
         //check foto
@@ -276,11 +278,8 @@ public class ActivityNewRecipe extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                finish();
                 onBackPressed();
-                return true;
-            case R.id.iSaveRecipe:
-                //saveRecipe(token,app);
-                if(editing){editRecipe();}else{createRecipe();}
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -290,85 +289,54 @@ public class ActivityNewRecipe extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 101) {
-            Utils.onActivityResult(this, requestCode, resultCode, data, filePath, ivRecipePhoto);
+            newFilePath = data.getData();
+            Utils.onActivityResult(this, requestCode, resultCode, data, ivRecipePhoto);
         }
         if(requestCode == 202) {
             Bitmap photo = (Bitmap) data.getExtras().get("data");
             ivRecipePhoto.setImageBitmap(photo);
-        }
+            File f = new File(getCacheDir(), UUID.randomUUID().toString());
+            try {
+                f.createNewFile();
+            }catch(Exception e){
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
 
-    }
+            //Convert bitmap to byte array
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            photo.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
+            byte[] bitmapdata = bos.toByteArray();
 
-    ///////////////////
-
-    private class RecipeLoader {
-
-        private final ApiRequests apiRequests;
-        private final MutableLiveData<List<Recipe>> recipeLiveData;
-
-        public RecipeLoader(ApiRequests apiRequests) {
-            this.apiRequests = apiRequests;
-            recipeLiveData = new MutableLiveData<>();
-        }
-
-        public LiveData<List<Recipe>> getRecipe() {
-            return recipeLiveData;
-        }
-
-        public void loadRecipe() {
-
-
-            apiRequests.getRecipeById(recipeId).enqueue(new Callback<List<RecipeId_Recipe_User>>() {
-                @Override
-                public void onResponse(Call<List<RecipeId_Recipe_User>> call, Response<List<RecipeId_Recipe_User>> response) {
-                    if (response.isSuccessful()) {
-                        List<RecipeId_Recipe_User> recipeApis = response.body();
-                        List<Recipe> recipes = new ArrayList<>();
-                        //tratamos los datos
-                        for (RecipeId_Recipe_User recipeApi : recipeApis) {
-                            Recipe recipe = new Recipe(
-                                    recipeApi.getRecipeDetails().getName(),
-                                    recipeApi.getRecipeDetails().getDescription(),
-                                    (ArrayList<String>) recipeApi.getRecipeDetails().getSteps(),
-                                    recipeApi.getRecipeDetails().getDateCreated(),
-                                    recipeApi.getRecipeDetails().getDifficulty(),
-                                    recipeApi.getUser().getUsername(),
-                                    recipeApi.getRecipeDetails().getImage(),
-                                    recipeApi.getRecipeDetails().getCountry(),
-                                    (ArrayList<String>) recipeApi.getRecipeDetails().getTags(),
-                                    (ArrayList<String>) recipeApi.getRecipeDetails().getIngredients(),
-                                    recipeApi.getRecipeId(),
-                                    recipeApi.getUser().getToken()
-                            );
-                            recipes.add(recipe);
-                            creatorToken = recipeApi.getUser().getToken();
-                        }
-                        recipeLiveData.postValue(recipes);
-                    } else {
-                        // La solicitud no fue exitosa
-                        Toast.makeText(ActivityNewRecipe.this, "something went wrong", Toast.LENGTH_SHORT).show();
-                    }
-
-                }
-
-                @Override
-                public void onFailure(Call<List<RecipeId_Recipe_User>> call, Throwable t) {
-                    Toast.makeText(ActivityNewRecipe.this, "something went wrong", Toast.LENGTH_SHORT).show();
-                }
-            });
-
+            //write the bytes in file
+            try{
+                FileOutputStream fos = new FileOutputStream(f);
+                fos.write(bitmapdata);
+                fos.flush();
+                fos.close();
+            }catch(Exception e){
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+            newFilePath = Uri.fromFile(f);
         }
     }
 
-    private void onRecipeLoaded(List<Recipe> recipes) {
-        // Actualizar la UI con la info de la recetas
+    private void bringRecipe() {
+        RecipeLoader recipesLoader = new RecipeLoader(ApiClient.getInstance(accessToken).getService(), this, recipeId);
+        recipesLoader.getRecipeById().observe(this, this::onRecipeLoaded);
+        recipesLoader.loadRecipeById();
+    }
 
-        recipe = ((ArrayList<Recipe>) recipes).get(0);
+    private void onRecipeLoaded(Recipe recipes) {
+        recipe = recipes;
 
-        //UNA VEZ SE HACE LA CARGA DE LA RECETA SE RELLENA LA INFORMACION Y SE HA MOVIDO EL CODIGO QUE DEPENDIESE DE LA MISMA(PAGINATOR Y EL BOTON DE LIKE)
-        //GENERAL
-        Bitmap bitmap = Utils.decodeBase64(recipe.getImage());
-        ivRecipePhoto.setImageBitmap(bitmap);
+        try {
+            Picasso.with(this).load(recipe.getImage()).into(ivRecipePhoto);
+        }catch(IllegalArgumentException iae){
+            Toast.makeText(this, "Image not retrieved", Toast.LENGTH_SHORT).show();
+        }
+
+        lastFileUrl = Uri.parse(recipe.getImage());
+
         //INFO
         FragmentInfoNewRecipe.setRecipeName(recipe.getName());
         FragmentInfoNewRecipe.setDescriptionRecipe(recipe.getDescription());
@@ -379,21 +347,9 @@ public class ActivityNewRecipe extends AppCompatActivity {
         FragmentStepsNewRecipe.setSteps(recipe.getSteps());
         //INGREDIENTS
         FragmentIngredientsNewRecipe.setIngredients(recipe.getIngredients());
-
     }
 
-    private void bringRecipe() {
-        //olvidamos asynctask y metemos lifecycle, que es mas actual y esta mejor optimizado
-
-        ActivityNewRecipe.RecipeLoader recipesLoader = new ActivityNewRecipe.RecipeLoader(ApiClient.getInstance(accessToken).getService());
-
-        recipesLoader.getRecipe().observe(this, this::onRecipeLoaded);
-
-        recipesLoader.loadRecipe();
-    }
-
-    public void createRecipe() {
-
+    public void createRecipe(Uri imgUrl) {
         apiClient = ApiClient.getInstance(accessToken);
 
         String name = FragmentInfoNewRecipe.getRecipeName().getText().toString();
@@ -402,11 +358,13 @@ public class ActivityNewRecipe extends AppCompatActivity {
         int difficulty = FragmentInfoNewRecipe.getDificulty();
         //recogemos datos de fragment pasos
         ArrayList<String> listSteps = FragmentStepsNewRecipe.getSteps();
-        String steps = String.join(",", listSteps);
+        //String steps = String.join(",", listSteps);
+
         //recogemos datos del fragment ingredientes
         ArrayList<String> listIngredients = FragmentIngredientsNewRecipe.getIngredients();
-        String ingredients = String.join(",", listIngredients);
-        //generacion automatica de tags
+
+        //String ingredients = String.join(",", listIngredients);
+        /*generacion automatica de tags
         ArrayList<String> listTags = new ArrayList<>();
         ArrayList<String> diccionario = new ArrayList<>();
         //traemos el diccionario
@@ -421,21 +379,18 @@ public class ActivityNewRecipe extends AppCompatActivity {
         palabras.addAll(Arrays.asList(name.split("\\s+")));
         palabras.addAll(Arrays.asList(description.split("\\s+")));
         palabras.addAll(listIngredients);
-        palabras.addAll(listSteps); //esto hay que splitearlo tb @TODO
-        listTags = Utils.searchTags(palabras, diccionario);
-        String tags = String.join(",", listTags);
-        if (checkFields()) {
+        palabras.addAll(listSteps); //esto hay que splitearlo tb @TODO*/
 
+        if (checkFields()) {
             RecipeRequest r = new RecipeRequest();
             r.setToken(token);
             r.setName(name);
             r.setDescription(description);
             r.setCountry(country);
-            r.setImage(""); //ESTO HAY QUE TERMINARLO, PERO YA FURULA
+            r.setImage(imgUrl.toString());
             r.setDifficulty(difficulty);
-            r.setIngredients(ingredients);
-            r.setSteps(steps);
-            r.setTags(tags);
+            r.setIngredients(listIngredients);
+            r.setSteps(listSteps);
 
             Call<Void> call = apiClient.getService().createRecipe(r);
             call.enqueue(new Callback<Void>() {
@@ -443,12 +398,12 @@ public class ActivityNewRecipe extends AppCompatActivity {
                 public void onResponse(Call<Void> call, Response<Void> response) {
                     if (response.isSuccessful()) {
                         //AQUI DEVOLVEMOS AL MAIN!
-                        Toast.makeText(ActivityNewRecipe.this, "Good!", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(ActivityNewRecipe.this, ActivityMain.class));
+                        Toast.makeText(ActivityNewRecipe.this, "Saved!", Toast.LENGTH_SHORT).show();
+                        finish();
                     } else {
                         // Handle the error
                         Log.e("API_ERROR", "Response error: " + response.code() + " " + response.message());
-                        Toast.makeText(ActivityNewRecipe.this, "bad!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ActivityNewRecipe.this, "Something was wrong!", Toast.LENGTH_SHORT).show();
 
                     }
                 }
@@ -456,17 +411,15 @@ public class ActivityNewRecipe extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<Void> call, Throwable t) {
                     // Handle the error
-                    Toast.makeText(ActivityNewRecipe.this, "bad!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityNewRecipe.this, "Something was wrong!", Toast.LENGTH_SHORT).show();
                 }
             });
 
         }
-
-
     }
 
-    public void editRecipe() {
-        Toast.makeText(this, "EDITING", Toast.LENGTH_SHORT).show();
+    public void editRecipe(Uri imgUrl) {
+        Toast.makeText(this, "EDITING ...", Toast.LENGTH_SHORT).show();
         apiClient = ApiClient.getInstance(accessToken);
 
         String name = FragmentInfoNewRecipe.getRecipeName().getText().toString();
@@ -475,11 +428,13 @@ public class ActivityNewRecipe extends AppCompatActivity {
         int difficulty = FragmentInfoNewRecipe.getDificulty();
         //recogemos datos de fragment pasos
         ArrayList<String> listSteps = FragmentStepsNewRecipe.getSteps();
-        String steps = String.join(",", listSteps);
+        //String steps = String.join(",", listSteps);
+
         //recogemos datos del fragment ingredientes
         ArrayList<String> listIngredients = FragmentIngredientsNewRecipe.getIngredients();
-        String ingredients = String.join(",", listIngredients);
-        //generacion automatica de tags
+        //String ingredients = String.join(",", listIngredients);
+
+        /*generacion automatica de tags
         ArrayList<String> listTags = new ArrayList<>();
         ArrayList<String> diccionario = new ArrayList<>();
         //traemos el diccionario
@@ -494,35 +449,36 @@ public class ActivityNewRecipe extends AppCompatActivity {
         palabras.addAll(Arrays.asList(name.split("\\s+")));
         palabras.addAll(Arrays.asList(description.split("\\s+")));
         palabras.addAll(listIngredients);
-        palabras.addAll(listSteps); //esto hay que splitearlo tb @TODO
-        listTags = Utils.searchTags(palabras, diccionario);
-        String tags = String.join(",", listTags);
-        if (checkFields()) {
+        palabras.addAll(listSteps);*/
 
+        String urlImage = (imgUrl != null ? imgUrl.toString() : lastFileUrl.toString());
+
+        if (checkFields()) {
             RecipeEditRequest r = new RecipeEditRequest();
             r.setRecipeId(recipeId);
             r.setName(name);
             r.setDescription(description);
             r.setCountry(country);
-            r.setImage(""); //ESTO HAY QUE TERMINARLO, PERO YA FURULA
+            r.setImage(urlImage);
             r.setDifficulty(difficulty);
-            r.setIngredients(ingredients);
-            r.setSteps(steps);
-            r.setTags(tags);
+            r.setIngredients(listIngredients);
+            r.setSteps(listSteps);
 
             Call<Void> call = apiClient.getService().editRecipe(r);
             call.enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {
                     if (response.isSuccessful()) {
-                        //AQUI DEVOLVEMOS AL MAIN!
-                        Toast.makeText(ActivityNewRecipe.this, "Good!", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(ActivityNewRecipe.this, ActivityMain.class));
+                        if (!lastFileUrl.equals("")) {
+                            final StorageReference storageReference = FirebaseStorage.getInstance().getReference().getStorage().getReferenceFromUrl(recipe.getImage());
+                            storageReference.delete();
+                        }
+                        Toast.makeText(ActivityNewRecipe.this, "Saved!", Toast.LENGTH_SHORT).show();
+                        finish();
                     } else {
                         // Handle the error
                         Log.e("API_ERROR", "Response error: " + response.code() + " " + response.message());
                         Toast.makeText(ActivityNewRecipe.this, "bad!", Toast.LENGTH_SHORT).show();
-
                     }
                 }
 
@@ -532,12 +488,52 @@ public class ActivityNewRecipe extends AppCompatActivity {
                     Toast.makeText(ActivityNewRecipe.this, "bad!", Toast.LENGTH_SHORT).show();
                 }
             });
-
         }
-
-
     }
 
-    //////////////////
+    private void saveData(Uri downloadUri) {
+        if(editing) {
+            editRecipe(downloadUri);
+        } else {
+            createRecipe(downloadUri);
+        }
+    }
+
+    private Uri uploadImage(Uri filePath) {
+        if (filePath != null) {
+            final StorageReference ref = FirebaseStorage.getInstance().getReference().child("images/" + UUID.randomUUID().toString());
+            UploadTask uploadTask = ref.putFile(filePath);
+            Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
+                    }
+                    // Continue with the task to get the download URL
+                    return ref.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()) {
+                        Uri downloadUri = task.getResult();
+                        saveData(downloadUri);
+                    } else {
+                        // Handle failures
+                        // ...
+                    }
+                }
+            });
+        }
+        return null;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        FragmentStepsNewRecipe.getSteps().clear();
+        FragmentIngredientsNewRecipe.getIngredients().clear();
+        FragmentInfoNewRecipe.getTags().clear();
+    }
 
 }

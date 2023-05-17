@@ -20,6 +20,7 @@ import com.example.tasteit_java.R;
 import com.example.tasteit_java.clases.OnLoadMoreListener;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.Utils;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -42,12 +43,27 @@ public class AdapterEndlessRecyclerMain extends RecyclerView.Adapter {
                     .getLayoutManager();
 
             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                private int totalDistanceScrolled = 0;
+                private int threshold = 100; // umbral de distancia a recorrer en px
+                private boolean isScrollingUp = false;
                 @Override
                 public void onScrolled(RecyclerView recyclerView,
                                        int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
 
+                    //Toast.makeText(recyclerView.getContext(), "Distancia: " + totalDistanceScrolled, Toast.LENGTH_SHORT).show();
+
                     if(recyclerView.getScrollState() == RecyclerView.SCROLL_STATE_SETTLING) {
+                        if (dy < 0) {
+                            // User is scrolling up
+                            isScrollingUp = true;
+                        } else if (dy > 0) {
+                            // User is scrolling down
+                            isScrollingUp = false;
+                        }
+
+                        totalDistanceScrolled += dy;
+
                         if (linearLayoutManager.findFirstVisibleItemPosition() > 0 && dy > 0) {
                             totalItemCount = linearLayoutManager.getItemCount();
                             lastVisibleItem = linearLayoutManager.findLastCompletelyVisibleItemPosition();
@@ -58,15 +74,17 @@ public class AdapterEndlessRecyclerMain extends RecyclerView.Adapter {
                                     onLoadMoreListener.onLoadMore();
                                 }
                                 loading = true;
+                                totalDistanceScrolled = 0;
                             }
-                        } else {
-                            /*if (!loading && !recyclerView.canScrollVertically(-1) && linearLayoutManager.findFirstVisibleItemPosition() == 1) {
+                        } else if (isScrollingUp && linearLayoutManager.findFirstVisibleItemPosition() == 0) {
+                            // Beginning has been reached
+                            if (!loading && totalDistanceScrolled > threshold) {
                                 if (onLoadMoreListener != null) {
-                                    Toast.makeText(recyclerView.getContext(), "ACTUALIZAAAA", Toast.LENGTH_SHORT).show();
                                     onLoadMoreListener.update();
                                 }
                                 loading = true;
-                            }*/
+                                totalDistanceScrolled = 0;
+                            }
                         }
                     }
                 }
@@ -110,7 +128,6 @@ public class AdapterEndlessRecyclerMain extends RecyclerView.Adapter {
         this.onLoadMoreListener = onLoadMoreListener;
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
         return dataList.size();
@@ -128,7 +145,7 @@ public class AdapterEndlessRecyclerMain extends RecyclerView.Adapter {
 
         public RecipeViewHolder(View view) {
             super(view);
-            // Define click listener for the ViewHolder's View
+            // Define click listener for the DataViewHolder's View
             ivPhotoRecipe = view.findViewById(R.id.ivPhotoRecipe);
             tvDifficulty = view.findViewById(R.id.tvDifficulty);
             tvNameRecipe = view.findViewById(R.id.tvNameRecipe);
@@ -151,8 +168,11 @@ public class AdapterEndlessRecyclerMain extends RecyclerView.Adapter {
             tvNameCreator.setText(recipe.getCreator());
             tvDescriptionRecipe.setText(recipe.getDescription());
             tvDifficulty.setText(String.valueOf(recipe.getDifficulty()));
-            Bitmap bitmap = Utils.decodeBase64(recipe.getImage());
-            ivPhotoRecipe.setImageBitmap(bitmap);
+            try{
+                Picasso.with(itemView.getContext()).load(recipe.getImage()).into(ivPhotoRecipe);
+            }catch(IllegalArgumentException iae){}
+            //Bitmap bitmap = Utils.decodeBase64(recipe.getImage());
+            //ivPhotoRecipe.setImageBitmap(bitmap);
             recipeId = recipe.getId();
             creatorToken = recipe.getCreatorToken();
         }

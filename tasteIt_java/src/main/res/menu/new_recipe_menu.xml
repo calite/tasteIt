@@ -3,10 +3,5 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <group>
-        <item
-            android:id="@+id/iSaveRecipe"
-            app:showAsAction="always"
-            android:title="Save" />
-
     </group>
 </menu>

@@ -1,9 +1,9 @@
-package com.example.tasteit_java.request;
+package com.example.tasteit_java.ApiRequest;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class RecipeReportRequest {
+public class RecipeLikeRequest {
 
     @SerializedName("rid")
     @Expose
@@ -13,22 +13,9 @@ public class RecipeReportRequest {
     @Expose
     private String token;
 
-    @SerializedName("comment")
-    @Expose
-    private String comment;
-
-    public RecipeReportRequest(String rid, String token, String comment) {
+    public RecipeLikeRequest(String rid, String token) {
         this.rid = rid;
         this.token = token;
-        this.comment = comment;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
     }
 
     public String getToken() {

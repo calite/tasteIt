@@ -3,16 +3,18 @@ package com.example.tasteit_java.clases;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.Nullable;
+
 import java.util.ArrayList;
 
-public class Recipe implements Parcelable {
+public class Recipe implements Parcelable, Comparable<Recipe> {
     private String name;
     private String description;
     private ArrayList<String> steps;
     private String dateCreated;
     private int difficulty;
     private String creator;
-    private String rating;
+    private float rating;
     private String image;
     private String country;
     private ArrayList<String> tags;
@@ -29,7 +31,7 @@ public class Recipe implements Parcelable {
         dateCreated = in.readString();
         difficulty = in.readInt();
         creator = in.readString();
-        rating = in.readString();
+        rating = in.readFloat();
         image = in.readString();
         country = in.readString();
         tags = in.createStringArrayList();
@@ -64,12 +66,13 @@ public class Recipe implements Parcelable {
     }
 
     //constructor de new recipe para neo
-    public Recipe(String name, String description, ArrayList<String> steps, String dateCreated, int difficulty, String creator, String image, String country, ArrayList<String> tags, ArrayList<String> ingredients, int id, String creatorToken) {
+    public Recipe(String name, String description, ArrayList<String> steps, String dateCreated, int difficulty, float rating, String creator, String image, String country, ArrayList<String> tags, ArrayList<String> ingredients, int id, String creatorToken) {
         this.name = name;
         this.description = description;
         this.steps = steps;
         this.dateCreated = dateCreated;
         this.difficulty = difficulty;
+        this.rating = rating;
         this.creator = creator;
         this.image = image;
         this.country = country;
@@ -140,11 +143,11 @@ public class Recipe implements Parcelable {
         this.creator = creator;
     }
 
-    public String getRating() {
+    public float getRating() {
         return rating;
     }
 
-    public void setRating(String rating) {
+    public void setRating(float rating) {
         this.rating = rating;
     }
 
@@ -197,12 +200,36 @@ public class Recipe implements Parcelable {
         parcel.writeString(dateCreated);
         parcel.writeInt(difficulty);
         parcel.writeString(creator);
-        parcel.writeString(rating);
+        parcel.writeFloat(rating);
         parcel.writeString(image);
         parcel.writeString(country);
         parcel.writeStringList(tags);
         parcel.writeStringList(ingredients);
         parcel.writeInt(id);
         parcel.writeInt(img);
+    }
+
+    @Override
+    public int compareTo(Recipe r){
+        if(r.getRating() > rating){
+            return -1;
+        }else if(r.getRating() == rating){
+            return 0;
+        }else{
+            return 1;
+        }
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj instanceof Recipe) {
+            return getId() == ((Recipe) obj).getId();
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }

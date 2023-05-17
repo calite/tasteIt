@@ -14,7 +14,6 @@
         android:fontFamily="@font/comfortaa_light"
         android:justificationMode="inter_word"
         android:padding="5dp"
-        android:text="@string/lorem_ipsum"
         android:textAlignment="inherit"
         android:textSize="17dp"
         android:textColor="@color/black"

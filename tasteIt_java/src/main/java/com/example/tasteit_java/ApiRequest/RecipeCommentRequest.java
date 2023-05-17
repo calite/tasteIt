@@ -1,4 +1,4 @@
-package com.example.tasteit_java.request;
+package com.example.tasteit_java.ApiRequest;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

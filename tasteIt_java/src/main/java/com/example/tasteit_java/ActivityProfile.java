@@ -1,39 +1,48 @@
 package com.example.tasteit_java;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.animation.Animation;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.tasteit_java.ApiService.ApiClient;
-import com.example.tasteit_java.ApiService.ApiRequests;
-import com.example.tasteit_java.ApiService.UserApi;
+import com.example.tasteit_java.ApiGetters.UserLoader;
 import com.example.tasteit_java.adapters.AdapterFragmentProfile;
-import com.example.tasteit_java.bdConnection.BdConnection;
 import com.example.tasteit_java.clases.OnItemNavSelectedListener;
+import com.example.tasteit_java.clases.SharedPreferencesSaved;
 import com.example.tasteit_java.clases.User;
 import com.example.tasteit_java.clases.Utils;
+import com.example.tasteit_java.ApiRequest.UserCommentRequest;
+import com.example.tasteit_java.ApiRequest.UserFollowRequest;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 
-import org.neo4j.driver.Query;
-import org.neo4j.driver.Result;
-import org.neo4j.driver.Session;
+import java.util.HashMap;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -50,48 +59,86 @@ public class ActivityProfile extends AppCompatActivity {
     private Button btnFollow;
     private ShimmerFrameLayout shimmer;
     private ConstraintLayout tagRecipe, tagFollowers, tagFollowing, tagLikes;
-    private BdConnection connection;
     private String uid;
     private Boolean myProfile;
+
+    private FloatingActionButton bComment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        BottomNavigationView fcMainMenu = findViewById(R.id.fcMainMenu);
-        fcMainMenu.setSelectedItemId(R.id.bHome);
-        fcMainMenu.setOnItemSelectedListener(new OnItemNavSelectedListener(this));
-
         shimmer = findViewById(R.id.shimmer);
         shimmer.startShimmer();
 
-        accessToken = Utils.getUserToken();
+        accessToken = Utils.getUserAcessToken();
+
         if (getIntent().getExtras() != null) {
-            Bundle params = getIntent().getExtras();
-            uid = params.getString("uid");
-            if (!FirebaseAuth.getInstance().getCurrentUser().getUid().equals(uid)) {
+            uid = getIntent().getExtras().getString("uid");
+            if (!Utils.getUserToken().equals(uid)) {
                 myProfile = false;
+                getIsFollowing(Utils.getUserToken(), uid);
             } else {
                 myProfile = true;
+                initializeViews();
+                bringUser();
             }
         } else {
-            uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            uid = Utils.getUserToken();
             myProfile = true;
+            initializeViews();
+            bringUser();
         }
-
-        connection = new BdConnection();
-        initializeViews();
-        bringUser();
 
         //menu superior
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Profile");
+    }
 
-        //bio, photo and comments Fragments
+    //Metodo para instanciar los elementos de la UI
+    private void initializeViews() {
+        tvUserName = findViewById(R.id.tvUserName);
+        tvReciperCounter = findViewById(R.id.tvReciperCounter);
+        tvFollowersCounter = findViewById(R.id.tvFollowersCounter);
+        tvFollowingCounter = findViewById(R.id.tvFollowingCounter);
+        tvLikesCounter = findViewById(R.id.tvLikesCounter);
+
+        ivUserPicture = findViewById(R.id.ivUserPicture);
+
+        btnFollow = findViewById(R.id.btnFollow);
+        bComment = findViewById(R.id.bComment);
+        if (myProfile) {
+            btnFollow.setVisibility(View.INVISIBLE);
+            btnFollow.setEnabled(false);
+        } else {
+            btnFollow.setVisibility(View.VISIBLE);
+            btnFollow.setEnabled(true);
+        }
+        vpPaginator = findViewById(R.id.vpPaginator);
+        tlUser = findViewById(R.id.tlUser);
+
+        tagRecipe = findViewById(R.id.tagRecipe);
+        tagFollowers = findViewById(R.id.tagFollowers);
+        tagFollowing = findViewById(R.id.tagFollowing);
+        tagLikes = findViewById(R.id.tagLikes);
+
         tlUser.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                if (tab.getPosition() != vpPaginator.getCurrentItem()) {
+                    if (tab.getPosition() == 2 && vpPaginator.getCurrentItem() != 2) {
+                        if (myProfile) {
+                            bComment.setVisibility(View.GONE);
+                            bComment.setEnabled(false);
+                        } else {
+                            bComment.setVisibility(View.VISIBLE);
+                            bComment.setEnabled(true);
+                        }
+                    } else if (tab.getPosition() != 2 && vpPaginator.getCurrentItem() == 2) {
+                        bComment.setVisibility(View.GONE);
+                    }
+                }
                 vpPaginator.setCurrentItem(tab.getPosition());
             }
 
@@ -117,13 +164,96 @@ public class ActivityProfile extends AppCompatActivity {
         btnFollow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (connection.isFollowing(FirebaseAuth.getInstance().getCurrentUser().getUid(), uid)) {
-                    connection.unFollowUser(FirebaseAuth.getInstance().getCurrentUser().getUid(), uid);
-                    btnFollow.setText("FOLLOW");
-                } else {
-                    connection.followUser(FirebaseAuth.getInstance().getCurrentUser().getUid(), uid);
-                    btnFollow.setText("UNFOLLOW");
-                }
+                UserFollowRequest userFollowRequest = new UserFollowRequest(Utils.getUserToken(), uid);
+                ApiClient apiClient = ApiClient.getInstance(accessToken);
+                Call<Void> call = apiClient.getService().followUser(userFollowRequest);
+                call.enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        if (response.isSuccessful()) {
+                            getIsFollowing(Utils.getUserToken(), uid);
+                        } else {
+                            // Handle the error
+                            Log.e("API_ERROR", "Response error: " + response.code() + " " + response.message());
+                            Toast.makeText(ActivityProfile.this, "bad!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        // Handle the error
+                        Toast.makeText(ActivityProfile.this, "bad!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+        bComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                View rate = View.inflate(ActivityProfile.this, R.layout.alert_dialog_comment_rate, null);
+                RatingBar rbRating = rate.findViewById(R.id.rbRating);
+                TextView textView12 = rate.findViewById(R.id.textView12);
+                EditText etComment = rate.findViewById(R.id.etCommentRate);
+                Button btnSend = rate.findViewById(R.id.btnSend);
+                Button btnCancel = rate.findViewById(R.id.btnCancel);
+
+                rbRating.setVisibility(View.GONE);
+                rbRating.setEnabled(false);
+                textView12.setVisibility(View.GONE);
+                textView12.setEnabled(false);
+
+                Dialog dialog = new Dialog(ActivityProfile.this);
+                dialog.setContentView(rate);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                Window window = dialog.getWindow();
+                WindowManager.LayoutParams lp = window.getAttributes();
+                lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                lp.gravity = Gravity.CENTER;
+                window.setAttributes(lp);
+                window.setWindowAnimations(Animation.INFINITE);
+
+                btnSend.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (!String.valueOf(etComment.getText()).trim().equals("")) {
+                            UserCommentRequest userCommentRequest = new UserCommentRequest(Utils.getUserToken(), uid, String.valueOf(etComment.getText()));
+                            ApiClient apiClient = ApiClient.getInstance(accessToken);
+                            Call<Void> call = apiClient.getService().commentUser(userCommentRequest);
+                            call.enqueue(new Callback<Void>() {
+                                @Override
+                                public void onResponse(Call<Void> call, Response<Void> response) {
+                                    if (response.isSuccessful()) {
+                                        getIsFollowing(Utils.getUserToken(), uid);
+                                        dialog.cancel();
+                                    } else {
+                                        // Handle the error
+                                        Log.e("API_ERROR", "Response error: " + response.code() + " " + response.message());
+                                        Toast.makeText(ActivityProfile.this, "bad!", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<Void> call, Throwable t) {
+                                    // Handle the error
+                                    Toast.makeText(ActivityProfile.this, "bad!", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        } else {
+                            Toast.makeText(ActivityProfile.this, "You must write a comment to continue!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+                btnCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.cancel();
+                    }
+                });
+
+                dialog.show();
             }
         });
         tagRecipe.setOnClickListener(new View.OnClickListener() {
@@ -164,85 +294,22 @@ public class ActivityProfile extends AppCompatActivity {
         });
     }
 
-    //Metodo para instanciar los elementos de la UI
-    private void initializeViews() {
-        tvUserName = findViewById(R.id.tvUserName);
-        tvReciperCounter = findViewById(R.id.tvReciperCounter);
-        tvFollowersCounter = findViewById(R.id.tvFollowersCounter);
-        tvFollowingCounter = findViewById(R.id.tvFollowingCounter);
-        tvLikesCounter = findViewById(R.id.tvLikesCounter);
-
-        ivUserPicture = findViewById(R.id.ivUserPicture);
-
-        btnFollow = findViewById(R.id.btnFollow);
-        if (myProfile) {
-            btnFollow.setVisibility(View.INVISIBLE);
-            btnFollow.setEnabled(false);
-        } else {
-            if (connection.isFollowing(FirebaseAuth.getInstance().getCurrentUser().getUid(), uid)) {
-                btnFollow.setText("UNFOLLOW");
-            }
-            btnFollow.setVisibility(View.VISIBLE);
-            btnFollow.setEnabled(true);
-        }
-        vpPaginator = findViewById(R.id.vpPaginator);
-        tlUser = findViewById(R.id.tlUser);
-
-        tagRecipe = findViewById(R.id.tagRecipe);
-        tagFollowers = findViewById(R.id.tagFollowers);
-        tagFollowing = findViewById(R.id.tagFollowing);
-        tagLikes = findViewById(R.id.tagLikes);
-    }
-
-    //Metodo para traer los datos del perfil
-    private void retrieveData(String uid) {
-
-        tvUserName.setText(userProfile.getUsername());
-        //ivUserPicture.setImageBitmap(Utils.uriToBitmap(getApplicationContext(), userProfile.getImgProfile()));
-
-        Picasso.with(this)
-                .load("https://firebasestorage.googleapis.com/v0/b/tasteit-java.appspot.com/o/images%2F035d70df-1048-4c15-ba6a-c4d81d44a026?alt=media&token=d2c0ebf1-3b4e-40a4-9162-94fbc2070008")
-                .into(ivUserPicture);
-
-        Session session = connection.openSession();
-
-        Query query = new Query("MATCH (n1:User)-[:Created]-(n2:Recipe) WHERE n1.token = '" + uid + "' RETURN COUNT(n2);");
-        Result result = session.run(query);
-
-        String counter = String.valueOf(result.single().get(0).asInt());
-        tvReciperCounter.setText(counter);
-
-        query = new Query("MATCH (n1:User)-[:Following]->(n2:User) WHERE n1.token = '" + uid + "' RETURN COUNT(n2);");
-        result = session.run(query);
-
-        counter = String.valueOf(result.single().get(0).asInt());
-        tvFollowingCounter.setText(counter);
-
-        query = new Query("MATCH (n1:User)<-[:Following]-(n2:User) WHERE n1.token = '" + uid + "' RETURN COUNT(n2);");
-        result = session.run(query);
-
-        counter = String.valueOf(result.single().get(0).asInt());
-        tvFollowersCounter.setText(counter);
-
-        query = new Query("MATCH (n1:User)-[:Liked]->(n2:Recipe) WHERE n1.token = '" + uid + "' RETURN COUNT(n2);");
-        result = session.run(query);
-
-        counter = String.valueOf(result.single().get(0).asInt());
-        tvLikesCounter.setText(counter);
-
-        connection.closeSession(session);
-    }
-
-
     //MENU superior
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.profile_menu, menu);
+
+        BottomNavigationView fcMainMenu = findViewById(R.id.fcMainMenu);
+        fcMainMenu.setSelectedItemId(R.id.bHome);
+        fcMainMenu.setOnItemSelectedListener(new OnItemNavSelectedListener(this));
+
         if (myProfile) {
             menu.getItem(0).setVisible(true);
         } else {
             menu.getItem(0).setVisible(false);
         }
+
+        menu.getItem(1).setVisible(false); //Peta el signout
         return true;
     }
 
@@ -250,14 +317,14 @@ public class ActivityProfile extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                finish();
                 onBackPressed();
-                //Toast.makeText(this, "Aqui finalizamos", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.iEditProfile:
                 startActivity(new Intent(getApplicationContext(), ActivityEditProfile.class));
                 return true;
             case R.id.iCloseSesion:
-                signOut();
+                //signOut();
             case R.id.iDarkMode:
                 if (AppCompatDelegate.getDefaultNightMode() != AppCompatDelegate.MODE_NIGHT_YES) {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -268,15 +335,19 @@ public class ActivityProfile extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-    //END MENU superior
 
-    //LOGOUT
+    //END MENU superior
     public void callSignOut(View view) {
-        signOut();
+        //signOut();
     }
 
     private void signOut() {
         FirebaseAuth.getInstance().signOut();
+        SharedPreferences.Editor editor = new SharedPreferencesSaved(this).getEditer();
+        editor.remove("uid");
+        editor.remove("accessToken");
+        editor.commit();
+
         startActivity(new Intent(this, ActivityLogin.class));
         finish();
     }
@@ -284,69 +355,75 @@ public class ActivityProfile extends AppCompatActivity {
     //Cuando se cambia a otra actividad y se vuelve a esta (ya creada) actualizamos los datos
     @Override
     protected void onRestart() {
+        if (myProfile) {
+            initializeViews();
+            bringUser();
+        } else {
+            getIsFollowing(Utils.getUserToken(), uid);
+        }
         super.onRestart();
-        //bringUser();
-        //adapter.updateFragments(userProfile.getBiography());
     }
 
-    //carga de usuario asyncrona
-    private class UserLoader {
-
-        private final ApiRequests apiRequests;
-        private final MutableLiveData<User> userLiveData;
-
-        public UserLoader(ApiRequests apiRequests) {
-            this.apiRequests = apiRequests;
-            userLiveData = new MutableLiveData<>();
-        }
-
-        public LiveData<User> getUser() {
-            return userLiveData;
-        }
-
-        public void loadUser() {
-            apiRequests.getUserByToken(uid).enqueue(new Callback<UserApi>() {
-                @Override
-                public void onResponse(Call<UserApi> call, Response<UserApi> response) {
-                    if (response.isSuccessful()) {
-                        UserApi userApi = response.body();
-                        User user = new User(
-                                userApi.getUsername(),
-                                userApi.getBiography(),
-                                userApi.getImgProfile(),
-                                userApi.getToken()
-                        );
-                        userLiveData.postValue(user);
-                    } else {
-                        Toast.makeText(ActivityProfile.this, "Primer error", Toast.LENGTH_SHORT).show();
-                        // La solicitud no fue exitosa
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<UserApi> call, Throwable t) {
-                    // Hubo un error en la solicitud
-                    Toast.makeText(ActivityProfile.this, "Failed to load data: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-    }
-
-    private void onUserLoaded(User users) {
-        userProfile = users;
-        retrieveData(uid);
-        adapter = new AdapterFragmentProfile(getSupportFragmentManager(), getLifecycle(), uid, myProfile);
-        vpPaginator.setAdapter(adapter);
-
-        shimmer.stopShimmer();
-        shimmer.hideShimmer();
-    }
-
+    //Carga de usuario asyncrona
     private void bringUser() {
-        //olvidamos asynctask y metemos lifecycle, que es mas actual y esta mejor optimizado
-        UserLoader userLoader = new UserLoader(ApiClient.getInstance(accessToken).getService());
-        userLoader.getUser().observe(this, this::onUserLoaded);
-        userLoader.loadUser();
+        UserLoader userLoader = new UserLoader(ApiClient.getInstance(accessToken).getService(), this, uid);
+        userLoader.getAllUser().observe(this, this::onUserLoaded);
+        userLoader.loadAllUser();
     }
 
+    private void onUserLoaded(HashMap<String, Object> userInfo) {
+        if (userInfo.size() == 5) {
+            userProfile = (User) userInfo.get("user");
+
+            tvUserName.setText(userProfile.getUsername());
+
+            try {
+                Picasso.with(this)
+                        .load(userProfile.getImgProfile())
+                        .into(ivUserPicture);
+            } catch (IllegalArgumentException e) {
+                Log.e("Image Error", "Error loading profile image");
+            }
+
+            String counter = String.valueOf(userInfo.get("recipes"));
+            tvReciperCounter.setText(counter);
+
+            counter = String.valueOf(userInfo.get("followers"));
+            tvFollowersCounter.setText(counter);
+
+            counter = String.valueOf(userInfo.get("following"));
+            tvFollowingCounter.setText(counter);
+
+            counter = String.valueOf(userInfo.get("liked"));
+            tvLikesCounter.setText(counter);
+
+            if (adapter == null) {
+                adapter = new AdapterFragmentProfile(getSupportFragmentManager(), getLifecycle(), uid, myProfile);
+                vpPaginator.setAdapter(adapter);
+                shimmer.stopShimmer();
+                shimmer.hideShimmer();
+            }
+
+            adapter.notifyDataSetChanged();
+        } else {
+            bringUser();
+        }
+    }
+
+    private void getIsFollowing(String sender_token, String receiver_token) {
+        UserLoader isFollowing = new UserLoader(ApiClient.getInstance(Utils.getUserAcessToken()).getService(), this, sender_token, receiver_token);
+        isFollowing.getIsFollow().observe(this, this::onFollowingLoaded);
+        isFollowing.loadIsFollow();
+    }
+
+    private void onFollowingLoaded(Boolean isFollow) {
+        initializeViews();
+        bringUser();
+
+        if (isFollow) {
+            btnFollow.setText("UNFOLLOW");
+        } else {
+            btnFollow.setText("FOLLOW");
+        }
+    }
 }

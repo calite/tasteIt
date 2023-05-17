@@ -1,9 +1,15 @@
-package com.example.tasteit_java.request;
+package com.example.tasteit_java.ApiRequest;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+
 public class RecipeEditRequest {
+
+    @SerializedName("rid")
+    @Expose
+    private int rid;
 
     @SerializedName("name")
     @Expose
@@ -27,21 +33,17 @@ public class RecipeEditRequest {
 
     @SerializedName("ingredients")
     @Expose
-    private String ingredients;
+    private ArrayList<String> ingredients;
 
     @SerializedName("steps")
     @Expose
-    private String steps;
+    private ArrayList<String> steps;
 
-    @SerializedName("tags")
+    /*@SerializedName("tags")
     @Expose
-    private String tags;
+    private String tags;*/
 
-    @SerializedName("rid")
-    @Expose
-    private int rid;
-
-    public RecipeEditRequest(int rid, String name, String description, String country, String image, int difficulty, String ingredients, String steps, String tags) {
+    public RecipeEditRequest(int rid, String name, String description, String country, String image, int difficulty, ArrayList<String> ingredients, ArrayList<String> steps) {
         this.rid = rid;
         this.name = name;
         this.description = description;
@@ -50,7 +52,7 @@ public class RecipeEditRequest {
         this.difficulty = difficulty;
         this.ingredients = ingredients;
         this.steps = steps;
-        this.tags = tags;
+        //this.tags = tags;
     }
 
     public RecipeEditRequest() {
@@ -104,27 +106,19 @@ public class RecipeEditRequest {
         this.difficulty = difficulty;
     }
 
-    public String getIngredients() {
+    public ArrayList<String> getIngredients() {
         return ingredients;
     }
 
-    public void setIngredients(String ingredients) {
+    public void setIngredients(ArrayList<String> ingredients) {
         this.ingredients = ingredients;
     }
 
-    public String getSteps() {
+    public ArrayList<String> getSteps() {
         return steps;
     }
 
-    public void setSteps(String steps) {
+    public void setSteps(ArrayList<String> steps) {
         this.steps = steps;
-    }
-
-    public String getTags() {
-        return tags;
-    }
-
-    public void setTags(String tags) {
-        this.tags = tags;
     }
 }
