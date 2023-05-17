@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     android:fillViewport="true"
+    android:fitsSystemWindows="true"
     android:scrollbars="vertical"
     tools:context=".ActivityNewRecipe">
 
@@ -18,16 +18,16 @@
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_marginVertical="10dp"
-            android:padding="2dp"
             android:adjustViewBounds="true"
+            android:padding="2dp"
             android:scaleType="centerCrop"
-            app:shapeAppearanceOverlay="@style/cornerRoundImageView"
-            app:strokeColor="@color/maroon"
-            app:strokeWidth="2dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/cornerRoundImageView"
+            app:strokeColor="@color/maroon"
+            app:strokeWidth="2dp" />
 
         <ImageButton
             android:id="@+id/ibPickPhoto"
@@ -45,9 +45,9 @@
             android:id="@+id/vSeparator"
             android:layout_width="match_parent"
             android:layout_height="2dp"
-            android:backgroundTint="@color/maroon"
-            android:background="@android:color/darker_gray"
             android:layout_marginTop="10dp"
+            android:background="@android:color/darker_gray"
+            android:backgroundTint="@color/maroon"
             app:layout_constraintTop_toBottomOf="@id/ivRecipePhoto"
             app:layout_constraintVertical_bias="0.103"
             tools:layout_editor_absoluteX="-1dp" />
@@ -57,23 +57,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="1dp"
-            app:tabTextAppearance="@style/TabItem"
-            app:layout_constraintTop_toBottomOf="@id/vSeparator">
+            app:layout_constraintTop_toBottomOf="@id/vSeparator"
+            app:tabTextAppearance="@style/TabItem">
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Info" />
+                android:text="@string/info" />
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Steps" />
+                android:text="@string/steps" />
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Ingredients" />
+                android:text="@string/ingredients" />
 
         </com.google.android.material.tabs.TabLayout>
 
@@ -84,7 +84,7 @@
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tlRecipe"
-            app:layout_constraintVertical_bias="0"/>
+            app:layout_constraintVertical_bias="0" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/bCreate"
@@ -93,8 +93,8 @@
             android:layout_gravity="bottom|end"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="20dp"
-            android:backgroundTint="@color/maroon"
             android:background="@drawable/s_oval"
+            android:backgroundTint="@color/maroon"
             app:borderWidth="0dp"
             app:elevation="0dp"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -38,8 +38,6 @@ public class ActivityRandom extends AppCompatActivity {
     private ShimmerFrameLayout shimmer;
     private MenuItem profileImg;
     private ArrayList<Recipe> someRecipes;
-    private ArrayList<Integer> lastIdRecipes;
-    private ArrayList<String> idRecipes;
     private AdapterFragmentRandom adapter;
     private ViewPager2 vpRandom;
     private String accessToken;
@@ -61,9 +59,6 @@ public class ActivityRandom extends AppCompatActivity {
         vpRandom.setVisibility(View.INVISIBLE);
         shimmer = findViewById(R.id.shimmer);
         someRecipes = new ArrayList<>();
-        lastIdRecipes = new ArrayList<>();
-        idRecipes = new ArrayList<>(new SharedPreferencesSaved(this).getSharedPreferences().getStringSet("idRecipes", new HashSet<>()));
-
 
         btnShuffle.setOnClickListener(new View.OnClickListener() {
             @Override

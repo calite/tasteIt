@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ActivityLogin"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".ActivityLogin">
 
     <ImageView
         android:id="@+id/imageView"
@@ -21,30 +21,32 @@
         android:id="@+id/etEmail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:singleLine="true"
         android:ems="10"
         android:fontFamily="@font/comfortaa_light"
         android:hint="@string/email"
         android:inputType="textEmailAddress"
+        android:maxLength="50"
+        android:singleLine="true"
         android:textAlignment="center"
         app:backgroundTint="@color/maroon"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <EditText
         android:id="@+id/etPassword"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:singleLine="true"
         android:ems="10"
         android:fontFamily="@font/comfortaa_light"
         android:hint="@string/password"
         android:inputType="textPassword"
+        android:maxLength="30"
+        android:singleLine="true"
         android:textAlignment="center"
         app:backgroundTint="@color/maroon"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etEmail" />
 
     <Button
@@ -61,15 +63,16 @@
         android:id="@+id/etConfirmPassword"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:singleLine="true"
         android:ems="10"
         android:fontFamily="@font/comfortaa_light"
         android:hint="@string/Confirm_password"
         android:inputType="textPassword"
+        android:maxLength="30"
+        android:singleLine="true"
         android:textAlignment="center"
         app:backgroundTint="@color/maroon"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etPassword" />
 
     <Button
@@ -85,13 +88,13 @@
     <Button
         android:id="@+id/bLogin"
         android:layout_width="0dp"
-        android:layout_marginHorizontal="30dp"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="30dp"
         android:layout_marginTop="10dp"
         android:fontFamily="@font/comfortaa_bold"
         android:text="@string/login"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etConfirmPassword" />
 
     <TextView
@@ -120,9 +123,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/comfortaa_light"
+            android:gravity="center"
             android:text="@string/acept"
             android:textSize="13sp"
-            android:gravity="center"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -130,15 +133,15 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_marginStart="5dp"
-            android:gravity="center"
             android:fontFamily="@font/comfortaa_light"
+            android:gravity="center"
             android:onClick="goTerms"
             android:text="@string/terms"
             android:textColor="@color/red"
             android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/cbAcept"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

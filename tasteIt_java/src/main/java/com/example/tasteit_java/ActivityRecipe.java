@@ -49,7 +49,7 @@ import retrofit2.Response;
 
 public class ActivityRecipe extends AppCompatActivity {
     private ImageView ivRecipePhoto;
-    private TextView tvRecipeName;
+    private TextView tvRecipeName, tvCounterLikes;
     private RatingBar rbRating;
     private TextView tvNameCreator;
     private TabLayout tlRecipe;
@@ -107,6 +107,7 @@ public class ActivityRecipe extends AppCompatActivity {
         tvRecipeName = findViewById(R.id.tvRecipeName);
         rbRating = findViewById(R.id.rbRating);
         tvNameCreator = findViewById(R.id.tvNameCreator);
+        tvCounterLikes = findViewById(R.id.tvCounterLikes);
         tlRecipe = findViewById(R.id.tlRecipe);
         vpPaginator = findViewById(R.id.vpPaginator);
 
@@ -337,6 +338,9 @@ public class ActivityRecipe extends AppCompatActivity {
         RecipeLoader recipesLoader = new RecipeLoader(ApiClient.getInstance(accessToken).getService(), this, recipeId);
         recipesLoader.getRecipeById().observe(this, this::onRecipeLoaded);
         recipesLoader.loadRecipeById();
+
+        recipesLoader.getCountLikesRecipes().observe(this, this::onCounterLikesLoaded);
+        recipesLoader.loadCountLikesRecipes();
     }
 
     private void onRecipeLoaded(Recipe recipes) {
@@ -365,6 +369,10 @@ public class ActivityRecipe extends AppCompatActivity {
 
         shimmer.stopShimmer();
         shimmer.hideShimmer();
+    }
+
+    private void onCounterLikesLoaded(Integer count) {
+        tvCounterLikes.setText(String.valueOf(count));
     }
 
     private void getIsLiked() {

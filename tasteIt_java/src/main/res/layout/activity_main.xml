@@ -11,20 +11,23 @@
         android:id="@+id/shimmer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:shimmer_auto_start="true"
         app:layout_constraintBottom_toTopOf="@+id/fcMainMenu"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0">
+        app:layout_constraintVertical_bias="0"
+        app:shimmer_auto_start="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <include layout="@layout/hint_item_card_recipes"/>
-            <include layout="@layout/hint_item_card_recipes"/>
-            <include layout="@layout/hint_item_card_recipes"/>
-            <include layout="@layout/hint_item_card_recipes"/>
+            <include layout="@layout/hint_item_card_recipes" />
+
+            <include layout="@layout/hint_item_card_recipes" />
+
+            <include layout="@layout/hint_item_card_recipes" />
+
+            <include layout="@layout/hint_item_card_recipes" />
 
         </LinearLayout>
 
@@ -37,7 +40,7 @@
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/fcMainMenu"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0"/>
+        app:layout_constraintVertical_bias="0" />
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -47,8 +50,8 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
-        android:backgroundTint="@color/maroon"
         android:background="@drawable/s_oval"
+        android:backgroundTint="@color/maroon"
         app:borderWidth="0dp"
         app:elevation="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -62,11 +65,11 @@
         android:id="@+id/fcMainMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:itemTextColor="@color/white"
+        android:layout_alignParentBottom="true"
         android:background="@color/maroon"
         app:itemIconTint="@color/white"
-        android:layout_alignParentBottom="true"
-        app:menu="@menu/nav_main_menu"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:itemTextColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/nav_main_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

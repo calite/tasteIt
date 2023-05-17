@@ -10,7 +10,7 @@
         android:id="@+id/tvTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="RECIPES"
+        android:text="@string/recipes"
         android:textAlignment="center"
         android:textColor="@color/maroon"
         android:textSize="25dp"
@@ -26,17 +26,17 @@
         <com.google.android.material.tabs.TabItem
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Me" />
+            android:text="@string/me" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Liked" />
+            android:text="@string/liked" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Followed" />
+            android:text="@string/followed" />
 
     </com.google.android.material.tabs.TabLayout>
 

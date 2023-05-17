@@ -28,6 +28,7 @@ public class RecipeLoader {
     private MutableLiveData<Recipe> recipeLiveData;
     private MutableLiveData<Boolean> likedLiveData;
     private MutableLiveData<List<Comment>> recipeCommentsLiveData;
+    private MutableLiveData<Integer> countLikesLiveData;
     private Context context;
     private int skipper;
     private int recipeId;
@@ -47,6 +48,7 @@ public class RecipeLoader {
         this.skipper = data;
         this.sender_token = sender_token;
         likedLiveData = new MutableLiveData<>();
+        countLikesLiveData = new MutableLiveData<>();
         this.recipeId = data;
 
         this.name = sender_token;
@@ -63,6 +65,7 @@ public class RecipeLoader {
         recipeLiveData = new MutableLiveData<>();
         this.recipeId = data;
         this.limit = data;
+        countLikesLiveData = new MutableLiveData<>();
     }
 
     public RecipeLoader(ApiRequests apiRequests, Context context, ArrayList<Integer> lastIdRecipes, ArrayList<String> idsRecipesShared) {
@@ -633,6 +636,29 @@ public class RecipeLoader {
 
             @Override
             public void onFailure(Call<List<RecipeId_Recipe_User>> call, Throwable t) {
+                Toast.makeText(context, "Something went wrong - " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public LiveData<Integer> getCountLikesRecipes() {
+        return countLikesLiveData;
+    }
+
+    public void loadCountLikesRecipes() {
+        apiRequests.getCountLikesOnRecipe(recipeId).enqueue(new Callback<List<Integer>>() {
+            @Override
+            public void onResponse(Call<List<Integer>> call, Response<List<Integer>> response) {
+                if (response.isSuccessful() && response.body().size() != 0) {
+                    Integer count = response.body().get(0);
+                    countLikesLiveData.postValue(count);
+                } else {
+                    // La solicitud no fue exitosa
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Integer>> call, Throwable t) {
                 Toast.makeText(context, "Something went wrong - " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

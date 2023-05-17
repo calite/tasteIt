@@ -44,7 +44,6 @@
                 android:layout_marginHorizontal="15dp"
                 android:fontFamily="@font/comfortaa_bold"
                 android:singleLine="true"
-                android:text="USERNAME"
                 android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textSize="17sp"
@@ -87,7 +86,7 @@
                     android:layout_marginTop="15dp"
                     android:fontFamily="@font/comfortaa_bold"
                     android:paddingLeft="20dp"
-                    android:text="Username"
+                    android:text="@string/username"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:layout_editor_absoluteX="16dp" />
 
@@ -98,10 +97,9 @@
                     android:layout_marginHorizontal="20dp"
                     android:ems="10"
                     android:fontFamily="@font/comfortaa_light"
-                    android:hint="Username"
+                    android:hint="@string/username"
                     android:inputType="text"
-                    android:maxHeight="50dp"
-                    android:maxLength="30"
+                    android:maxLength="16"
                     android:minHeight="48dp"
                     android:singleLine="true"
                     android:textAlignment="center"
@@ -117,7 +115,7 @@
                     android:layout_marginTop="10dp"
                     android:fontFamily="@font/comfortaa_bold"
                     android:paddingLeft="20dp"
-                    android:text="Biography"
+                    android:text="@string/biography"
                     app:layout_constraintTop_toBottomOf="@+id/etUsername"
                     tools:layout_editor_absoluteX="16dp" />
 
@@ -128,9 +126,9 @@
                     android:layout_marginHorizontal="20dp"
                     android:ems="10"
                     android:fontFamily="@font/comfortaa_light"
-                    android:hint="Biography"
+                    android:hint="@string/biography"
                     android:inputType="textMultiLine"
-                    android:maxLength="180"
+                    android:maxLength="240"
                     android:maxLines="3"
                     android:minHeight="48dp"
                     android:scrollbars="vertical"
@@ -147,7 +145,7 @@
                     android:layout_marginTop="10dp"
                     android:fontFamily="@font/comfortaa_bold"
                     android:paddingLeft="20dp"
-                    android:text="Email"
+                    android:text="@string/email"
                     app:layout_constraintTop_toBottomOf="@+id/etBiography" />
 
                 <EditText
@@ -177,7 +175,7 @@
                     android:layout_marginTop="20dp"
                     android:fontFamily="@font/comfortaa_bold"
                     android:paddingEnd="10dp"
-                    android:text="Change password? "
+                    android:text="@string/ask_change_pass"
                     android:textAlignment="textEnd"
                     android:textColor="@color/maroon"
                     android:textStyle="italic"
@@ -200,8 +198,9 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
+                        android:maxLength="30"
                         android:paddingLeft="20dp"
-                        android:text="Old Password"
+                        android:text="@string/old_pass"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -214,7 +213,7 @@
                         android:layout_marginHorizontal="20dp"
                         android:ems="10"
                         android:fontFamily="@font/comfortaa_light"
-                        android:hint="Old Password"
+                        android:hint="@string/old_pass"
                         android:inputType="textPassword"
                         android:maxLength="30"
                         android:minHeight="48dp"
@@ -230,7 +229,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:paddingLeft="20dp"
-                        android:text="New Password"
+                        android:text="@string/new_pass"
                         app:layout_constraintTop_toBottomOf="@+id/etOldPassword" />
 
 
@@ -241,7 +240,7 @@
                         android:layout_marginHorizontal="20dp"
                         android:ems="10"
                         android:fontFamily="@font/comfortaa_light"
-                        android:hint="@string/password"
+                        android:hint="@string/new_pass"
                         android:inputType="textPassword"
                         android:maxLength="30"
                         android:minHeight="48dp"
@@ -257,7 +256,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:paddingLeft="20dp"
-                        android:text="Confirm Password"
+                        android:text="@string/Confirm_password"
                         app:layout_constraintTop_toBottomOf="@+id/etNewPassword" />
 
 
@@ -287,7 +286,7 @@
                     android:layout_marginHorizontal="30dp"
                     android:layout_marginTop="20dp"
                     android:fontFamily="@font/comfortaa_bold"
-                    android:text="save changes"
+                    android:text="@string/save_changes"
                     app:layout_constraintBottom_toTopOf="@+id/btnDeleteAcc"
                     app:layout_constraintTop_toBottomOf="@id/clPassword"
                     app:layout_constraintVertical_bias="0.3"
@@ -299,7 +298,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="30dp"
                     android:fontFamily="@font/comfortaa_bold"
-                    android:text="Delete Account"
+                    android:text="@string/delete_acc"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/btnSave"
                     app:layout_constraintVertical_bias="0.1"

@@ -44,6 +44,29 @@
         non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
     </string>
 
+    <string name="username">Username</string>
+    <string name="biography">Biography</string>
+    <string name="ask_change_pass">Change password? </string>
+    <string name="save_changes">Save changes</string>
+    <string name="delete_acc">Delete Account</string>
+    <string name="old_pass">Old Password</string>
+    <string name="new_pass">New Password</string>
+    <string name="recipes">Recipes</string>
+    <string name="me">Me</string>
+    <string name="liked">Liked</string>
+    <string name="followed">Followed</string>
+    <string name="add_your_comment">Add your comment..</string>
+    <string name="info">Info</string>
+    <string name="steps">Steps</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="follow">Follow</string>
+    <string name="followers">Followers</string>
+    <string name="followings">Followings</string>
+    <string name="likes">Likes</string>
+    <string name="bio">Bio</string>
+    <string name="photos">Photos</string>
+    <string name="comments">Comments</string>
+
     <!--Countries-->
     <string-array name="countries_array">
         <item>Afghanistan</item>
@@ -78,10 +101,6 @@
         <item>United States</item>
         <item>Vietnam</item>
     </string-array>
-
-    <!-- Strings used for fragments for navigation -->
-
-    <string name="add_your_comment">Add your comment..</string>
 
     <string-array name="tags_array">
         <item>carne</item>

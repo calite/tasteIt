@@ -92,6 +92,8 @@ public interface ApiRequests {
     Call<List<RecipeId_Recipe_User>> getLikesOnRecipe(@Path("rid") int rid); //Usuarios que dan like a una receta
     @GET("recipe/comments/{rid}/{skipper}")
     Call<List<RecipeApiComment>> getCommentsOnRecipe(@Path("rid") int rid, @Path("skipper") int skipper); //Comentarios de una receta
+    @GET("recipe/likes_on_recipes/{rid}")
+    Call<List<Integer>> getCountLikesOnRecipe(@Path("rid") int rid); //Total de likes a una receta
 
     //POST RECETAS
     @Headers("Content-Type: application/json")
