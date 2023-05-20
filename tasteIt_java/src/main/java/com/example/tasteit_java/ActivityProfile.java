@@ -230,6 +230,7 @@ public class ActivityProfile extends AppCompatActivity {
                                         Intent intent = getIntent();
                                         finish();
                                         startActivity(intent);
+                                        overridePendingTransition(0, 0);
                                     } else {
                                         // Handle the error
                                         Log.e("API_ERROR", "Response error: " + response.code() + " " + response.message());
