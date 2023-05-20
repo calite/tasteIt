@@ -27,6 +27,7 @@ import com.example.tasteit_java.clases.Utils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class AdapterEndlessRecyclerSearch extends Adapter {
 

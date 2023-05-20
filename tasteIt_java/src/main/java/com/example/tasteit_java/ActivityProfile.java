@@ -227,6 +227,9 @@ public class ActivityProfile extends AppCompatActivity {
                                     if (response.isSuccessful()) {
                                         getIsFollowing(Utils.getUserToken(), uid);
                                         dialog.cancel();
+                                        Intent intent = getIntent();
+                                        finish();
+                                        startActivity(intent);
                                     } else {
                                         // Handle the error
                                         Log.e("API_ERROR", "Response error: " + response.code() + " " + response.message());

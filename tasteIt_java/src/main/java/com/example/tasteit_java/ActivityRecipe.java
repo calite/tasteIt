@@ -208,6 +208,9 @@ public class ActivityRecipe extends AppCompatActivity {
                                 if (response.isSuccessful()) {
                                     getIsLiked();
                                     dialog.cancel();
+                                    Intent intent = getIntent();
+                                    finish();
+                                    startActivity(intent);
                                 } else {
                                     // Handle the error
                                     Log.e("API_ERROR", "Response error: " + response.code() + " " + response.message());
