@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -67,9 +68,6 @@ public class ActivityMain extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getSupportActionBar().setDisplayUseLogoEnabled(true);
-        getSupportActionBar().setLogo(R.drawable.logo4alphadarkpeque);
-
         shimmer = findViewById(R.id.shimmer);
         shimmer.startShimmer();
 
@@ -97,7 +95,7 @@ public class ActivityMain extends AppCompatActivity {
             @Override
             public void onLoadMore() {
                 if(allItemsLoaded) { //habra que ponerle un limite (que en principio puede ser el total de recipes en la bbdd o algo fijo para no sobrecargar el terminal)
-                    Toast.makeText(ActivityMain.this, "Finiquitao con " + adapter.getItemCount() + " recetas", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(ActivityMain.this, "Finiquitao con " + adapter.getItemCount() + " recetas", Toast.LENGTH_SHORT).show();
                 } else {
                     adapter.dataList.add(null);
                     adapter.notifyItemInserted(adapter.getItemCount() - 1);

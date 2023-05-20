@@ -1,0 +1,205 @@
+<resources>
+    <string name="app_name">tasteIt</string>
+    <string name="email">Correo electrónico</string>
+    <string name="password">Contraseña</string>
+    <string name="Confirm_password">Confirmar contraseña</string>
+    <string name="forgot_password">¿Olvidaste tu contraseña?</string>
+    <string name="login">¡Iniciar sesión!</string>
+    <string name="acept">He leído y acepto los</string>
+    <string name="terms">términos y condiciones de uso.</string>
+    <string name="something_wrong">Algo salió mal</string>
+    <string name="info_deleted">Tu información ha sido eliminada</string>
+
+    <string name="bar_title_terms">Términos y condiciones de uso</string>
+    <string name="terms1">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent rhoncus
+        convallis metus at pretium. Vivamus at lacinia leo. Praesent velit elit, suscipit sit amet
+        pulvinar id, imperdiet ac massa. Quisque molestie lectus rhoncus urna tempor, ut lacinia mi
+        tempor. Praesent volutpat, ligula eget lobortis cursus, mauris libero consequat ligula, nec
+        scelerisque erat ipsum tempor justo. Aliquam ornare faucibus augue vel faucibus. Ut
+        sollicitudin commodo tortor eu faucibus. Vestibulum lacinia ligula sed tortor auctor, vitae
+        sollicitudin lorem dapibus. Phasellus sed tincidunt odio.</string>
+    <string name="terms2">Praesent arcu nisi, auctor quis tempor id, vehicula non nulla. Sed a
+        fermentum tellus, quis pharetra lorem. Fusce vehicula libero in ultricies varius.
+        Suspendisse vel velit tortor. Aliquam non nisi eget lectus tempor consectetur sed in magna.
+        Nullam tincidunt, nibh ut sodales suscipit, ante est luctus purus, sed pellentesque ipsum
+        massa et quam. Proin sed sapien ultrices ex aliquet elementum sed et erat. Sed tincidunt
+        felis sapien, a suscipit massa cursus et. Phasellus auctor tellus ac neque maximus accumsan.
+        Morbi sit amet odio nec sapien pharetra elementum maximus id odio. Integer laoreet, neque
+        id efficitur auctor, magna massa consequat justo, quis vehicula ipsum massa at sem. Morbi
+        in ornare sapien, in luctus mauris. </string>
+    <string name="terms3">Sed id libero auctor, lacinia lectus a, consequat nisl. Nam quis suscipit
+        purus. Fusce at congue quam. Etiam congue imperdiet bibendum. Etiam at porttitor ipsum.
+        Donec consectetur sapien in neque tempus. Sed vulputate rutrum ultrices. Praesent
+        in est leo. Suspendisse euismod purus id urna tempus pellentesque. Praesent condimentum
+        nisl sit amet purus pulvinar sagittis. Cras purus felis, hendrerit et ornare ut, molestie
+        id orci. Integer dictum consequat leo, id pretium urna tempus et. Donec nibh ante, laoreet
+        id lorem vitae, vestibulum sollicitudin lorem. </string>
+
+    <string name="lorem_ipsum">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+        laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
+        voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
+        non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    </string>
+
+    <string name="username">Nombre de usuario</string>
+    <string name="biography">Biografía</string>
+    <string name="ask_change_pass">¿Cambiar contraseña?</string>
+    <string name="save_changes">Guardar cambios</string>
+    <string name="delete_acc">Eliminar cuenta</string>
+    <string name="old_pass">Contraseña anterior</string>
+    <string name="new_pass">Nueva contraseña</string>
+    <string name="recipes">Recetas</string>
+    <string name="me">Yo</string>
+    <string name="liked">Me gusta</string>
+    <string name="followed">Seguidos</string>
+    <string name="add_your_comment">Añade tu comentario...</string>
+    <string name="info">Información</string>
+    <string name="steps">Pasos</string>
+    <string name="ingredients">Ingredientes</string>
+    <string name="follow">Seguir</string>
+    <string name="unfollow">Siguiendo</string>
+    <string name="followers">Seguidores</string>
+    <string name="followings">Siguiendo</string>
+    <string name="likes">Me gusta</string>
+    <string name="bio">Biografía</string>
+    <string name="photos">Fotos</string>
+    <string name="comments">Comentarios</string>
+    <string name="sending">Enviando...</string>
+    <string name="send">¡Enviar!</string>
+    <string name="lets_try_something">Probemos algo...</string>
+    <string name="taste">¡Prueba!</string>
+    <string name="type_something">Escribe algo...</string>
+    <string name="rate_this_recipe">Califica esta receta</string>
+    <string name="comment">Comentario</string>
+    <string name="optional">Opcional</string>
+    <string name="cancel">Cancelar</string>
+    <string name="are_you_sure_you_want_to_eliminate_this_step">¿Estás seguro de que quieres eliminar este paso?</string>
+    <string name="yes">¡Sí!</string>
+    <string name="no">¡No!</string>
+    <string name="modify_step">Modificar paso</string>
+    <string name="modify">¡Modificar!</string>
+    <string name="choose_your_username">¡Elige tu nombre de usuario para empezar a cocinar!</string>
+    <string name="lets_go">¡Vamos!</string>
+    <string name="label_recipe_name">Nombre de la receta:</string>
+    <string name="recipe_name">Nombre de la receta</string>
+    <string name="label_description">Descripción:</string>
+    <string name="recipe_description">Descripción de la receta</string>
+    <string name="label_level">Nivel:</string>
+    <string name="label_country">País:</string>
+    <string name="label_difficulty">Dificultad:</string>
+    <string name="label_tags">Etiquetas:</string>
+    <string name="label_ingredients">Ingredientes:</string>
+    <string name="note_ingredient">Nota: Debes establecer al menos 1 ingrediente</string>
+    <string name="see_recipe">Ver receta</string>
+    <string name="next_recipe">Siguiente receta</string>
+    <string name="note_steps">Nota: Debes establecer al menos 1 paso</string>
+    <string name="name_creator">Nombre del creador</string>
+    <string name="wait_login">Iniciando sesión en el servidor</string>
+    <string name="please_wait">¡Por favor espera!</string>
+    <string name="from_camera">Desde la cámara</string>
+    <string name="from_gallery">Desde la galería</string>
+    <string name="profile">Perfil</string>
+    <string name="dark_light_mode">Modo oscuro/claro</string>
+    <string name="close_session">Cerrar sesión</string>
+    <string name="home">Inicio</string>
+    <string name="search">Buscar</string>
+    <string name="random">Aleatorio</string>
+    <string name="my_book">Mi Libro</string>
+    <string name="edit">Editar</string>
+    <string name="remove">Eliminar</string>
+    <string name="report">Reportar</string>
+    <string name="edit_profile">Editar perfil</string>
+    <string name="edit_recipe">Editar receta</string>
+    <string name="delete_recipe">Eliminar receta</string>
+    <string name="write_a_comment">Debes escribir un comentario para continuar!</string>
+    <string name="pass_match_error">La contraseña debe coincidir y tener al menos 6 caracteres</string>
+    <string name="data_saved_succ">Datos y contraseña modificados correctamente</string>
+    <string name="auth_failed">Autenticación fallida</string>
+    <string name="register">¡Regístrate ahora!</string>
+    <string name="username_error">Debes elegir un nombre de usuario válido</string>
+    <string name="check_terms">Acepta la política de términos</string>
+    <string name="nullemail_error">Por favor, ingresa tu correo electrónico</string>
+    <string name="no_user_found">No se encontró ningún usuario con ese correo electrónico</string>
+    <string name="email_sent">Correo electrónico enviado a $e</string>
+    <string name="new_recipe">Nueva Receta</string>
+    <string name="error_new_rec_image">Debes agregar una imagen</string>
+    <string name="error_new_recipe_name">Por favor, ingresa un Nombre de Receta</string>
+    <string name="error_new_recipe_desc">Por favor, ingresa una Descripción de Receta</string>
+    <string name="saved">¡Guardado!</string>
+    <string name="liked_recipes">Recetas Favoritas</string>
+    <string name="step">"Paso "</string>
+    <string name="step_succ_mod">Paso modificado correctamente</string>
+    <string name="error_step">Debes indicar un paso</string>
+    <string name="step_removed">Paso eliminado</string>
+    <string name="error_load_data">Error al cargar los datos</string>
+    <string name="select_picture">Selecciona una imagen</string>
+    <string name="canceled">Cancelado</string>
+    <string name="error_no_ingredient">Debes especificar un ingrediente</string>
+
+    <!--Countries-->
+    <string-array name="countries_array">
+        <item>Afganistán</item>
+        <item>Argentina</item>
+        <item>Australia</item>
+        <item>Bangladesh</item>
+        <item>Brasil</item>
+        <item>Canadá</item>
+        <item>China</item>
+        <item>Colombia</item>
+        <item>Egipto</item>
+        <item>Francia</item>
+        <item>Alemania</item>
+        <item>Grecia</item>
+        <item>India</item>
+        <item>Indonesia</item>
+        <item>Irán</item>
+        <item>Italia</item>
+        <item>Japón</item>
+        <item>México</item>
+        <item>Nigeria</item>
+        <item>Pakistán</item>
+        <item>Filipinas</item>
+        <item>Portugal</item>
+        <item>Rusia</item>
+        <item>Arabia Saudita</item>
+        <item>Sudáfrica</item>
+        <item>Corea del Sur</item>
+        <item>España</item>
+        <item>Turquía</item>
+        <item>Reino Unido</item>
+        <item>Estados Unidos</item>
+        <item>Vietnam</item>
+    </string-array>
+
+    <string-array name="tags_array">
+        <item>carne</item>
+        <item>pescado</item>
+        <item>pollo</item>
+        <item>pan</item>
+        <item>arroz</item>
+        <item>fideos</item>
+        <item>huevos</item>
+        <item>queso</item>
+        <item>leche</item>
+        <item>salsa</item>
+        <item>especias</item>
+        <item>hierbas</item>
+        <item>limón</item>
+        <item>asar</item>
+        <item>freír</item>
+        <item>hervir</item>
+        <item>saltear</item>
+        <item>sofreír</item>
+        <item>hornear</item>
+        <item>marinar</item>
+        <item>gratinar</item>
+        <item>glasear</item>
+        <item>guisar</item>
+        <item>escalfar</item>
+        <item>tostar</item>
+        <item>flambear</item>
+    </string-array>
+
+</resources>

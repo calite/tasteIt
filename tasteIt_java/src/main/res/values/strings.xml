@@ -29,7 +29,7 @@
         in ornare sapien, in luctus mauris. </string>
     <string name="terms3">Sed id libero auctor, lacinia lectus a, consequat nisl. Nam quis suscipit
         purus. Fusce at congue quam. Etiam congue imperdiet bibendum. Etiam at porttitor ipsum.
-        Donec consectetur sapien in neque tempus tempus. Sed vulputate rutrum ultrices. Praesent
+        Donec consectetur sapien in neque tempus. Sed vulputate rutrum ultrices. Praesent
         in est leo. Suspendisse euismod purus id urna tempus pellentesque. Praesent condimentum
         nisl sit amet purus pulvinar sagittis. Cras purus felis, hendrerit et ornare ut, molestie
         id orci. Integer dictum consequat leo, id pretium urna tempus et. Donec nibh ante, laoreet
@@ -60,12 +60,84 @@
     <string name="steps">Steps</string>
     <string name="ingredients">Ingredients</string>
     <string name="follow">Follow</string>
+    <string name="unfollow">Unfollow</string>
     <string name="followers">Followers</string>
     <string name="followings">Followings</string>
     <string name="likes">Likes</string>
     <string name="bio">Bio</string>
     <string name="photos">Photos</string>
     <string name="comments">Comments</string>
+    <string name="sending">Sending..</string>
+    <string name="send">Send!</string>
+    <string name="lets_try_something">Lets try something…</string>
+    <string name="taste">Taste!</string>
+    <string name="type_something">Type something…</string>
+    <string name="rate_this_recipe">Rate this recipe</string>
+    <string name="comment">Comment</string>
+    <string name="optional">Optional</string>
+    <string name="cancel">Cancel</string>
+    <string name="are_you_sure_you_want_to_eliminate_this_step">Are you sure you want to eliminate this step?</string>
+    <string name="yes">Yes!</string>
+    <string name="no">No!</string>
+    <string name="modify_step">Modify Step</string>
+    <string name="modify">Modify!</string>
+    <string name="choose_your_username">Choose your username to start cooking!</string>
+    <string name="lets_go">Lets go!</string>
+    <string name="label_recipe_name">Recipe Name:</string>
+    <string name="recipe_name">Recipe Name</string>
+    <string name="label_description">Description:</string>
+    <string name="recipe_description">Recipe Description</string>
+    <string name="label_level">Level:</string>
+    <string name="label_country">Country:</string>
+    <string name="label_difficulty">Difficulty:</string>
+    <string name="label_tags">Tags:</string>
+    <string name="label_ingredients">Ingredients:</string>
+    <string name="note_ingredient">Note: At least set 1 Ingredient</string>
+    <string name="see_recipe">See Recipe</string>
+    <string name="next_recipe">next recipe</string>
+    <string name="note_steps">Note: At least set 1 Step</string>
+    <string name="name_creator">Name Creator</string>
+    <string name="wait_login">Login in to the server</string>
+    <string name="please_wait">Please wait!</string>
+    <string name="from_camera">From Camera</string>
+    <string name="from_gallery">From Gallery</string>
+    <string name="profile">Profile</string>
+    <string name="dark_light_mode">Dark/Light Mode</string>
+    <string name="close_session">Close Session</string>
+    <string name="home">Home</string>
+    <string name="search">Search</string>
+    <string name="random">Random</string>
+    <string name="my_book">My Book</string>
+    <string name="edit">Edit</string>
+    <string name="remove">Remove</string>
+    <string name="report">Report</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="edit_recipe">Edit Recipe</string>
+    <string name="delete_recipe">Delete Recipe</string>
+    <string name="write_a_comment">You must write a comment to continue!</string>
+    <string name="pass_match_error">Password must match and be equal or longer than 6 characters</string>
+    <string name="data_saved_succ">Data and password successfully modified</string>
+    <string name="auth_failed">Authentication Failed</string>
+    <string name="register">Register now!</string>
+    <string name="username_error">You must choose a valid username</string>
+    <string name="check_terms">CHECK the terms policy.</string>
+    <string name="nullemail_error">Please, put your email</string>
+    <string name="no_user_found">No user was found with that email</string>
+    <string name="email_sent">Email sent to $e</string>
+    <string name="new_recipe">New Recipe</string>
+    <string name="error_new_rec_image">You have to set a image</string>
+    <string name="error_new_recipe_name">Please enter a Recipe Name</string>
+    <string name="error_new_recipe_desc">Please enter a Recipe Description</string>
+    <string name="saved">Saved!</string>
+    <string name="liked_recipes">Recipes Liked</string>
+    <string name="step">\"Step \"</string>
+    <string name="step_succ_mod">Step successfully modified</string>
+    <string name="error_step">You must indicate a step</string>
+    <string name="step_removed">Step removed</string>
+    <string name="error_load_data">Failed to load data </string>
+    <string name="select_picture">Select a Picture</string>
+    <string name="canceled">Canceled</string>
+    <string name="error_no_ingredient">You must specify an ingredient</string>
 
     <!--Countries-->
     <string-array name="countries_array">
@@ -103,32 +175,32 @@
     </string-array>
 
     <string-array name="tags_array">
-        <item>carne</item>
-        <item>pescado</item>
-        <item>pollo</item>
-        <item>pan</item>
-        <item>arroz</item>
-        <item>fideos</item>
-        <item>huevos</item>
-        <item>queso</item>
-        <item>leche</item>
-        <item>salsa</item>
-        <item>especias</item>
-        <item>hierbas</item>
-        <item>limón</item>
-        <item>asar</item>
-        <item>freír</item>
-        <item>hervir</item>
-        <item>saltear</item>
-        <item>sofreír</item>
-        <item>hornear</item>
-        <item>marinar</item>
-        <item>gratinar</item>
-        <item>glasear</item>
-        <item>guisar</item>
-        <item>escalfar</item>
-        <item>tostar</item>
-        <item>flambear</item>
+        <item>meat</item>
+        <item>fish</item>
+        <item>chicken</item>
+        <item>bread</item>
+        <item>rice</item>
+        <item>noodles</item>
+        <item>eggs</item>
+        <item>cheese</item>
+        <item>milk</item>
+        <item>sauce</item>
+        <item>spices</item>
+        <item>herbs</item>
+        <item>lemon</item>
+        <item>roast</item>
+        <item>fry</item>
+        <item>boil</item>
+        <item>stir-fry</item>
+        <item>sauté</item>
+        <item>bake</item>
+        <item>marinate</item>
+        <item>grill</item>
+        <item>glaze</item>
+        <item>stew</item>
+        <item>poach</item>
+        <item>toast</item>
+        <item>flambé</item>
     </string-array>
 
 </resources>

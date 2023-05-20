@@ -3,9 +3,9 @@
 
     <item
         android:id="@+id/iCamera"
-        android:title="From Camera"/>
+        android:title="@string/from_camera"/>
     <item
         android:id="@+id/iGallery"
-        android:title="From Gallery"/>
+        android:title="@string/from_gallery"/>
 
 </menu>

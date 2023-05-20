@@ -50,8 +50,7 @@
                 android:layout_marginHorizontal="15dp"
                 android:singleLine="true"
                 android:textAlignment="center"
-                android:text="Recipe Name "
-                android:textSize="18sp"
+                android:textSize="17sp"
                 app:layout_constraintBottom_toTopOf="@+id/rbRating"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -84,7 +83,6 @@
                 android:layout_marginHorizontal="20dp"
                 android:singleLine="true"
                 android:textAlignment="center"
-                android:text="Name Creator"
                 android:textSize="15sp"
                 android:textStyle="italic"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -108,16 +106,16 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/textView17"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Description:"
+                    android:text="@string/label_description"
                     android:textColor="@color/maroon"
-                    android:textSize="20dp"
+                    android:textSize="20sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -135,9 +133,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Difficulty:"
+                    android:text="@string/label_difficulty"
                     android:textColor="@color/maroon"
-                    android:textSize="20dp"
+                    android:textSize="20sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvDescription" />
 
@@ -155,9 +153,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Country:"
+                    android:text="@string/label_country"
                     android:textColor="@color/maroon"
-                    android:textSize="20dp"
+                    android:textSize="20sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvDifficulty" />
 
@@ -175,9 +173,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Ingredients:"
+                    android:text="@string/label_ingredients"
                     android:textColor="@color/maroon"
-                    android:textSize="20dp"
+                    android:textSize="20sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvCountry" />
 
@@ -201,7 +199,8 @@
                     android:scaleType="centerCrop"
                     android:background="#00FFFFFF"
                     app:layout_constraintBottom_toTopOf="@+id/btnNext"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:contentDescription="@string/see_recipe" />
 
                 <ImageButton
                     android:id="@+id/btnNext"
@@ -212,7 +211,8 @@
                     android:scaleType="centerCrop"
                     android:background="#00FFFFFF"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:contentDescription="@string/next_recipe"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

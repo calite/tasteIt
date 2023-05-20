@@ -57,8 +57,6 @@ public class AdapterRecyclerCommentsRecipe extends RecyclerView.Adapter {
                                        int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
 
-                    //Toast.makeText(recyclerView.getContext(), "Distancia: " + totalDistanceScrolled, Toast.LENGTH_SHORT).show();
-
                     if(recyclerView.getScrollState() == RecyclerView.SCROLL_STATE_SETTLING) {
                         if (dy < 0) {
                             // User is scrolling up

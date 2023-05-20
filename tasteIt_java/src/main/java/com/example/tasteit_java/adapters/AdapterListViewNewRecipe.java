@@ -74,7 +74,7 @@ public class AdapterListViewNewRecipe extends BaseAdapter {
         TextView tvText = view.findViewById(R.id.tvText);
 
         tvText.setText(arrayListSteps.get(i));
-        tvTitle.setText("Step " + (i + 1) );
+        tvTitle.setText(context.getString(R.string.step) + (i + 1));
 
         tvText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,10 +114,10 @@ public class AdapterListViewNewRecipe extends BaseAdapter {
                 if(!step.trim().equals("")) {
                     arrayListSteps.set(pos, step);
                     notifyDataSetChanged();
-                    Toast.makeText(context, "Step successfully modified", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.step_succ_mod, Toast.LENGTH_SHORT).show();
                     dialog.cancel();
                 } else {
-                    Toast.makeText(context, "You must indicate a step", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.error_step, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -156,7 +156,7 @@ public class AdapterListViewNewRecipe extends BaseAdapter {
             public void onClick(View view) {
                 arrayListSteps.remove(pos);
                 notifyDataSetChanged();
-                Toast.makeText(context, "Step removed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.step_removed, Toast.LENGTH_SHORT).show();
                 dialog.cancel();
             }
         });

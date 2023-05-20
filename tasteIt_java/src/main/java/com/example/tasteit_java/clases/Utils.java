@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.example.tasteit_java.R;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -81,7 +82,7 @@ public class Utils {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(activity, Intent.createChooser(intent, "Select a Picture"), SELECT_PICTURE, null);
+        startActivityForResult(activity, Intent.createChooser(intent, activity.getString(R.string.select_picture)), SELECT_PICTURE, null);
     }
 
     public static void takePicture(Activity activity) {
@@ -103,7 +104,7 @@ public class Utils {
                     }
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
-                Toast.makeText(activity.getApplicationContext(), "Canceled", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity.getApplicationContext(), R.string.canceled, Toast.LENGTH_SHORT).show();
             }
         }
     }

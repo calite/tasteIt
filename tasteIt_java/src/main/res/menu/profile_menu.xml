@@ -3,9 +3,9 @@
 
     <item
         android:id="@+id/iEditProfile"
-        android:title="Edit Profile"/>
+        android:title="@string/edit_profile"/>
     <item
         android:id="@+id/iCloseSesion"
-        android:title="Close Session"/>
+        android:title="@string/close_session"/>
 
 </menu>

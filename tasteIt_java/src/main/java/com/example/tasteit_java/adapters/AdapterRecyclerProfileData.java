@@ -227,6 +227,7 @@ public class AdapterRecyclerProfileData extends RecyclerView.Adapter {
                     tvCreator.setText(temp.getCreator());
 
                     cgTags.setChipSpacingHorizontal(8);
+                    cgTags.setChipSpacingVertical(2);
 
                     for (String s : temp.getTags()) {
                         Chip chip = new Chip(context);
@@ -265,12 +266,12 @@ public class AdapterRecyclerProfileData extends RecyclerView.Adapter {
                     }catch(IllegalArgumentException iae){}
 
                     if (isFollow) {
-                        btnFollow.setText("UNFOLLOW");
+                        btnFollow.setText(R.string.unfollow);
                     } else if (token.equals(temp.getUid())) {
                         btnFollow.setVisibility(View.INVISIBLE);
                         btnFollow.setEnabled(false);
                     } else {
-                        btnFollow.setText("FOLLOW");
+                        btnFollow.setText(R.string.follow);
                     }
 
                     btnFollow.setOnClickListener(new View.OnClickListener() {
@@ -287,7 +288,7 @@ public class AdapterRecyclerProfileData extends RecyclerView.Adapter {
                                     } else {
                                         // Handle the error
                                         Log.e("API_ERROR", "Response error: " + response.code() + " " + response.message());
-                                        Toast.makeText(context, "bad!", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(context, R.string.something_wrong, Toast.LENGTH_SHORT).show();
 
                                     }
                                 }
@@ -295,7 +296,7 @@ public class AdapterRecyclerProfileData extends RecyclerView.Adapter {
                                 @Override
                                 public void onFailure(Call<Void> call, Throwable t) {
                                     // Handle the error
-                                    Toast.makeText(context, "bad!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, R.string.something_wrong, Toast.LENGTH_SHORT).show();
                                 }
                             });
                         }

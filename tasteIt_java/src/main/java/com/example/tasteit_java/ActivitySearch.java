@@ -102,7 +102,7 @@ public class ActivitySearch extends AppCompatActivity {
 
         //menu superior
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Search");
+        getSupportActionBar().setTitle(R.string.search);
     }
 
     private void initializeViews() {

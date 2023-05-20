@@ -84,7 +84,7 @@ public class ActivityEditProfile extends AppCompatActivity {
 
         //Menu superior
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Edit Profile");
+        getSupportActionBar().setTitle(R.string.edit_profile);
     }
 
     //Metodo para instanciar los elementos de la UI
@@ -152,11 +152,10 @@ public class ActivityEditProfile extends AppCompatActivity {
                 String newPassword = etNewPassword.getText().toString();
                 String ConfPass = etConfirmPassword.getText().toString();
 
-                if (newPassword.length() >= 8 && newPassword.equals(ConfPass) && oldPassword.length() > 0 && newFilePath != null) {
+                if (newPassword.length() >= 6 && newPassword.equals(ConfPass) && oldPassword.length() > 0 && newFilePath != null) {
                     changePassword(oldPassword, newPassword);
-                    Toast.makeText(ActivityEditProfile.this, "Updateo password", Toast.LENGTH_SHORT).show();
                     uploadImage(newFilePath);
-                } else if (newPassword.length() >= 8 && newPassword.equals(ConfPass) && oldPassword.length() > 0 && newFilePath == null) {
+                } else if (newPassword.length() >= 6 && newPassword.equals(ConfPass) && oldPassword.length() > 0 && newFilePath == null) {
                     changePassword(oldPassword, newPassword);
                     saveDataUser(null);
                 } else if (oldPassword.length() == 0 && newFilePath != null) {
@@ -164,7 +163,7 @@ public class ActivityEditProfile extends AppCompatActivity {
                 } else if (oldPassword.length() == 0 && newFilePath == null) {
                     saveDataUser(null);
                 } else {
-                    Toast.makeText(getApplicationContext(), "Password must match and be equal or longer than 8 characters", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.pass_match_error, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -224,14 +223,14 @@ public class ActivityEditProfile extends AppCompatActivity {
                         @Override
                         public void onComplete(Task<Void> task) {
                             if (!task.isSuccessful()) {
-                                Toast.makeText(ActivityEditProfile.this, "Something went wrong. Please try again later", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ActivityEditProfile.this, R.string.something_wrong, Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(ActivityEditProfile.this, "Data and password successfully modified", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ActivityEditProfile.this, R.string.data_saved_succ, Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
                 } else {
-                    Toast.makeText(ActivityEditProfile.this, "Authentication Failed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityEditProfile.this, R.string.auth_failed, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -374,7 +373,6 @@ public class ActivityEditProfile extends AppCompatActivity {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(ActivityEditProfile.this, "All saved!", Toast.LENGTH_SHORT).show();
                     if (newFilePath != null && lastFileUrl != null) {
                         final StorageReference storageReference = FirebaseStorage.getInstance().getReference().getStorage().getReferenceFromUrl(user.getImgProfile());
                         storageReference.delete();
@@ -389,14 +387,14 @@ public class ActivityEditProfile extends AppCompatActivity {
                 } else {
                     // Handle the error
                     Log.e("API_ERROR", "Response error: " + response.code() + " " + response.message());
-                    Toast.makeText(ActivityEditProfile.this, "bad!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityEditProfile.this, R.string.something_wrong, Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
                 // Handle the error
-                Toast.makeText(ActivityEditProfile.this, "bad!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityEditProfile.this, R.string.something_wrong, Toast.LENGTH_SHORT).show();
             }
         });
 

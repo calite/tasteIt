@@ -120,7 +120,7 @@ public class FragmentSearch extends Fragment {
             @Override
             public void onLoadMore() {
                 if(allItemsLoaded) { //habra que ponerle un limite (que en principio puede ser el total de recipes en la bbdd o algo fijo para no sobrecargar el terminal)
-                    Toast.makeText(getContext(), "Finiquitao con " + adapter.getItemCount() + " recetas", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(), "Finiquitao con " + adapter.getItemCount() + " recetas", Toast.LENGTH_SHORT).show();
                 } else {
                     adapter.dataList.add(null);
                     adapter.notifyItemInserted(adapter.getItemCount() - 1);
@@ -290,12 +290,12 @@ public class FragmentSearch extends Fragment {
             }
         }
 
-        Collections.sort(recipes);
         for (Recipe rec : recipes) {
             if(!dataListAux.contains(rec)) {
                 dataListAux.add(rec);
             }
         }
+
         changeDataType(dataView);
     }
 
@@ -309,7 +309,6 @@ public class FragmentSearch extends Fragment {
         }
 
         dataListAux.addAll(users);
-        Collections.shuffle(dataListAux);
         changeDataType(dataView);
     }
 }

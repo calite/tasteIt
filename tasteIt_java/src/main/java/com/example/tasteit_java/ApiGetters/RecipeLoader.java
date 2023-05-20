@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.tasteit_java.ApiService.ApiRequests;
 import com.example.tasteit_java.ApiService.RecipeApiComment;
 import com.example.tasteit_java.ApiService.RecipeId_Recipe_User;
+import com.example.tasteit_java.R;
 import com.example.tasteit_java.clases.Comment;
 import com.example.tasteit_java.clases.Recipe;
 import com.example.tasteit_java.clases.User;
@@ -125,7 +126,7 @@ public class RecipeLoader {
             @Override
             public void onFailure(Call<List<RecipeId_Recipe_User>> call, Throwable t) {
                 // Hubo un error en la solicitud
-                Toast.makeText(context, "Failed to load data", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.error_load_data, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -170,7 +171,7 @@ public class RecipeLoader {
             @Override
             public void onFailure(Call<List<RecipeId_Recipe_User>> call, Throwable t) {
                 // Hubo un error en la solicitud
-                Toast.makeText(context, "Failed to load data", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.error_load_data, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -215,7 +216,7 @@ public class RecipeLoader {
             @Override
             public void onFailure(Call<List<RecipeId_Recipe_User>> call, Throwable t) {
                 // Hubo un error en la solicitud
-                Toast.makeText(context, "Failed to load data", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.error_load_data, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -260,7 +261,7 @@ public class RecipeLoader {
             @Override
             public void onFailure(Call<List<RecipeId_Recipe_User>> call, Throwable t) {
                 // Hubo un error en la solicitud
-                Toast.makeText(context, "Failed to load data", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.error_load_data, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -298,7 +299,7 @@ public class RecipeLoader {
 
             @Override
             public void onFailure(Call<List<RecipeId_Recipe_User>> call, Throwable t) {
-                Toast.makeText(context, "Something went wrong - " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.something_wrong + " " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -373,7 +374,7 @@ public class RecipeLoader {
             @Override
             public void onFailure(Call<Boolean> call, Throwable t) {
                 // Hubo un error en la solicitud
-                Toast.makeText(context, "Failed to load data: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.error_load_data + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -414,7 +415,7 @@ public class RecipeLoader {
             @Override
             public void onFailure(Call<List<RecipeApiComment>> call, Throwable t) {
                 // Hubo un error en la solicitud
-                Toast.makeText(context, "Failed to load data: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.error_load_data + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -459,7 +460,7 @@ public class RecipeLoader {
             @Override
             public void onFailure(Call<List<RecipeId_Recipe_User>> call, Throwable t) {
                 // Hubo un error en la solicitud
-                Toast.makeText(context, "Failed to load data", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.error_load_data, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -504,7 +505,7 @@ public class RecipeLoader {
             @Override
             public void onFailure(Call<List<RecipeId_Recipe_User>> call, Throwable t) {
                 // Hubo un error en la solicitud
-                Toast.makeText(context, "Failed to load data", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.error_load_data, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -549,7 +550,7 @@ public class RecipeLoader {
             @Override
             public void onFailure(Call<List<RecipeId_Recipe_User>> call, Throwable t) {
                 // Hubo un error en la solicitud
-                Toast.makeText(context, "Failed to load data", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.error_load_data, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -594,7 +595,7 @@ public class RecipeLoader {
             @Override
             public void onFailure(Call<List<RecipeId_Recipe_User>> call, Throwable t) {
                 // Hubo un error en la solicitud
-                Toast.makeText(context, "Failed to load data", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.error_load_data, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -636,7 +637,7 @@ public class RecipeLoader {
 
             @Override
             public void onFailure(Call<List<RecipeId_Recipe_User>> call, Throwable t) {
-                Toast.makeText(context, "Something went wrong - " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.something_wrong + " " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -659,7 +660,7 @@ public class RecipeLoader {
 
             @Override
             public void onFailure(Call<List<Integer>> call, Throwable t) {
-                Toast.makeText(context, "Something went wrong - " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.something_wrong + " " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

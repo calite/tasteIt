@@ -51,7 +51,7 @@ public class ActivityProfileData extends AppCompatActivity {
             uidProfile = getIntent().getExtras().getString("uid");
             dataType = getIntent().getExtras().getInt("dataType");
         } else {
-            Toast.makeText(this, "Error al cargar los datos, volviendo atrás ...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_SHORT).show();
             finish();
         }
 
@@ -68,7 +68,7 @@ public class ActivityProfileData extends AppCompatActivity {
             @Override
             public void onLoadMore() {
                 if(allItemsLoaded) { //habra que ponerle un limite (que en principio puede ser el total de recipes en la bbdd o algo fijo para no sobrecargar el terminal)
-                    Toast.makeText(ActivityProfileData.this, "Finiquitao con " + adapter.getItemCount() + " items", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(ActivityProfileData.this, "Finiquitao con " + adapter.getItemCount() + " items", Toast.LENGTH_SHORT).show();
                 } else {
                     adapter.dataList.add(null);
                     adapter.notifyItemInserted(adapter.getItemCount() - 1);
@@ -116,22 +116,22 @@ public class ActivityProfileData extends AppCompatActivity {
     private void retrieveData() {
         switch (dataType) {
             case 1: { //Recipes
-                getSupportActionBar().setTitle("Recipes");
+                getSupportActionBar().setTitle(R.string.recipes);
                 bringUserRecipes();
                 break;
             }
             case 2: { //Followers
-                getSupportActionBar().setTitle("Followers");
+                getSupportActionBar().setTitle(R.string.followers);
                 bringUserFollowers();
                 break;
             }
             case 3: { //Following
-                getSupportActionBar().setTitle("Following");
+                getSupportActionBar().setTitle(R.string.followings);
                 bringUserFollowing();
                 break;
             }
             case 4: { //Following
-                getSupportActionBar().setTitle("Recipes Liked");
+                getSupportActionBar().setTitle(R.string.liked_recipes);
                 bringRecipesLikedByUser();
                 break;
             }

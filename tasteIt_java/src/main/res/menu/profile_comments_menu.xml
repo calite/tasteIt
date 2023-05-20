@@ -3,14 +3,14 @@
 
     <item
         android:id="@+id/iEditComment"
-        android:title="Edit"/>
+        android:title="@string/edit"/>
 
     <item
         android:id="@+id/iRemoveComment"
-        android:title="Remove"/>
+        android:title="@string/remove"/>
 
     <item
         android:id="@+id/iReportComment"
-        android:title="Report"/>
+        android:title="@string/report"/>
 
 </menu>

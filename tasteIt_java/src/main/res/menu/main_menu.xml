@@ -6,13 +6,13 @@
         <item
             android:id="@+id/iProfile"
             android:icon="@drawable/ic_default_profile"
-            android:title="Profile"
+            android:title="@string/profile"
             app:showAsAction="always" />
         <item
             android:id="@+id/iDarkMode"
-            android:title="Dark/Light Mode" />
+            android:title="@string/dark_light_mode" />
         <item
             android:id="@+id/iCloseSesion"
-            android:title="Close Session" />
+            android:title="@string/close_session" />
     </group>
 </menu>

@@ -16,12 +16,16 @@ import com.example.tasteit_java.R;
 import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class FragmentInfoNewRecipe extends Fragment {
 
     private static EditText etRecipeName;
     private static EditText etDescriptionRecipe;
     private static Spinner spCountries;
+    private static ArrayList<String> countryList;
     private static SeekBar skDificulty;
     private ChipGroup cgTags;
     private static ArrayList<String> tags = new ArrayList<>();
@@ -56,11 +60,14 @@ public class FragmentInfoNewRecipe extends Fragment {
         //seekbar
         skDificulty = view.findViewById(R.id.skDificulty);
         //spinner
+        countryList = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.countries_array)));
+        Collections.sort(countryList);
+
         spCountries = view.findViewById(R.id.spCountry);
-        ArrayAdapter<CharSequence> adapterSpinnerCountries = ArrayAdapter.createFromResource(getContext(),
-                R.array.countries_array, android.R.layout.simple_spinner_item);
+        ArrayAdapter<String> adapterSpinnerCountries = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, countryList);
         adapterSpinnerCountries.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spCountries.setAdapter(adapterSpinnerCountries);
+
         //tags
         /*
         cgTags = view.findViewById(R.id.cgTags);
@@ -112,8 +119,6 @@ public class FragmentInfoNewRecipe extends Fragment {
 
 
     public static void setCountry(String countryName) {
-        ArrayList<String> countryList = new ArrayList<>();
-        countryList.add("Spain"); countryList.add("France"); countryList.add("Italy"); countryList.add("Portugal"); countryList.add("Greece"); countryList.add("Germany"); countryList.add("Turkey"); countryList.add("England");
         spCountries.setSelection(countryList.indexOf(countryName));
     }
 

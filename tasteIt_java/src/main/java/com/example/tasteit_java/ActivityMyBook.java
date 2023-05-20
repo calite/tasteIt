@@ -46,7 +46,7 @@ public class ActivityMyBook extends AppCompatActivity {
         initializeViews();
 
         //menu superior
-        getSupportActionBar().setTitle("My Book");
+        getSupportActionBar().setTitle(R.string.my_book);
     }
 
     private void initializeViews() {

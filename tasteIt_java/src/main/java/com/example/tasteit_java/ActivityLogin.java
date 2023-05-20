@@ -193,7 +193,7 @@ public class ActivityLogin extends AppCompatActivity {
         password = etPassword.getText().toString();
         confirmPassword = etConfirmPassword.getText().toString();
         //HAY QUE COMPROBAR LA CLASE VALIDATE EMAIL CON SU METODO
-        if ( password.length() < 8 || !Utils.isEmail(email)) {
+        if ( password.length() < 6 || !Utils.isEmail(email)) {
             bLogin.setBackgroundColor(ContextCompat.getColor(this, R.color.gray));
             bLogin.setEnabled(false);
         } else {
@@ -223,7 +223,7 @@ public class ActivityLogin extends AppCompatActivity {
                                 lyTerms.setVisibility(View.VISIBLE);
                                 etConfirmPassword.setVisibility(View.VISIBLE);
                                 bShowPass2.setVisibility(View.VISIBLE);
-                                bLogin.setText("Register now!");
+                                bLogin.setText(R.string.register);
                             } else {
                                 CheckBox cbAcept = findViewById(R.id.cbAcept);
                                 if (cbAcept.isChecked()) {
@@ -256,7 +256,7 @@ public class ActivityLogin extends AppCompatActivity {
                                                     String pathImg = "android.resource://"+  getPackageName() + "/" + R.drawable.defaultpp;
                                                     uploadImage(Uri.parse(pathImg));
                                                 } else {
-                                                    Toast.makeText(ActivityLogin.this, "You must choose a valid username", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(ActivityLogin.this, R.string.username_error, Toast.LENGTH_SHORT).show();
                                                 }
                                             }
                                         });
@@ -264,11 +264,11 @@ public class ActivityLogin extends AppCompatActivity {
                                         dialog.show();
                                     } else {
                                         bLogin.setBackgroundColor(ContextCompat.getColor(ActivityLogin.this, R.color.orange));
-                                        Toast.makeText(getApplicationContext(), "Password must match and be equal or longer than 8 characters", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getApplicationContext(), R.string.pass_match_error, Toast.LENGTH_SHORT).show();
                                     }
                                 } else {
                                     bLogin.setBackgroundColor(ContextCompat.getColor(ActivityLogin.this, R.color.orange));
-                                    Toast.makeText(ActivityLogin.this, "CHECK the terms policy.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ActivityLogin.this, R.string.check_terms, Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }
@@ -289,7 +289,6 @@ public class ActivityLogin extends AppCompatActivity {
         Intent i = new Intent(this, ActivityMain.class);
 
         SharedPreferencesSaved sharedPreferences = new SharedPreferencesSaved(this);
-
         if(!sharedPreferences.getSharedPreferences().contains("accessToken") || !sharedPreferences.getSharedPreferences().getString("accessToken", "null").equals(Utils.getUserAcessToken())) {
             SharedPreferences.Editor editor = sharedPreferences.getEditer();
             editor.putString("accessToken", Utils.getUserAcessToken());
@@ -327,20 +326,19 @@ public class ActivityLogin extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<Void> call, Response<Void> response) {
                             if (response.isSuccessful()) {
-                                Toast.makeText(ActivityLogin.this, "Good!", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(ActivityLogin.this, ActivityMain.class));
                                 finish();
                             } else {
                                 // Handle the error
                                 Log.e("API_ERROR", "Response error: " + response.code() + " " + response.message());
-                                Toast.makeText(ActivityLogin.this, "bad!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ActivityLogin.this, R.string.something_wrong, Toast.LENGTH_SHORT).show();
                             }
                         }
 
                         @Override
                         public void onFailure(Call<Void> call, Throwable t) {
                             // Handle the error
-                            Toast.makeText(ActivityLogin.this, "bad!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ActivityLogin.this, R.string.something_wrong, Toast.LENGTH_SHORT).show();
                         }
                     });
 
@@ -348,7 +346,7 @@ public class ActivityLogin extends AppCompatActivity {
                     waitingForConection();
                     goHome();
                 } else
-                    Toast.makeText(ActivityLogin.this, "Something went wrong!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityLogin.this, R.string.something_wrong, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -370,18 +368,18 @@ public class ActivityLogin extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if (task.isSuccessful())
-                        Toast.makeText(ActivityLogin.this, "Email sent to $e", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ActivityLogin.this, R.string.email_sent, Toast.LENGTH_SHORT).show();
                     else
-                        Toast.makeText(ActivityLogin.this, "no user was found with that email", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ActivityLogin.this, R.string.no_user_found, Toast.LENGTH_SHORT).show();
                 }
             });
-        } else Toast.makeText(this, "please, put your email", Toast.LENGTH_SHORT).show();
+        } else Toast.makeText(this, R.string.nullemail_error, Toast.LENGTH_SHORT).show();
     }
 
     private boolean confirmPassword() {
         password = etPassword.getText().toString();
         confirmPassword = etConfirmPassword.getText().toString();
-        return password.length() >= 8 && password.equals(confirmPassword);
+        return password.length() >= 6 && password.equals(confirmPassword);
     }
 
     private Dialog setProgressDialog() {

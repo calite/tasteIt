@@ -74,7 +74,7 @@ public class FragmentIngredientsNewRecipe extends Fragment {
                     ingredients.add(etIngredientName.getText().toString());
                     etIngredientName.setText("");
                 } else {
-                    Toast.makeText(getContext(), "You must specify an ingredient", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), R.string.error_no_ingredient, Toast.LENGTH_SHORT).show();
                 }
             }
         });

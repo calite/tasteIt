@@ -6,7 +6,7 @@
         <item name="android:layout_margin">8dp</item>
     </style>
     <style name="DialogTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:windowBackground">@color/maroon</item>
+        <item name="android:windowBackground">@color/black</item>
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
         <item name="colorAccent">@color/maroon</item>
@@ -20,7 +20,7 @@
         <item name="cornerSize">10%</item>
     </style>
     <style name="TabItem">
-        <item name="android:textSize">13sp</item>
+        <item name="android:textSize">11sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:textColor">@color/black</item>

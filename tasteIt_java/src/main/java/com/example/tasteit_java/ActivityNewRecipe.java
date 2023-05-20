@@ -82,9 +82,9 @@ public class ActivityNewRecipe extends AppCompatActivity {
             creatorToken = params.getString("creatorToken");
 
             bringRecipe();
-            getSupportActionBar().setTitle("Edit Recipe");
+            getSupportActionBar().setTitle(R.string.edit_recipe);
         } else {
-            getSupportActionBar().setTitle("New Recipe");
+            getSupportActionBar().setTitle(R.string.new_recipe);
         }
 
         //menu superior
@@ -161,7 +161,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
                     if(newFilePath != null) {
                         uploadImage(newFilePath);
                     } else {
-                        Toast.makeText(ActivityNewRecipe.this, "You have to set a image", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ActivityNewRecipe.this, R.string.error_new_rec_image, Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -235,13 +235,13 @@ public class ActivityNewRecipe extends AppCompatActivity {
         EditText etRecipeName = FragmentInfoNewRecipe.getRecipeName();
         if(etRecipeName.getText().toString().length() == 0) {
             status = false;
-            etRecipeName.setError("Please enter a Recipe Name");
+            etRecipeName.setError(getString(R.string.error_new_recipe_name));
         }
         //description
         EditText etDescriptionRecipe = FragmentInfoNewRecipe.getDescriptionRecipe();
         if(etDescriptionRecipe.getText().toString().length() == 0) {
             status = false;
-            etDescriptionRecipe.setError("Please enter a Recipe Description");
+            etDescriptionRecipe.setError(getString(R.string.error_new_recipe_desc));
         }
         /*
         //tags
@@ -398,12 +398,12 @@ public class ActivityNewRecipe extends AppCompatActivity {
                 public void onResponse(Call<Void> call, Response<Void> response) {
                     if (response.isSuccessful()) {
                         //AQUI DEVOLVEMOS AL MAIN!
-                        Toast.makeText(ActivityNewRecipe.this, "Saved!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ActivityNewRecipe.this, R.string.saved, Toast.LENGTH_SHORT).show();
                         finish();
                     } else {
                         // Handle the error
                         Log.e("API_ERROR", "Response error: " + response.code() + " " + response.message());
-                        Toast.makeText(ActivityNewRecipe.this, "Something was wrong!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ActivityNewRecipe.this, R.string.something_wrong, Toast.LENGTH_SHORT).show();
 
                     }
                 }
@@ -411,7 +411,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<Void> call, Throwable t) {
                     // Handle the error
-                    Toast.makeText(ActivityNewRecipe.this, "Something was wrong!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityNewRecipe.this, R.string.something_wrong, Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -419,7 +419,6 @@ public class ActivityNewRecipe extends AppCompatActivity {
     }
 
     public void editRecipe(Uri imgUrl) {
-        Toast.makeText(this, "EDITING ...", Toast.LENGTH_SHORT).show();
         apiClient = ApiClient.getInstance(accessToken);
 
         String name = FragmentInfoNewRecipe.getRecipeName().getText().toString();
@@ -473,19 +472,19 @@ public class ActivityNewRecipe extends AppCompatActivity {
                             final StorageReference storageReference = FirebaseStorage.getInstance().getReference().getStorage().getReferenceFromUrl(recipe.getImage());
                             storageReference.delete();
                         }
-                        Toast.makeText(ActivityNewRecipe.this, "Saved!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ActivityNewRecipe.this, R.string.saved, Toast.LENGTH_SHORT).show();
                         finish();
                     } else {
                         // Handle the error
                         Log.e("API_ERROR", "Response error: " + response.code() + " " + response.message());
-                        Toast.makeText(ActivityNewRecipe.this, "bad!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ActivityNewRecipe.this, R.string.something_wrong, Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 @Override
                 public void onFailure(Call<Void> call, Throwable t) {
                     // Handle the error
-                    Toast.makeText(ActivityNewRecipe.this, "bad!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityNewRecipe.this, R.string.something_wrong, Toast.LENGTH_SHORT).show();
                 }
             });
         }

@@ -86,7 +86,7 @@ public class FragmentMyBook extends Fragment {
             @Override
             public void onLoadMore() {
                 if(allItemsLoaded) {
-                    Toast.makeText(getContext(), "Finiquitao con " + adapter.getItemCount() + " recetas", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(), "Finiquitao con " + adapter.getItemCount() + " recetas", Toast.LENGTH_SHORT).show();
                 } else {
                     adapter.dataList.add(null);
                     adapter.notifyItemInserted(adapter.getItemCount() - 1);

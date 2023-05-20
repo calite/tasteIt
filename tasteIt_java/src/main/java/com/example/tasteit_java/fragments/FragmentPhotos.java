@@ -107,7 +107,7 @@ public class FragmentPhotos extends Fragment {
             @Override
             public void onLoadMore() {
                 if(allItemsLoaded) { //habra que ponerle un limite (que en principio puede ser el total de recipes en la bbdd o algo fijo para no sobrecargar el terminal)
-                    Toast.makeText(getContext(), "Finiquitao con " + adapter.getItemCount() + " recetas", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(), "Finiquitao con " + adapter.getItemCount() + " recetas", Toast.LENGTH_SHORT).show();
                 } else {
                     adapter.dataList.add(null);
                     adapter.notifyItemInserted(adapter.getItemCount() - 1);

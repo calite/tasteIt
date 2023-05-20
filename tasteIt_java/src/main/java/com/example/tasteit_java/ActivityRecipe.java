@@ -163,13 +163,13 @@ public class ActivityRecipe extends AppCompatActivity {
                         } else {
                             // Handle the error
                             Log.e("API_ERROR", "Response error: " + response.code() + " " + response.message());
-                            Toast.makeText(ActivityRecipe.this, "bad!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ActivityRecipe.this, R.string.something_wrong, Toast.LENGTH_SHORT).show();
                         }
                     }
                     @Override
                     public void onFailure(Call<Void> call, Throwable t) {
                         // Handle the error
-                        Toast.makeText(ActivityRecipe.this, "bad!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ActivityRecipe.this, R.string.something_wrong, Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -198,6 +198,8 @@ public class ActivityRecipe extends AppCompatActivity {
                 btnSend.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        btnSend.setEnabled(false);
+                        btnSend.setText(R.string.sending);
                         //comentario en receta segun ID
                         RecipeCommentRequest recipeCommentRequest = new RecipeCommentRequest(String.valueOf(recipeId), token, String.valueOf(etComment.getText()), String.valueOf(rbRating.getRating()));
                         ApiClient apiClient = ApiClient.getInstance(accessToken);
@@ -206,7 +208,7 @@ public class ActivityRecipe extends AppCompatActivity {
                             @Override
                             public void onResponse(Call<Void> call, Response<Void> response) {
                                 if (response.isSuccessful()) {
-                                    getIsLiked();
+                                    //getIsLiked();
                                     dialog.cancel();
                                     Intent intent = getIntent();
                                     finish();
@@ -215,14 +217,18 @@ public class ActivityRecipe extends AppCompatActivity {
                                 } else {
                                     // Handle the error
                                     Log.e("API_ERROR", "Response error: " + response.code() + " " + response.message());
-                                    Toast.makeText(ActivityRecipe.this, "@string/something_wrong", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ActivityRecipe.this, R.string.something_wrong, Toast.LENGTH_SHORT).show();
+                                    btnSend.setEnabled(true);
+                                    btnSend.setText(R.string.send);
 
                                 }
                             }
                             @Override
                             public void onFailure(Call<Void> call, Throwable t) {
                                 // Handle the error
-                                Toast.makeText(ActivityRecipe.this, "bad!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ActivityRecipe.this, R.string.something_wrong, Toast.LENGTH_SHORT).show();
+                                btnSend.setEnabled(true);
+                                btnSend.setText(R.string.send);
                             }
                         });
                     }
@@ -278,7 +284,7 @@ public class ActivityRecipe extends AppCompatActivity {
                 EditText etCommentReport = report.findViewById(R.id.etCommentReport);
                 AlertDialog.Builder builderReport = new AlertDialog.Builder(ActivityRecipe.this);
                 builderReport.setView(report);
-                builderReport.setPositiveButton("Send!", new DialogInterface.OnClickListener() {
+                builderReport.setPositiveButton(R.string.send, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         //report receta segun ID
@@ -293,18 +299,18 @@ public class ActivityRecipe extends AppCompatActivity {
                                 } else {
                                     // Handle the error
                                     Log.e("API_ERROR", "Response error: " + response.code() + " " + response.message());
-                                    Toast.makeText(ActivityRecipe.this, "bad!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ActivityRecipe.this, R.string.something_wrong, Toast.LENGTH_SHORT).show();
                                 }
                             }
                             @Override
                             public void onFailure(Call<Void> call, Throwable t) {
                                 // Handle the error
-                                Toast.makeText(ActivityRecipe.this, "bad!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ActivityRecipe.this, R.string.something_wrong, Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
                 });
-                builderReport.setNegativeButton("Cancel", null);
+                builderReport.setNegativeButton(R.string.cancel, null);
                 builderReport.create().show();
                 return true;
             case R.id.iEditRecipe:
@@ -321,15 +327,15 @@ public class ActivityRecipe extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
                         if (response.isSuccessful()) {
-                            Toast.makeText(ActivityRecipe.this, "@strings/info_deleted", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ActivityRecipe.this, R.string.info_deleted, Toast.LENGTH_SHORT).show();
                         } else {
                             Log.e("API_ERROR", "Response error: " + response.code() + " " + response.message());
-                            Toast.makeText(ActivityRecipe.this, "@strings/something_wrong", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ActivityRecipe.this, R.string.something_wrong, Toast.LENGTH_SHORT).show();
                         }
                     }
                     @Override
                     public void onFailure(Call<Void> call, Throwable t) {
-                        Toast.makeText(ActivityRecipe.this, "@strings/something_wrong", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ActivityRecipe.this, R.string.something_wrong, Toast.LENGTH_SHORT).show();
                     }
                 });
                 finish();

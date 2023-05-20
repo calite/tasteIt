@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.tasteit_java.ApiService.ApiRequests;
 import com.example.tasteit_java.ApiService.UserApi;
 import com.example.tasteit_java.ApiService.UserCommentApi;
+import com.example.tasteit_java.R;
 import com.example.tasteit_java.clases.Comment;
 import com.example.tasteit_java.clases.User;
 
@@ -77,7 +78,7 @@ public class UserLoader {
             @Override
             public void onFailure(Call<List<Integer>> call, Throwable t) {
                 // Hubo un error en la solicitud
-                Toast.makeText(context, "Failed to load data: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.error_load_data + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
         apiRequests.getCountFollowers(sender_token).enqueue(new Callback<List<Integer>>() {
@@ -87,7 +88,6 @@ public class UserLoader {
                     Integer counter = response.body().get(0);
                     temp.put("followers", counter);
                 } else {
-                    Toast.makeText(context, "Primer error", Toast.LENGTH_SHORT).show();
                     // La solicitud no fue exitosa
                 }
             }
@@ -95,7 +95,7 @@ public class UserLoader {
             @Override
             public void onFailure(Call<List<Integer>> call, Throwable t) {
                 // Hubo un error en la solicitud
-                Toast.makeText(context, "Failed to load data: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.error_load_data + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
         apiRequests.getCountFollowing(sender_token).enqueue(new Callback<List<Integer>>() {
@@ -105,7 +105,6 @@ public class UserLoader {
                     Integer counter = response.body().get(0);
                     temp.put("following", counter);
                 } else {
-                    Toast.makeText(context, "Primer error", Toast.LENGTH_SHORT).show();
                     // La solicitud no fue exitosa
                 }
             }
@@ -113,7 +112,7 @@ public class UserLoader {
             @Override
             public void onFailure(Call<List<Integer>> call, Throwable t) {
                 // Hubo un error en la solicitud
-                Toast.makeText(context, "Failed to load data: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.error_load_data + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
         apiRequests.getCountRecipesLiked(sender_token).enqueue(new Callback<List<Integer>>() {
@@ -123,14 +122,13 @@ public class UserLoader {
                     Integer counter = response.body().get(0);
                     temp.put("liked", counter);
                 } else {
-                    Toast.makeText(context, "Primer error", Toast.LENGTH_SHORT).show();
                     // La solicitud no fue exitosa
                 }
             }
             @Override
             public void onFailure(Call<List<Integer>> call, Throwable t) {
                 // Hubo un error en la solicitud
-                Toast.makeText(context, "Failed to load data: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.error_load_data + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
         apiRequests.getUserByToken(sender_token).enqueue(new Callback<UserApi>() {
@@ -147,7 +145,6 @@ public class UserLoader {
                     temp.put("user", user);
                     userProfileLiveData.postValue(temp);
                 } else {
-                    Toast.makeText(context, "Primer error", Toast.LENGTH_SHORT).show();
                     // La solicitud no fue exitosa
                 }
             }
@@ -155,7 +152,7 @@ public class UserLoader {
             @Override
             public void onFailure(Call<UserApi> call, Throwable t) {
                 // Hubo un error en la solicitud
-                Toast.makeText(context, "Failed to load data: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.error_load_data + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -173,7 +170,6 @@ public class UserLoader {
                     Boolean bool = response.body();
                     isFollowLiveData.postValue(bool);
                 } else {
-                    Toast.makeText(context, "Primer error", Toast.LENGTH_SHORT).show();
                     // La solicitud no fue exitosa
                 }
             }
@@ -181,7 +177,7 @@ public class UserLoader {
             @Override
             public void onFailure(Call<Boolean> call, Throwable t) {
                 // Hubo un error en la solicitud
-                Toast.makeText(context, "Failed to load data: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.error_load_data + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -209,7 +205,6 @@ public class UserLoader {
 
                     userCommentsLiveData.postValue(comments);
                 } else {
-                    Toast.makeText(context, "Primer error comentarios", Toast.LENGTH_SHORT).show();
                     // La solicitud no fue exitosa
                 }
             }
@@ -217,7 +212,7 @@ public class UserLoader {
             @Override
             public void onFailure(Call<List<UserCommentApi>> call, Throwable t) {
                 // Hubo un error en la solicitud
-                Toast.makeText(context, "Failed to load data: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.error_load_data + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -253,7 +248,7 @@ public class UserLoader {
             @Override
             public void onFailure(Call<List<UserApi>> call, Throwable t) {
                 // Hubo un error en la solicitud
-                Toast.makeText(context, "Failed to load data", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.error_load_data, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -289,7 +284,7 @@ public class UserLoader {
             @Override
             public void onFailure(Call<List<UserApi>> call, Throwable t) {
                 // Hubo un error en la solicitud
-                Toast.makeText(context, "Failed to load data", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.error_load_data, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -325,7 +320,7 @@ public class UserLoader {
             @Override
             public void onFailure(Call<List<UserApi>> call, Throwable t) {
                 // Hubo un error en la solicitud
-                Toast.makeText(context, "Failed to load data: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.error_load_data + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -355,7 +350,7 @@ public class UserLoader {
             @Override
             public void onFailure(Call<UserApi> call, Throwable t) {
                 // Hubo un error en la solicitud
-                Toast.makeText(context, "Failed to load data: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.error_load_data + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -64,7 +64,7 @@ public class FragmentStepsNewRecipe extends Fragment {
                     adapter.notifyDataSetChanged();
                     etStep.setText("");
                 } else {
-                    Toast.makeText(getContext(), "You must indicate a step", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), R.string.error_step, Toast.LENGTH_SHORT).show();
                 }
             }
         });

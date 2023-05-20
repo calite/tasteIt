@@ -89,7 +89,7 @@ public class FragmentRandom extends Fragment {
             tvRecipeName.setText(recipe.getName());
             tvNameCreator.setText(recipe.getCreator());
             tvDescription.setText(recipe.getDescription());
-            tvDifficulty.setText(recipe.getDescription());
+            tvDifficulty.setText(recipe.getDifficulty());
             tvCountry.setText(recipe.getCountry());
             rbRating.setRating(recipe.getRating());
 

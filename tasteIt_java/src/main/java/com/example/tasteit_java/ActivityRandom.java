@@ -53,7 +53,7 @@ public class ActivityRandom extends AppCompatActivity {
         fcMainMenu.setSelectedItemId(R.id.bRandom);
         fcMainMenu.setOnItemSelectedListener(new OnItemNavSelectedListener(this));
 
-        getSupportActionBar().setTitle("Random");
+        getSupportActionBar().setTitle(R.string.random);
         btnShuffle = findViewById(R.id.btnShuffle);
         vpRandom = findViewById(R.id.vpRandom);
         vpRandom.setVisibility(View.INVISIBLE);

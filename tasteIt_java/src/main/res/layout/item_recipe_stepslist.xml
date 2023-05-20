@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -16,8 +17,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:textStyle="italic"
-            android:text="Step one"/>
+            android:textStyle="italic"/>
 
         <ImageButton
             android:id="@+id/btnDelete"
@@ -30,17 +30,26 @@
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tvText"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:backgroundTint="@color/maroon"
-        android:textColor="@color/black"
-        android:inputType="textMultiLine"
-        android:textSize="16sp"
-        android:text="Step oneeeeeeee"
-        android:maxLength="255"
-        android:maxLines="4"
-        android:scrollbars="vertical"/>
+        card_view:cardCornerRadius="5dp"
+        card_view:cardElevation="4dp"
+        card_view:cardBackgroundColor="#F3C2C2"
+        card_view:cardUseCompatPadding="true">
+
+        <TextView
+            android:id="@+id/tvText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:backgroundTint="@color/maroon"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:maxLength="255"
+            android:maxLines="4"
+            android:scrollbars="vertical"
+            android:padding="5dp"/>
+
+    </androidx.cardview.widget.CardView>
 
 </LinearLayout>

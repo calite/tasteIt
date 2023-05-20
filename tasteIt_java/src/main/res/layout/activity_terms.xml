@@ -7,11 +7,6 @@
     tools:context=".ActivityTerms"
     android:orientation="vertical">
 
-    <Toolbar
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
-
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -21,8 +16,7 @@
         android:layout_marginTop="20dp"
         android:layout_margin="8dp"
         android:textColor="@color/white"
-        android:background="@color/gray"
-        />
+        android:background="@color/gray"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -50,7 +44,5 @@
         android:justificationMode="inter_word"
         android:layout_marginTop="20dp"
         android:layout_margin="8dp" />
-
-
 
 </LinearLayout>

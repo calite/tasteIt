@@ -93,7 +93,7 @@ public class ActivityProfile extends AppCompatActivity {
 
         //menu superior
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Profile");
+        getSupportActionBar().setTitle(R.string.profile);
     }
 
     //Metodo para instanciar los elementos de la UI
@@ -175,14 +175,14 @@ public class ActivityProfile extends AppCompatActivity {
                         } else {
                             // Handle the error
                             Log.e("API_ERROR", "Response error: " + response.code() + " " + response.message());
-                            Toast.makeText(ActivityProfile.this, "bad!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ActivityProfile.this, R.string.something_wrong, Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<Void> call, Throwable t) {
                         // Handle the error
-                        Toast.makeText(ActivityProfile.this, "bad!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ActivityProfile.this, R.string.something_wrong, Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -218,6 +218,9 @@ public class ActivityProfile extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         if (!String.valueOf(etComment.getText()).trim().equals("")) {
+                            btnSend.setEnabled(false);
+                            btnSend.setText(R.string.sending);
+
                             UserCommentRequest userCommentRequest = new UserCommentRequest(Utils.getUserToken(), uid, String.valueOf(etComment.getText()));
                             ApiClient apiClient = ApiClient.getInstance(accessToken);
                             Call<Void> call = apiClient.getService().commentUser(userCommentRequest);
@@ -225,7 +228,7 @@ public class ActivityProfile extends AppCompatActivity {
                                 @Override
                                 public void onResponse(Call<Void> call, Response<Void> response) {
                                     if (response.isSuccessful()) {
-                                        getIsFollowing(Utils.getUserToken(), uid);
+                                        //getIsFollowing(Utils.getUserToken(), uid);
                                         dialog.cancel();
                                         Intent intent = getIntent();
                                         finish();
@@ -234,18 +237,22 @@ public class ActivityProfile extends AppCompatActivity {
                                     } else {
                                         // Handle the error
                                         Log.e("API_ERROR", "Response error: " + response.code() + " " + response.message());
-                                        Toast.makeText(ActivityProfile.this, "bad!", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(ActivityProfile.this, R.string.something_wrong, Toast.LENGTH_SHORT).show();
+                                        btnSend.setEnabled(true);
+                                        btnSend.setText(R.string.send);
                                     }
                                 }
 
                                 @Override
                                 public void onFailure(Call<Void> call, Throwable t) {
                                     // Handle the error
-                                    Toast.makeText(ActivityProfile.this, "bad!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ActivityProfile.this, R.string.something_wrong, Toast.LENGTH_SHORT).show();
+                                    btnSend.setEnabled(true);
+                                    btnSend.setText(R.string.send);
                                 }
                             });
                         } else {
-                            Toast.makeText(ActivityProfile.this, "You must write a comment to continue!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ActivityProfile.this, R.string.write_a_comment, Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -307,11 +314,7 @@ public class ActivityProfile extends AppCompatActivity {
         fcMainMenu.setSelectedItemId(R.id.bHome);
         fcMainMenu.setOnItemSelectedListener(new OnItemNavSelectedListener(this));
 
-        if (myProfile) {
-            menu.getItem(0).setVisible(true);
-        } else {
-            menu.getItem(0).setVisible(false);
-        }
+        menu.getItem(0).setVisible(myProfile);
 
         menu.getItem(1).setVisible(false); //Peta el signout
         return true;
@@ -425,9 +428,9 @@ public class ActivityProfile extends AppCompatActivity {
         bringUser();
 
         if (isFollow) {
-            btnFollow.setText("UNFOLLOW");
+            btnFollow.setText(R.string.unfollow);
         } else {
-            btnFollow.setText("FOLLOW");
+            btnFollow.setText(R.string.follow);
         }
     }
 }

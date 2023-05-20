@@ -15,7 +15,7 @@
         android:justificationMode="inter_word"
         android:padding="5dp"
         android:textAlignment="inherit"
-        android:textSize="17dp"
+        android:textSize="17sp"
         android:textColor="@color/black"
         tools:ignore="TextSizeCheck" />
 

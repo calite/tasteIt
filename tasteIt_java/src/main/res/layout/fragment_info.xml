@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="Recipe Name: *"
+            android:text="@string/label_recipe_name"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -27,7 +27,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/comfortaa_light"
-            android:hint="Recipe Name"
+            android:hint="@string/recipe_name"
             android:singleLine="true"
             android:inputType="text"
             app:backgroundTint="@color/maroon"
@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:fontFamily="@font/comfortaa_bold"
-            android:text="Description: *"
+            android:text="@string/label_description"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/etRecipeName" />
 
@@ -50,7 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/comfortaa_light"
-            android:hint="Recipe Description"
+            android:hint="@string/recipe_description"
             android:inputType="textMultiLine"
             android:scrollbars="vertical"
             android:maxLength="200"
@@ -63,7 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="Level: "
+            android:text="@string/label_level"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/etDescripcionRecipe" />
 
@@ -82,7 +82,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="Country:"
+            android:text="@string/label_country"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
