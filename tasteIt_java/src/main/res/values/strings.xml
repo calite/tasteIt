@@ -130,7 +130,7 @@
     <string name="error_new_recipe_desc">Please enter a Recipe Description</string>
     <string name="saved">Saved!</string>
     <string name="liked_recipes">Recipes Liked</string>
-    <string name="step">\"Step \"</string>
+    <string name="step">Step</string>
     <string name="step_succ_mod">Step successfully modified</string>
     <string name="error_step">You must indicate a step</string>
     <string name="step_removed">Step removed</string>

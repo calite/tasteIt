@@ -178,7 +178,6 @@
                     android:text="@string/ask_change_pass"
                     android:textAlignment="textEnd"
                     android:textColor="@color/maroon"
-                    android:textStyle="italic"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/etEmail" />
