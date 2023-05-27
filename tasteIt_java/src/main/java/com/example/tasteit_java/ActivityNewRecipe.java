@@ -156,10 +156,15 @@ public class ActivityNewRecipe extends AppCompatActivity {
                 if(editing){
                     if(newFilePath != null) {
                         uploadImage(newFilePath);
-                        editRecipe(newFilePath);
+                        editRecipe(null);
                         Intent i = new Intent(view.getContext(), ActivityRecipe.class);
                         i.putExtra("creatorToken", creatorToken);
                         i.putExtra("recipeId", recipeId);
+                        try {
+                            Thread.sleep(1500);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
                         view.getContext().startActivity(i);
                     } else {
                         editRecipe(null);
