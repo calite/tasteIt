@@ -98,6 +98,7 @@ public class Utils {
                         //creamos imagen
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(activity.getApplicationContext().getContentResolver(), data.getData());
                         //cambiamos imagen del perfil
+                        if(bitmap != null)
                         ivRecipePhoto.setImageBitmap(bitmap);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -105,6 +106,7 @@ public class Utils {
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 Toast.makeText(activity.getApplicationContext(), R.string.canceled, Toast.LENGTH_SHORT).show();
+
             }
         }
     }

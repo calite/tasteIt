@@ -293,30 +293,35 @@ public class ActivityNewRecipe extends AppCompatActivity {
             Utils.onActivityResult(this, requestCode, resultCode, data, ivRecipePhoto);
         }
         if(requestCode == 202) {
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
-            ivRecipePhoto.setImageBitmap(photo);
-            File f = new File(getCacheDir(), UUID.randomUUID().toString());
-            try {
-                f.createNewFile();
-            }catch(Exception e){
-                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-
-            //Convert bitmap to byte array
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            photo.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
-            byte[] bitmapdata = bos.toByteArray();
-
-            //write the bytes in file
             try{
-                FileOutputStream fos = new FileOutputStream(f);
-                fos.write(bitmapdata);
-                fos.flush();
-                fos.close();
-            }catch(Exception e){
-                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                Bitmap photo = (Bitmap) data.getExtras().get("data");
+                ivRecipePhoto.setImageBitmap(photo);
+                File f = new File(getCacheDir(), UUID.randomUUID().toString());
+                try {
+                    f.createNewFile();
+                }catch(Exception e){
+                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+
+                //Convert bitmap to byte array
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                photo.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
+                byte[] bitmapdata = bos.toByteArray();
+
+                //write the bytes in file
+                try{
+                    FileOutputStream fos = new FileOutputStream(f);
+                    fos.write(bitmapdata);
+                    fos.flush();
+                    fos.close();
+                }catch(Exception e){
+                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+                newFilePath = Uri.fromFile(f);
+            }catch (RuntimeException re){
+                Toast.makeText(this, "Photo not updated", Toast.LENGTH_SHORT).show();
             }
-            newFilePath = Uri.fromFile(f);
+
         }
     }
 
