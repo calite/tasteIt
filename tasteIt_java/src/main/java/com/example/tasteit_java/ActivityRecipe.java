@@ -401,4 +401,10 @@ public class ActivityRecipe extends AppCompatActivity {
             bLike.setRotationX(0);
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        Intent i = new Intent(this.getApplicationContext(), ActivityMain.class);
+        startActivity(i);
+    }
 }

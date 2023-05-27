@@ -45,6 +45,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -154,8 +156,17 @@ public class ActivityNewRecipe extends AppCompatActivity {
                 if(editing){
                     if(newFilePath != null) {
                         uploadImage(newFilePath);
+                        editRecipe(newFilePath);
+                        Intent i = new Intent(view.getContext(), ActivityRecipe.class);
+                        i.putExtra("creatorToken", creatorToken);
+                        i.putExtra("recipeId", recipeId);
+                        view.getContext().startActivity(i);
                     } else {
                         editRecipe(null);
+                        Intent i = new Intent(view.getContext(), ActivityRecipe.class);
+                        i.putExtra("creatorToken", creatorToken);
+                        i.putExtra("recipeId", recipeId);
+                        view.getContext().startActivity(i);
                     }
                 } else{
                     if(newFilePath != null) {
@@ -474,8 +485,12 @@ public class ActivityNewRecipe extends AppCompatActivity {
                 public void onResponse(Call<Void> call, Response<Void> response) {
                     if (response.isSuccessful()) {
                         if (!lastFileUrl.equals("")) {
-                            final StorageReference storageReference = FirebaseStorage.getInstance().getReference().getStorage().getReferenceFromUrl(recipe.getImage());
-                            storageReference.delete();
+                            try{
+                                final StorageReference storageReference = FirebaseStorage.getInstance().getReference().getStorage().getReferenceFromUrl(recipe.getImage());
+                                storageReference.delete();
+                            }catch (IllegalArgumentException iae){
+                                Logger.getGlobal().log(Level.WARNING, "Firestorage didn't like the photo");}
+
                         }
                         Toast.makeText(ActivityNewRecipe.this, R.string.saved, Toast.LENGTH_SHORT).show();
                         finish();
@@ -538,6 +553,12 @@ public class ActivityNewRecipe extends AppCompatActivity {
         FragmentStepsNewRecipe.getSteps().clear();
         FragmentIngredientsNewRecipe.getIngredients().clear();
         FragmentInfoNewRecipe.getTags().clear();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent i = new Intent(this.getApplicationContext(), ActivityMain.class);
+        startActivity(i);
     }
 
 }
