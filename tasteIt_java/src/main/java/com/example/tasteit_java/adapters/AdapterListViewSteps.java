@@ -55,8 +55,8 @@ public class AdapterListViewSteps extends BaseAdapter {
         TextView tvText = view.findViewById(R.id.tvText);
 
         tvText.setText(arrayListSteps.get(i));
-        tvTitle.setText(R.string.step + (i + 1) );
-
+        tvTitle.setText(R.string.step);
+        tvTitle.setText(tvTitle.getText().toString()+" "+(i + 1) );
         return view;
     }
 
