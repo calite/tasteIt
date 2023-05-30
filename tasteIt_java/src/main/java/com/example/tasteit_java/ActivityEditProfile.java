@@ -263,35 +263,38 @@ public class ActivityEditProfile extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 101) {
-            newFilePath = data.getData();
-            Utils.onActivityResult(this, requestCode, resultCode, data, ivProfilePhoto);
-        }
-        if(requestCode == 202) {
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
-            ivProfilePhoto.setImageBitmap(photo);
-            File f = new File(getCacheDir(), UUID.randomUUID().toString());
-            try {
-                f.createNewFile();
-            }catch(Exception e){
-                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        if (requestCode == 101 && resultCode == -1) {
+            if (data.getData() != null) {
+                newFilePath = data.getData();
+                Utils.onActivityResult(this, requestCode, resultCode, data, ivProfilePhoto);
             }
+        } else if(requestCode == 202 && resultCode == -1) {
+            if(data.getExtras().get("data") != null ){
+                Bitmap photo = (Bitmap) data.getExtras().get("data");
+                ivProfilePhoto.setImageBitmap(photo);
+                File f = new File(getCacheDir(), UUID.randomUUID().toString());
+                try {
+                    f.createNewFile();
+                }catch(Exception e){
+                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
 
-            //Convert bitmap to byte array
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            photo.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
-            byte[] bitmapdata = bos.toByteArray();
+                //Convert bitmap to byte array
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                photo.compress(Bitmap.CompressFormat.PNG, 0, bos);
+                byte[] bitmapdata = bos.toByteArray();
 
-            //write the bytes in file
-            try{
-                FileOutputStream fos = new FileOutputStream(f);
-                fos.write(bitmapdata);
-                fos.flush();
-                fos.close();
-            }catch(Exception e){
-                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                //write the bytes in file
+                try{
+                    FileOutputStream fos = new FileOutputStream(f);
+                    fos.write(bitmapdata);
+                    fos.flush();
+                    fos.close();
+                }catch(Exception e){
+                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+                newFilePath = Uri.fromFile(f);
             }
-            newFilePath = Uri.fromFile(f);
         }
     }
     //END PHOTO PICKER
@@ -379,7 +382,7 @@ public class ActivityEditProfile extends AppCompatActivity {
 
                         if(!sharedPreferences.getSharedPreferences().contains("urlImgProfile") || !sharedPreferences.getSharedPreferences().getString("urlImgProfile", "null").equals(urlImage)) {
                             SharedPreferences.Editor editor = sharedPreferences.getEditer();
-                            editor.putString("urlImgProfile", String.valueOf(urlImage));
+                            editor.putString("urlImgProfile", urlImage);
                             editor.commit();
                         }
                     }

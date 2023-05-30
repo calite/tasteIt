@@ -138,6 +138,7 @@
     <string name="select_picture">Select a Picture</string>
     <string name="canceled">Canceled</string>
     <string name="error_no_ingredient">You must specify an ingredient</string>
+    <string name="saving">Saving...</string>
 
     <!--Countries-->
     <string-array name="countries_array">

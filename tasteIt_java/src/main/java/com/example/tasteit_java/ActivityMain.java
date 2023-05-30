@@ -287,6 +287,25 @@ public class ActivityMain extends AppCompatActivity {
     @Override
     protected void onRestart() {
         updateList();
+        Glide.with(this)
+                .load(sharedPreferences.getSharedPreferences().getString("urlImgProfile", "null"))
+                .into(new CustomTarget<Drawable>() {
+                    @Override
+                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                        Bitmap bitmap = Bitmap.createBitmap(resource.getIntrinsicWidth(),
+                                resource.getIntrinsicHeight(),
+                                Bitmap.Config.ARGB_8888);
+                        Canvas canvas = new Canvas(bitmap);
+                        resource.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+                        resource.draw(canvas);
+
+                        Drawable roundedDrawable = new BitmapDrawable(getResources(), Utils.getRoundBitmapWithImage(bitmap));
+                        profileImg.setIcon(roundedDrawable);
+                    }
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                    }
+                });
         super.onRestart();
     }
 }

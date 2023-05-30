@@ -21,44 +21,44 @@
             android:layout_marginStart="10dp"
             android:backgroundTint="@color/white"
             android:hint="@string/type_something"
-            android:textColor="@color/white"
-            android:textColorHint="@color/white"
-            android:textSize="18sp"
             android:inputType="textMultiLine"
             android:maxLength="240"
             android:maxLines="3"
             android:scrollbars="vertical"
-            app:layout_constraintStart_toStartOf="parent"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            android:textSize="18sp"
             app:layout_constraintEnd_toStartOf="@+id/ivsearch"
             app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@+id/ivsearch"
             android:layout_width="35dp"
             android:layout_height="35dp"
-            android:background="@drawable/ic_search"
             android:layout_marginEnd="10dp"
-            app:layout_constraintStart_toEndOf="@+id/tvSearch"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@drawable/ic_search"
             app:layout_constraintBottom_toBottomOf="@+id/tvSearch"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tvSearch"
             app:layout_constraintTop_toTopOf="@+id/tvSearch"
-            app:layout_constraintVertical_bias="0.5"/>
+            app:layout_constraintVertical_bias="0.5" />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tlSearch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:tabTextAppearance="@style/TabItem"
+            android:background="@color/maroon"
+            app:layout_constraintTop_toBottomOf="@+id/tvSearch"
             app:tabIconTint="@color/white"
             app:tabIndicatorColor="@color/white"
-            app:layout_constraintTop_toBottomOf="@+id/tvSearch"
-            android:background="@color/maroon">
+            app:tabTextAppearance="@style/TabItem">
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:icon="@drawable/selectall"/>
+                android:icon="@drawable/selectall" />
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="match_parent"
@@ -93,11 +93,11 @@
         android:id="@+id/fcMainMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:itemTextColor="@color/white"
+        android:layout_alignParentBottom="true"
         android:background="@color/maroon"
         app:itemIconTint="@color/white"
-        android:layout_alignParentBottom="true"
-        app:menu="@menu/nav_main_menu"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:itemTextColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/nav_main_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
