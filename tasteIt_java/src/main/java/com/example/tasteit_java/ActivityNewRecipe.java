@@ -156,22 +156,8 @@ public class ActivityNewRecipe extends AppCompatActivity {
                 if(editing){
                     if(newFilePath != null) {
                         uploadImage(newFilePath);
-                        editRecipe(null);
-                        Intent i = new Intent(view.getContext(), ActivityRecipe.class);
-                        i.putExtra("creatorToken", creatorToken);
-                        i.putExtra("recipeId", recipeId);
-                        try {
-                            Thread.sleep(1500);
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
-                        view.getContext().startActivity(i);
                     } else {
-                        editRecipe(null);
-                        Intent i = new Intent(view.getContext(), ActivityRecipe.class);
-                        i.putExtra("creatorToken", creatorToken);
-                        i.putExtra("recipeId", recipeId);
-                        view.getContext().startActivity(i);
+                        saveData(null);
                     }
                 } else{
                     if(newFilePath != null) {
@@ -180,6 +166,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
                         Toast.makeText(ActivityNewRecipe.this, R.string.error_new_rec_image, Toast.LENGTH_SHORT).show();
                     }
                 }
+                Toast.makeText(ActivityNewRecipe.this, R.string.saving, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -247,6 +234,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
         if(ivRecipePhoto.getDrawable() == null) {
             status = false;
         }
+
         //check name
         EditText etRecipeName = FragmentInfoNewRecipe.getRecipeName();
         if(etRecipeName.getText().toString().length() == 0) {
@@ -304,12 +292,13 @@ public class ActivityNewRecipe extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 101) {
-            newFilePath = data.getData();
-            Utils.onActivityResult(this, requestCode, resultCode, data, ivRecipePhoto);
-        }
-        if(requestCode == 202) {
-            try{
+        if(requestCode == 101 && resultCode == -1) {
+            if (data.getData() != null) {
+                newFilePath = data.getData();
+                Utils.onActivityResult(this, requestCode, resultCode, data, ivRecipePhoto);
+            }
+        } else if(requestCode == 202 && resultCode == -1) {
+            if(data.getExtras().get("data") != null ){
                 Bitmap photo = (Bitmap) data.getExtras().get("data");
                 ivRecipePhoto.setImageBitmap(photo);
                 File f = new File(getCacheDir(), UUID.randomUUID().toString());
@@ -334,10 +323,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
                     Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
                 newFilePath = Uri.fromFile(f);
-            }catch (RuntimeException re){
-                Toast.makeText(this, "Photo not updated", Toast.LENGTH_SHORT).show();
             }
-
         }
     }
 
@@ -418,7 +404,6 @@ public class ActivityNewRecipe extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {
                     if (response.isSuccessful()) {
-                        //AQUI DEVOLVEMOS AL MAIN!
                         Toast.makeText(ActivityNewRecipe.this, R.string.saved, Toast.LENGTH_SHORT).show();
                         finish();
                     } else {
@@ -489,7 +474,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {
                     if (response.isSuccessful()) {
-                        if (!lastFileUrl.equals("")) {
+                        if (!lastFileUrl.toString().equals(urlImage)) {
                             try{
                                 final StorageReference storageReference = FirebaseStorage.getInstance().getReference().getStorage().getReferenceFromUrl(recipe.getImage());
                                 storageReference.delete();
@@ -558,12 +543,6 @@ public class ActivityNewRecipe extends AppCompatActivity {
         FragmentStepsNewRecipe.getSteps().clear();
         FragmentIngredientsNewRecipe.getIngredients().clear();
         FragmentInfoNewRecipe.getTags().clear();
-    }
-
-    @Override
-    public void onBackPressed() {
-        Intent i = new Intent(this.getApplicationContext(), ActivityMain.class);
-        startActivity(i);
     }
 
 }

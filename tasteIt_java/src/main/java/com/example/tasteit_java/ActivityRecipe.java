@@ -257,6 +257,12 @@ public class ActivityRecipe extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onRestart() {
+        getIsLiked();
+        super.onRestart();
+    }
+
     //MENU superior
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -400,11 +406,5 @@ public class ActivityRecipe extends AppCompatActivity {
         } else {
             bLike.setRotationX(0);
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        Intent i = new Intent(this.getApplicationContext(), ActivityMain.class);
-        startActivity(i);
     }
 }

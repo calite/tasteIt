@@ -316,7 +316,7 @@ public class ActivityProfile extends AppCompatActivity {
 
         menu.getItem(0).setVisible(myProfile);
 
-        menu.getItem(1).setVisible(false); //Peta el signout
+        menu.getItem(1).setVisible(false);
         return true;
     }
 
@@ -330,8 +330,6 @@ public class ActivityProfile extends AppCompatActivity {
             case R.id.iEditProfile:
                 startActivity(new Intent(getApplicationContext(), ActivityEditProfile.class));
                 return true;
-            case R.id.iCloseSesion:
-                //signOut();
             case R.id.iDarkMode:
                 if (AppCompatDelegate.getDefaultNightMode() != AppCompatDelegate.MODE_NIGHT_YES) {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -342,28 +340,14 @@ public class ActivityProfile extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
     //END MENU superior
-    public void callSignOut(View view) {
-        //signOut();
-    }
-
-    private void signOut() {
-        FirebaseAuth.getInstance().signOut();
-        SharedPreferences.Editor editor = new SharedPreferencesSaved(this).getEditer();
-        editor.remove("uid");
-        editor.remove("accessToken");
-        editor.commit();
-
-        startActivity(new Intent(this, ActivityLogin.class));
-        finish();
-    }
 
     //Cuando se cambia a otra actividad y se vuelve a esta (ya creada) actualizamos los datos
     @Override
     protected void onRestart() {
         if (myProfile) {
-            initializeViews();
+            adapter = null;
+            vpPaginator.setAdapter(null);
             bringUser();
         } else {
             getIsFollowing(Utils.getUserToken(), uid);
@@ -411,7 +395,7 @@ public class ActivityProfile extends AppCompatActivity {
                 shimmer.hideShimmer();
             }
 
-            adapter.notifyDataSetChanged();
+            //adapter.notifyDataSetChanged();
         } else {
             bringUser();
         }

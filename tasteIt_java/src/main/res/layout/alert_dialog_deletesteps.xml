@@ -36,6 +36,7 @@
             android:layout_height="wrap_content"
             android:text="@string/are_you_sure_you_want_to_eliminate_this_step"
             android:textColor="@color/black"
+            android:paddingHorizontal="15dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ivLogo" />

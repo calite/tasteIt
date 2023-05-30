@@ -2,10 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="15dp">
+    android:layout_margin="15dp"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,41 +15,29 @@
         <TextView
             android:id="@+id/tvTitle"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:textStyle="italic"/>
+            android:layout_weight="1"
+            android:textStyle="italic" />
 
         <ImageButton
             android:id="@+id/btnDelete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_close"
-            app:tint="@color/maroon"
+            android:background="#F3C2C2"
             android:scaleType="centerCrop"
-            android:background="#F3C2C2"/>
+            android:src="@drawable/ic_close"
+            app:tint="@color/maroon" />
 
     </LinearLayout>
 
-    <androidx.cardview.widget.CardView
+    <TextView
+        android:id="@+id/tvText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        card_view:cardCornerRadius="5dp"
-        card_view:cardElevation="4dp"
-        card_view:cardBackgroundColor="#F3C2C2"
-        card_view:cardUseCompatPadding="true">
-
-        <TextView
-            android:id="@+id/tvText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:backgroundTint="@color/maroon"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:maxLength="255"
-            android:maxLines="4"
-            android:scrollbars="vertical"
-            android:padding="5dp"/>
-
-    </androidx.cardview.widget.CardView>
+        android:maxLength="255"
+        android:padding="5dp"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:backgroundTint="@color/maroon" />
 
 </LinearLayout>

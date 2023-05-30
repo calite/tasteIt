@@ -6,7 +6,7 @@
     <string name="forgot_password">¿Olvidaste tu contraseña?</string>
     <string name="login">¡Iniciar sesión!</string>
     <string name="acept">He leído y acepto los</string>
-    <string name="terms">términos y condiciones de uso.</string>
+    <string name="terms">términos y condiciones.</string>
     <string name="something_wrong">Algo salió mal</string>
     <string name="info_deleted">Tu información ha sido eliminada</string>
 
@@ -137,6 +137,7 @@
     <string name="select_picture">Selecciona una imagen</string>
     <string name="canceled">Cancelado</string>
     <string name="error_no_ingredient">Debes especificar un ingrediente</string>
+    <string name="saving">Guardando...</string>
 
     <!--Countries-->
     <string-array name="countries_array">
