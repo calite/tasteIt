@@ -161,6 +161,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
                         i.putExtra("creatorToken", creatorToken);
                         i.putExtra("recipeId", recipeId);
                         try {
+
                             Thread.sleep(1500);
                         } catch (InterruptedException e) {
                             throw new RuntimeException(e);
@@ -490,11 +491,14 @@ public class ActivityNewRecipe extends AppCompatActivity {
                 public void onResponse(Call<Void> call, Response<Void> response) {
                     if (response.isSuccessful()) {
                         if (!lastFileUrl.equals("")) {
+                            /*
                             try{
                                 final StorageReference storageReference = FirebaseStorage.getInstance().getReference().getStorage().getReferenceFromUrl(recipe.getImage());
                                 storageReference.delete();
                             }catch (IllegalArgumentException iae){
                                 Logger.getGlobal().log(Level.WARNING, "Firestorage didn't like the photo");}
+
+                             */
 
                         }
                         Toast.makeText(ActivityNewRecipe.this, R.string.saved, Toast.LENGTH_SHORT).show();
