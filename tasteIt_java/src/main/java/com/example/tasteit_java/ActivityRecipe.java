@@ -259,6 +259,8 @@ public class ActivityRecipe extends AppCompatActivity {
 
     @Override
     protected void onRestart() {
+        adapter = null;
+        vpPaginator.setAdapter(null);
         getIsLiked();
         super.onRestart();
     }
