@@ -12,19 +12,13 @@
 
     <string name="bar_title_terms">Términos y condiciones de uso</string>
     <string name="terms1">Propiedad intelectual: Se establece que todos los derechos de propiedad intelectual relacionados con la aplicación, incluyendo el diseño, los logotipos, el contenido y cualquier otra marca registrada, pertenecen a la empresa desarrolladora. Se prohíbe la reproducción, distribución o modificación no autorizada de estos elementos.
-
-Responsabilidad del usuario: Los usuarios son responsables de la información que publican en la aplicación y deben garantizar que no infringen derechos de terceros ni violan la privacidad o la propiedad intelectual de otras personas. También se indica que la empresa no es responsable por el contenido generado por los usuarios.
-
-Privacidad y protección de datos: Se establece cómo se recopilan, almacenan y utilizan los datos personales de los usuarios. Se debe cumplir con las leyes de protección de datos y se proporciona una política de privacidad detallada.</string>
+        Responsabilidad del usuario: Los usuarios son responsables de la información que publican en la aplicación y deben garantizar que no infringen derechos de terceros ni violan la privacidad o la propiedad intelectual de otras personas. También se indica que la empresa no es responsable por el contenido generado por los usuarios.
+        Privacidad y protección de datos: Se establece cómo se recopilan, almacenan y utilizan los datos personales de los usuarios. Se debe cumplir con las leyes de protección de datos y se proporciona una política de privacidad detallada.</string>
     <string name="terms2">Contenido generado por el usuario: Se establece que los usuarios conservan la propiedad del contenido que generan, pero al publicarlo en la aplicación, otorgan una licencia no exclusiva a la empresa para utilizar, modificar y distribuir dicho contenido.
-
-Interrupciones del servicio: La empresa se reserva el derecho de interrumpir o suspender el servicio de la aplicación en cualquier momento, ya sea por mantenimiento, actualizaciones o por cualquier otro motivo. No se garantiza la disponibilidad ininterrumpida de la aplicación.
-
-Limitación de responsabilidad: La empresa no se hace responsable por cualquier daño, pérdida o perjuicio causado por el uso de la aplicación. Esto incluye daños directos, indirectos, incidentales o consecuentes.</string>
+        Interrupciones del servicio: La empresa se reserva el derecho de interrumpir o suspender el servicio de la aplicación en cualquier momento, ya sea por mantenimiento, actualizaciones o por cualquier otro motivo. No se garantiza la disponibilidad ininterrumpida de la aplicación.
+        Limitación de responsabilidad: La empresa no se hace responsable por cualquier daño, pérdida o perjuicio causado por el uso de la aplicación. Esto incluye daños directos, indirectos, incidentales o consecuentes.</string>
     <string name="terms3">Modificaciones de los términos: La empresa se reserva el derecho de modificar los términos y condiciones en cualquier momento. Los usuarios serán notificados de los cambios y se les dará la opción de aceptarlos o dejar de utilizar la aplicación.
-
-Terminación de la cuenta: La empresa se reserva el derecho de terminar o suspender la cuenta de un usuario en caso de incumplimiento de los términos y condiciones o por cualquier otro motivo justificado.</string>
-
+        Terminación de la cuenta: La empresa se reserva el derecho de terminar o suspender la cuenta de un usuario en caso de incumplimiento de los términos y condiciones o por cualquier otro motivo justificado.</string>
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
         labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
