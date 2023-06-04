@@ -2,6 +2,7 @@ package com.example.tasteit_java;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -43,6 +44,7 @@ import com.squareup.picasso.Picasso;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -300,7 +302,7 @@ public class ActivityNewRecipe extends AppCompatActivity {
         } else if(requestCode == 202 && resultCode == -1) {
             if(data.getExtras().get("data") != null ){
                 Bitmap photo = (Bitmap) data.getExtras().get("data");
-                ivRecipePhoto.setImageBitmap(photo);
+
                 File f = new File(getCacheDir(), UUID.randomUUID().toString());
                 try {
                     f.createNewFile();
@@ -322,7 +324,38 @@ public class ActivityNewRecipe extends AppCompatActivity {
                 }catch(Exception e){
                     Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
+
+                ExifInterface ei = null;
+                try {
+                    ei = new ExifInterface(f.getAbsolutePath());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                        ExifInterface.ORIENTATION_UNDEFINED);
+
+                switch(orientation) {
+
+                    case ExifInterface.ORIENTATION_ROTATE_90:
+                        photo = Utils.rotateImage(photo, 90);
+                        break;
+
+                    case ExifInterface.ORIENTATION_ROTATE_180:
+                        photo = Utils.rotateImage(photo, 180);
+                        break;
+
+                    case ExifInterface.ORIENTATION_ROTATE_270:
+                        photo = Utils.rotateImage(photo, 270);
+                        break;
+
+                    case ExifInterface.ORIENTATION_NORMAL:
+
+                    default:
+                        break;
+                }
+
                 newFilePath = Uri.fromFile(f);
+                ivRecipePhoto.setImageBitmap(photo);
             }
         }
     }
