@@ -19,6 +19,7 @@
         android:background="@color/gray"/>
 
     <TextView
+        android:id="@+id/tvterms1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/terms1"
@@ -28,6 +29,7 @@
         android:layout_margin="8dp" />
 
     <TextView
+        android:id="@+id/tvterms2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/terms2"
@@ -37,6 +39,7 @@
         android:layout_margin="8dp" />
 
     <TextView
+        android:id="@+id/tvterms3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/terms3"
