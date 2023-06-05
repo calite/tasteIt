@@ -159,6 +159,7 @@
         <item>United Kingdom</item>
         <item>United States</item>
         <item>Vietnam</item>
+        <item>International</item>
     </string-array>
 
     <string-array name="tags_array">
